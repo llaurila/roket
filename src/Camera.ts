@@ -1,4 +1,5 @@
 import Vector from "./Vector";
+import { getCenter } from "./Utils";
 
 class Camera {
     pos: Vector;
@@ -7,6 +8,13 @@ class Camera {
     constructor(position: Vector, zoom: number) {
         this.pos = position;
         this.zoom = zoom;
+    }
+
+    toScreenCoordinates(ctx: CanvasRenderingContext2D, p: Vector): Vector {
+        return p
+            .mul(this.zoom)
+            .add(getCenter(ctx))
+            .add(this.pos.mul(-1 * this.zoom));
     }
 
     toWorldCoordinates(ctx: CanvasRenderingContext2D, p: Vector): Vector {

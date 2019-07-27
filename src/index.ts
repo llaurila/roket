@@ -15,7 +15,7 @@ let drawables: IDrawable[] = [];
 
 drawables.push(new Cosmos());
 
-const camera = new Camera(new Vector(30, 50), 3);
+const camera = new Camera(new Vector(0, 0), 3);
 const game = new Game(update, draw, camera);
 
 const ship = new Ship(new Vector(0, 0));
@@ -54,12 +54,12 @@ function update(time: number, delta: number) {
 
     if (zoomIn()) {
         camera.zoom *= 1 + delta;
-        panTowardsShip(delta);
     }
     else if (zoomOut()) {
         camera.zoom *= 1 - delta;
-        panTowardsShip(delta);
     }
+
+    panTowardsShip(delta);
 }
 
 function draw(ctx: CanvasRenderingContext2D, camera: Camera): void {
@@ -81,10 +81,14 @@ function drawObjects(ctx: CanvasRenderingContext2D, camera: Camera): void {
 }
 
 function panTowardsShip(delta: number): void {
-    let toShip = ship.pos.sub(camera.pos);
-    if (toShip.length() > 0)
+    const target= ship.pos.add(
+        ship.v.mul(2)
+    );
+    const towards = target.sub(camera.pos);
+
+    if (towards.length() > 0)
     {
-        camera.pos = camera.pos.add(toShip.mul(delta));
+        camera.pos = camera.pos.add(towards.mul(delta));
     }
 }
 

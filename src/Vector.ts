@@ -57,6 +57,20 @@ class Vector {
         );
     }
 
+    floor(): Vector {
+        return new Vector(
+            Math.floor(this.x),
+            Math.floor(this.y)
+        );
+    }
+
+    ceil(): Vector {
+        return new Vector(
+            Math.ceil(this.x),
+            Math.ceil(this.y)
+        );
+    }
+
     toScreenCoordinates(drawContext: IDrawContext): Vector {
         const origin = getCenter(drawContext.ctx);
         const zoom = drawContext.camera.zoom;
