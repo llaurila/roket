@@ -49,11 +49,7 @@ class Ship extends Body implements IDrawable {
                 this.die();
             }
 
-            this.engineLeft.update(time, delta);
-            this.engineRight.update(time, delta);
-
-            this.engineLeft.applyForcesOnParent();
-            this.engineRight.applyForcesOnParent();
+            updateEngines([this.engineLeft, this.engineRight], time, delta);
         }
         else {
             this.explosion.update(time, delta);
@@ -94,6 +90,13 @@ class Ship extends Body implements IDrawable {
         else {
             this.explosion.draw(ctx, camera);
         }
+    }
+}
+
+function updateEngines(engines: Engine[], time: number, delta: number) {
+    for (let engine of engines) {
+        engine.update(time, delta);
+        engine.applyForcesOnParent();    
     }
 }
 

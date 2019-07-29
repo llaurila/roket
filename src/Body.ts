@@ -11,7 +11,7 @@ class Body implements IUpdatable {
     mass: number = 0;
     centerOfMass: Vector = Vector.Zero;
 
-    private _alive: boolean = true;
+    protected _alive: boolean = true;
     private forces: Forces = Forces.Zero;
 
     constructor(position: Vector) {
@@ -51,13 +51,15 @@ class Body implements IUpdatable {
             return;
         }
 
-        const forces = this.getForces();
+        if (this.mass > 0) {
+            const forces = this.getForces();
 
-        this.v = this.v.add(
-            forces.F.mul(delta).div(this.getMass())
-        );
-
-        this.angularVelocity += forces.Torque / this.getMass() * delta;
+            this.v = this.v.add(
+                forces.F.mul(delta).div(this.getMass())
+            );
+    
+            this.angularVelocity += forces.Torque / this.getMass() * delta;    
+        }
 
         this.pos = this.pos.add(
             this.v.mul(delta)

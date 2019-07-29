@@ -7,21 +7,24 @@ import Hud from './Hud';
 import Keys from './Keys';
 import Cosmos from './Cosmos';
 import IDrawable from './IDrawable';
-import Pointer from './Pointer';
+import ShipController from './ShipController';
+import Fuel from './Fuel';
 
 let updatables: IUpdatable[] = [];
 let drawables: IDrawable[] = [];
 
 drawables.push(new Cosmos());
 
-const camera = new Camera(new Vector(0, 0), 3);
+const camera = new Camera(Vector.Zero, 3);
 const game = new Game(update, draw, camera);
 
-const ship = new Ship(new Vector(0, 0));
+const ship = new Ship(Vector.Zero);
 ship.mass = 800;
-
 updatables.push(ship);
 drawables.push(ship);
+
+let fuelCapsule: Fuel;
+generateFuelCapsule();
 
 const hud = new Hud();
 //hud.items.push(() => `Altitude: ${ship.pos.y.toFixed(0)} m`);
@@ -42,15 +45,10 @@ game.start();
     drawables = drawables.filter(x => x.alive);
 }, 1000);*/
 
+let shipController = new ShipController(ship);
+
 function update(time: number, delta: number) {
-    ship.engineLeft.burning = cw();
-    ship.engineRight.burning = ccw();
-    
-    if (!ship.engineLeft.burning && !ship.engineRight.burning && burning())
-    {
-        ship.engineLeft.burning = true;
-        ship.engineRight.burning = true;
-    }
+    shipController.control();
 
     if (fire()) {
         const ammo = ship.fire();
@@ -62,11 +60,9 @@ function update(time: number, delta: number) {
         updatable.update(time, delta);
     }
 
-    if (zoomIn()) {
-        camera.zoom = Math.min(12, camera.zoom * (1 + delta));
-    }
-    else if (zoomOut()) {
-        camera.zoom = Math.max(2, camera.zoom * (1 - delta));
+    if (fuelCapsule.pos.sub(ship.pos).length() < 8) {
+        fuelCapsule.collect(ship);
+        generateFuelCapsule();
     }
 
     panTowardsShip(delta);
@@ -91,9 +87,13 @@ function drawObjects(ctx: CanvasRenderingContext2D, camera: Camera): void {
 }
 
 function panTowardsShip(delta: number): void {
+    const v = ship.v.length();
+    camera.zoom = 5 - Math.min(99, v) / 33;
+
     const target = ship.pos.add(
         ship.v.mul(2)
     );
+
     const towards = target.sub(camera.pos);
 
     if (towards.length() > 0)
@@ -116,9 +116,14 @@ function getThrusterStatus(ship: Ship): string {
     return status.trim();
 }
 
-const burning = () => Keys.isDown(38);
-const ccw = () => Keys.isDown(37);
-const cw = () => Keys.isDown(39);
-const zoomIn = () => Keys.isDown(107) || Keys.isDown(81);
-const zoomOut = () => Keys.isDown(109) || Keys.isDown(65);
 const fire = () => Keys.wasPressed(32);
+
+function generateFuelCapsule(): void {
+    const distance = 25 + Math.random() * 50;
+    const angle = Math.random() * Math.PI * 2;
+
+    fuelCapsule = new Fuel(ship.pos.add(Vector.Up.mul(distance).rotate(angle)));
+    fuelCapsule.angularVelocity = Math.random() - 0.5;
+    updatables.push(fuelCapsule);
+    drawables.push(fuelCapsule);
+}
