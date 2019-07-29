@@ -40,7 +40,11 @@ class Polygon {
         );
     }
 
-    toScreenCoordinates(drawContext: IDrawContext): Polygon {
+    toScreenCoordinates(drawContext?: IDrawContext): Polygon {
+        if (drawContext == undefined) {
+            return this.scale(1, -1);
+        }
+
         const origin = getCenter(drawContext.ctx);
         const zoom = drawContext.camera.zoom;
 

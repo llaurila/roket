@@ -12,7 +12,7 @@ class Ammo extends Body implements IDrawable {
 
     ttl: number = 5;
     private age: number = 0;
-    
+
     constructor(position: Vector) {
         super(position);
         this.mass = 1;

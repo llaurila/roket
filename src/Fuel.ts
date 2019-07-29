@@ -6,10 +6,18 @@ import Body from "./Body";
 import Vector from "./Vector";
 import Ship from "./Ship";
 
+enum State {
+    Pulse,
+    FadeOut,
+    Dead
+}
+
 class Fuel extends Body implements IDrawable {
     static Shape: Polygon = Shapes.Capsule;
 
-    collected: boolean = false;
+    private collected: boolean = false;
+    private state: State = State.Pulse;
+    private opacity: number = 0;
 
     constructor(position: Vector) {
         super(position);
@@ -27,10 +35,34 @@ class Fuel extends Body implements IDrawable {
         ship.fuelTank.currentAmount =
             Math.min(ship.fuelTank.capacity,
                 ship.fuelTank.currentAmount + this.mass);
+
+        this.state = State.FadeOut;
+    }
+
+    update(time: number, delta: number) {
+        super.update(time, delta);
+                
+        if (this.state == State.Dead || !this.alive) {
+            return;
+        }
+        
+        switch (this.state) {
+        case State.Pulse:
+            this.opacity = 0.75 + Math.sin(time * 4) * 0.25;
+            break;
+        
+        case State.FadeOut:
+            this.opacity -= delta * 4;
+            if (this.opacity <= 0) {
+                this.opacity = 0;
+                this.state = State.Dead;
+            }
+            break;
+        }
     }
 
     draw(ctx: CanvasRenderingContext2D, camera: Camera) {
-        if (this.collected || !this.alive) {
+        if (this.state == State.Dead) {
             return;
         }
 
@@ -43,7 +75,7 @@ class Fuel extends Body implements IDrawable {
 
         ctx.save();
         ctx.lineWidth = 1;
-        ctx.strokeStyle = "#00ff00";
+        ctx.strokeStyle = `rgba(0, 255, 0, ${this.opacity})`;
 
         Fuel.Shape.toScreenCoordinates(drawContext).makeClosedPath(ctx);
 

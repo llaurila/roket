@@ -23,10 +23,9 @@ ship.mass = 800;
 updatables.push(ship);
 drawables.push(ship);
 
-let fuelCapsule: Fuel;
-generateFuelCapsule();
+let fuelCapsule: Fuel = generateFuelCapsule();
 
-const hud = new Hud();
+const hud = new Hud(ship, fuelCapsule);
 //hud.items.push(() => `Altitude: ${ship.pos.y.toFixed(0)} m`);
 hud.items.push(() => `Velocity: ${ship.v.length().toFixed(1)} m/s`);
 hud.items.push(() => `Thrusters: ${getThrusterStatus(ship)}`);
@@ -62,7 +61,7 @@ function update(time: number, delta: number) {
 
     if (fuelCapsule.pos.sub(ship.pos).length() < 8) {
         fuelCapsule.collect(ship);
-        generateFuelCapsule();
+        hud.fuelCapsule = generateFuelCapsule();
     }
 
     panTowardsShip(delta);
@@ -118,12 +117,14 @@ function getThrusterStatus(ship: Ship): string {
 
 const fire = () => Keys.wasPressed(32);
 
-function generateFuelCapsule(): void {
-    const distance = 25 + Math.random() * 50;
+function generateFuelCapsule(): Fuel {
+    const distance = 100 + Math.random() * 200;
     const angle = Math.random() * Math.PI * 2;
 
     fuelCapsule = new Fuel(ship.pos.add(Vector.Up.mul(distance).rotate(angle)));
     fuelCapsule.angularVelocity = Math.random() - 0.5;
     updatables.push(fuelCapsule);
     drawables.push(fuelCapsule);
+
+    return fuelCapsule;
 }
