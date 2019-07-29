@@ -1,4 +1,5 @@
 let keysDown: any = {};
+let wasDown: any = {};
 
 window.addEventListener("keydown", (e: KeyboardEvent) => {
     keysDown[e.keyCode] = true;
@@ -8,6 +9,15 @@ window.addEventListener("keyup", (e: KeyboardEvent) => {
     keysDown[e.keyCode] = false;
 });
 
+const isDown = (keyCode: number) => <boolean> keysDown[keyCode];
+
 export default {
-    isPressed: (keyCode: number) => <boolean> keysDown[keyCode]
+    isDown,
+
+    wasPressed: (keyCode: number): boolean => {
+        const down = isDown(32);
+        const result = !wasDown[keyCode] && down;
+        wasDown[keyCode] = down;
+        return result;
+    }
 };

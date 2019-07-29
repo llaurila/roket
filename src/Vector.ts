@@ -71,6 +71,13 @@ class Vector {
         );
     }
 
+    neg(): Vector {
+        return new Vector(
+            -this.x,
+            -this.y
+        );
+    }
+
     toScreenCoordinates(drawContext: IDrawContext): Vector {
         const origin = getCenter(drawContext.ctx);
         const zoom = drawContext.camera.zoom;

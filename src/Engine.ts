@@ -32,6 +32,10 @@ class Engine implements IUpdatable, IDrawable {
             () => this.output / 120 + Math.random() * this.output / 500);
     }
 
+    get alive() {
+        return true;
+    }
+
     get targetOutput(): number {
         return this.thrust * this.throttle;
     }
@@ -51,16 +55,11 @@ class Engine implements IUpdatable, IDrawable {
         this.throttle = value;
     }
 
-    getForces(): Forces {
-        let F = Vector.Zero;
-        let Torque = 0;
-
-        if (this.output > 0) {
-            F = F.add(this.getHeading().mul(this.output));
-            Torque += this.relativePosition.rotate(this.worldRotation).cross(F);
-        }
-
-        return new Forces(F, Torque);
+    applyForcesOnParent(): void {
+        this.parent.applyForce(
+            this.getHeading().mul(this.output),
+            this.relativePosition.rotate(this.worldRotation)
+        );
     }
 
     get worldPosition(): Vector {

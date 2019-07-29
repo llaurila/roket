@@ -15,6 +15,10 @@ class Forces {
             this.Torque + other.Torque
         );
     }
+
+    static get Zero() {
+        return new Forces(Vector.Zero, 0);
+    }
 }
 
 export default Forces;

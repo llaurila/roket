@@ -9,9 +9,21 @@ class Body implements IUpdatable {
     rotation: number = 0;
     angularVelocity: number = 0;
     mass: number = 0;
+    centerOfMass: Vector = Vector.Zero;
+
+    private _alive: boolean = true;
+    private forces: Forces = Forces.Zero;
 
     constructor(position: Vector) {
         this.pos = position;
+    }
+
+    get alive(): boolean {
+        return this._alive;
+    }
+
+    set alive(value: boolean) {
+        this._alive = value;
     }
 
     getHeading() {
@@ -22,12 +34,23 @@ class Body implements IUpdatable {
         return this.mass;
     }
 
+    applyForce(F: Vector, point: Vector): void {
+        let Torque = (point.sub(this.centerOfMass)).cross(F);
+        this.forces = this.forces.add(
+            new Forces(F, Torque)
+        );
+    }
+
     getInertia(size: Vector)
     {
         return this.mass * (size.x * size.x + size.y * size.y) / 12;
     }
 
     update(time: number, delta: number) {
+        if (!this.alive) {
+            return;
+        }
+
         const forces = this.getForces();
 
         this.v = this.v.add(
@@ -41,13 +64,15 @@ class Body implements IUpdatable {
         );
         
         this.rotation += this.angularVelocity * delta;
+
+        this.forces = Forces.Zero;
     }
 
     getForces(): Forces {
-        return new Forces(
+        return this.forces.add(new Forces(
             Environment.G.mul(this.getMass()),
             0
-        );
+        ));
     }
 }
 

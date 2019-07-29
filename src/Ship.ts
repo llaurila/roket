@@ -7,21 +7,18 @@ import Engine from "./Engine";
 import FuelTank from "./FuelTank";
 import Forces from "./Forces";
 import ExplosionParticleEngine from "./ExplosionParticleEngine";
+import Shapes from "./Shapes";
+import Ammo from "./Ammo";
 
 const SCALE = 2;
 
 class Ship extends Body implements IDrawable {
-    static Shape: Polygon = new Polygon([
-        new Vector( 0,  2),
-        new Vector(+1, -1),
-        new Vector(-1, -1)
-    ]).mul(SCALE);
+    static Shape: Polygon = Shapes.Ship.mul(SCALE);
 
     engineLeft: Engine;
     engineRight: Engine;
     fuelTank: FuelTank;
     explosion: ExplosionParticleEngine;
-    alive: boolean = true;
 
     constructor(position: Vector) {
         super(position);
@@ -31,16 +28,32 @@ class Ship extends Body implements IDrawable {
         this.explosion = new ExplosionParticleEngine(position);
     }
 
+    fire(): Ammo {
+        let ammo = new Ammo(this.pos.add(this.getHeading().mul(5)));
+        ammo.rotation = this.rotation;
+        ammo.v = this.v;
+
+        let F = this.getHeading().mul(10000);
+
+        ammo.applyForce(F, ammo.centerOfMass);
+        this.applyForce(F.neg(), this.centerOfMass);
+
+        return ammo;
+    }
+
     update(time: number, delta: number) {
         super.update(time, delta);
 
         if (this.alive) {
-            this.engineLeft.update(time, delta);
-            this.engineRight.update(time, delta);
-
             if (Math.abs(this.angularVelocity) > 20) {
                 this.die();
             }
+
+            this.engineLeft.update(time, delta);
+            this.engineRight.update(time, delta);
+
+            this.engineLeft.applyForcesOnParent();
+            this.engineRight.applyForcesOnParent();
         }
         else {
             this.explosion.update(time, delta);
@@ -55,12 +68,6 @@ class Ship extends Body implements IDrawable {
 
     getMass(): number {
         return super.getMass() + this.fuelTank.getMass();
-    }
-
-    getForces(): Forces {
-        let forces = this.engineLeft.getForces();
-        forces = forces.add(this.engineRight.getForces());
-        return super.getForces().add(forces);
     }
 
     draw(ctx: CanvasRenderingContext2D, camera: Camera) {

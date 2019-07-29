@@ -18,6 +18,10 @@ interface IStarSegment {
 class Cosmos implements IDrawable {
     starSegments: any = {};
 
+    get alive() {
+        return true;
+    }
+
     draw(ctx: CanvasRenderingContext2D, camera: Camera) {
         const
             bottomLeft = camera.toWorldCoordinates(

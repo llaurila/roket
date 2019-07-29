@@ -37,6 +37,11 @@ hud.items.push(() => `Fuel: ${(ship.fuelTank.currentAmount / ship.fuelTank.capac
 
 game.start();
 
+setInterval(() => {
+    updatables = updatables.filter(x => x.alive);
+    drawables = drawables.filter(x => x.alive);
+}, 1000);
+
 function update(time: number, delta: number) {
     ship.engineLeft.burning = cw();
     ship.engineRight.burning = ccw();
@@ -45,6 +50,12 @@ function update(time: number, delta: number) {
     {
         ship.engineLeft.burning = true;
         ship.engineRight.burning = true;
+    }
+
+    if (fire()) {
+        const ammo = ship.fire();
+        updatables.push(ammo);
+        drawables.push(ammo);
     }
 
     for (let updatable of updatables) {
@@ -105,8 +116,9 @@ function getThrusterStatus(ship: Ship): string {
     return status.trim();
 }
 
-const burning = () => Keys.isPressed(38);
-const ccw = () => Keys.isPressed(37);
-const cw = () => Keys.isPressed(39);
-const zoomIn = () => Keys.isPressed(107) || Keys.isPressed(81);
-const zoomOut = () => Keys.isPressed(109) || Keys.isPressed(65);
+const burning = () => Keys.isDown(38);
+const ccw = () => Keys.isDown(37);
+const cw = () => Keys.isDown(39);
+const zoomIn = () => Keys.isDown(107) || Keys.isDown(81);
+const zoomOut = () => Keys.isDown(109) || Keys.isDown(65);
+const fire = () => Keys.wasPressed(32);

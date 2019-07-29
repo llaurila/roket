@@ -71,6 +71,19 @@ class Polygon {
 
         ctx.closePath();
     }
+
+    static Make(pts: number[]): Polygon {
+        let v: Vector[] = [];
+
+        for (let i = 0; i < pts.length; i += 2) {
+            v.push(new Vector(
+                pts[i],
+                pts[i+1]
+            ));
+        }
+
+        return new Polygon(v);
+    }
 }
 
 export default Polygon;
