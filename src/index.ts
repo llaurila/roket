@@ -37,10 +37,10 @@ hud.items.push(() => `Fuel: ${(ship.fuelTank.currentAmount / ship.fuelTank.capac
 
 game.start();
 
-setInterval(() => {
+/*setInterval(() => {
     updatables = updatables.filter(x => x.alive);
     drawables = drawables.filter(x => x.alive);
-}, 1000);
+}, 1000);*/
 
 function update(time: number, delta: number) {
     ship.engineLeft.burning = cw();
