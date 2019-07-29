@@ -2,7 +2,8 @@ import IDrawable from "./IDrawable";
 import Camera from "./Camera";
 import Vector from "./Vector";
 
-const SEGMENT_SIZE = 100;
+const SEGMENT_SIZE = 200;
+const STARS_PER_SEGMENT = 12;
 
 interface IStar {
     pos: Vector;
@@ -15,7 +16,7 @@ interface IStarSegment {
 }
 
 class Cosmos implements IDrawable {
-    starSegments: IStarSegment[] = [];
+    starSegments: any = {};
 
     draw(ctx: CanvasRenderingContext2D, camera: Camera) {
         const
@@ -48,14 +49,37 @@ class Cosmos implements IDrawable {
     }
 
     getSegment(x: number, y: number): IStarSegment {
-        return {
-            stars: [{
-                pos: new Vector(x, y).mul(SEGMENT_SIZE),
-                size: 2,
-                opacity: 0.5
-            }]
-        };
+        let key = x + "," + y;
+        let segment: IStarSegment = this.starSegments[key];
+
+        if (!segment) {
+            segment = {
+                stars: generateStars(x, y)
+            }
+            this.starSegments[key] = segment;
+        }
+
+        return segment;
     }
+}
+
+function generateStars(x: number, y: number) {
+    let stars: IStar[] = [];
+
+    const origin = new Vector(x, y).mul(SEGMENT_SIZE);
+
+    for (let i = 0; i < STARS_PER_SEGMENT; i++) {
+        stars.push({
+            pos: origin.add(new Vector(
+                Math.random(),
+                Math.random()
+            ).mul(SEGMENT_SIZE)),
+            size: 1 + Math.random() * 2,
+            opacity: 0.25 + Math.random() * 0.75
+        });
+    }
+
+    return stars;
 }
 
 export default Cosmos;

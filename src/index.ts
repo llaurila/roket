@@ -5,7 +5,6 @@ import IUpdatable from './IUpdatable';
 import Camera from './Camera';
 import Hud from './Hud';
 import Keys from './Keys';
-import { CCW, CW } from './Utils';
 import Cosmos from './Cosmos';
 import IDrawable from './IDrawable';
 import Pointer from './Pointer';
@@ -30,11 +29,11 @@ hud.items.push(() => `Velocity: ${ship.v.length().toFixed(1)} m/s`);
 hud.items.push(() => `Thrusters: ${getThrusterStatus(ship)}`);
 hud.items.push(() => `Fuel: ${(ship.fuelTank.currentAmount / ship.fuelTank.capacity * 100).toFixed()}% (${ship.fuelTank.currentAmount.toFixed()} kg)`);
 
-hud.items.push(() => {
+/*hud.items.push(() => {
     const screen = Pointer.getPosition();
     const world = camera.toWorldCoordinates(game.ctx, screen);
     return `Mouse: ${screen} (screen) ${world} (world)`;
-});
+});*/
 
 game.start();
 
@@ -53,10 +52,10 @@ function update(time: number, delta: number) {
     }
 
     if (zoomIn()) {
-        camera.zoom *= 1 + delta;
+        camera.zoom = Math.min(12, camera.zoom * (1 + delta));
     }
     else if (zoomOut()) {
-        camera.zoom *= 1 - delta;
+        camera.zoom = Math.max(2, camera.zoom * (1 - delta));
     }
 
     panTowardsShip(delta);
@@ -81,7 +80,7 @@ function drawObjects(ctx: CanvasRenderingContext2D, camera: Camera): void {
 }
 
 function panTowardsShip(delta: number): void {
-    const target= ship.pos.add(
+    const target = ship.pos.add(
         ship.v.mul(2)
     );
     const towards = target.sub(camera.pos);
