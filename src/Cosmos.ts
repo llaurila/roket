@@ -1,6 +1,7 @@
 import IDrawable from "./IDrawable";
 import Camera from "./Camera";
 import Vector from "./Vector";
+import UniqueIdProvider from "./UniqueIdProvider";
 
 const SEGMENT_SIZE = 200;
 const STARS_PER_SEGMENT = 12;
@@ -16,6 +17,7 @@ interface IStarSegment {
 }
 
 class Cosmos implements IDrawable {
+    id: number = UniqueIdProvider.next();
     starSegments: any = {};
 
     get alive() {

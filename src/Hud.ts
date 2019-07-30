@@ -6,11 +6,13 @@ import Shapes from "./Shapes";
 import Vector from "./Vector";
 import Fuel from "./Fuel";
 import Ship from "./Ship";
+import UniqueIdProvider from "./UniqueIdProvider";
 
 const FONT_SIZE = 14;
 const LINE_HEIGHT = 18;
 
 class Hud implements IDrawable {
+    id: number = UniqueIdProvider.next();
     items: (() => string)[] = [];
     ship: Ship;
     fuelCapsule: Fuel;
