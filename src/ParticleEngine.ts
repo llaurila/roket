@@ -3,8 +3,10 @@ import IUpdatable from "./IUpdatable";
 import Vector from "./Vector";
 import Camera from "./Camera";
 import Particle from "./Particle";
+import UniqueIdProvider from "./UniqueIdProvider";
 
-class ParticleEngine implements IDrawable, IUpdatable {    
+class ParticleEngine implements IDrawable, IUpdatable { 
+    id: number;   
     pos: Vector;
     particles: Particle[] = [];
     
@@ -12,11 +14,16 @@ class ParticleEngine implements IDrawable, IUpdatable {
     rotation: number = 0;
 
     constructor(position: Vector) {
+        this.id = UniqueIdProvider.next();
         this.pos = position;
 
         setInterval(() => {
             this.particles = this.particles.filter(p => p.alive);
         }, 1000)
+    }
+
+    get alive() {
+        return true;
     }
     
     update(time: number, delta: number) {

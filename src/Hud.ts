@@ -43,7 +43,7 @@ class Hud implements IDrawable {
 
         ctx.save();
         
-        ctx.strokeStyle = `rgba(255, 255, 255, 0.15)`;
+        ctx.strokeStyle = `rgba(255, 255, 255, 0.25)`;
         ctx.beginPath();
         ctx.arc(center.x, center.y, size, 0, 2 * Math.PI);
         ctx.stroke();

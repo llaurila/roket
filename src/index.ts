@@ -49,7 +49,7 @@ let shipController = new ShipController(ship);
 function update(time: number, delta: number) {
     shipController.control();
 
-    if (fire()) {
+    if (fire() && ship.alive) {
         const ammo = ship.fire();
         updatables.push(ammo);
         drawables.push(ammo);

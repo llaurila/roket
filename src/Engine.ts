@@ -6,10 +6,12 @@ import ParticleEngine from "./SprayParticleEngine";
 import FuelTank from "./FuelTank";
 import Forces from "./Forces";
 import Body from "./Ship";
+import UniqueIdProvider from "./UniqueIdProvider";
 
 const DEFAULT_CONSUMPTION = 0.0001675;
 
 class Engine implements IUpdatable, IDrawable {
+    id: number;
     parent: Body;
     relativePosition: Vector;
     relativeRotation: number;
@@ -22,6 +24,7 @@ class Engine implements IUpdatable, IDrawable {
     private particleEngine: ParticleEngine;
 
     constructor(parent: Body, relativePosition: Vector, relativeRotation: number, thrust: number, fuelTank: FuelTank) {
+        this.id = UniqueIdProvider.next();
         this.parent = parent;
         this.relativePosition = relativePosition;
         this.relativeRotation = relativeRotation;

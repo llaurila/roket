@@ -2,8 +2,10 @@ import Vector from "./Vector";
 import IUpdatable from "./IUpdatable";
 import { Default as Environment } from "./Environment";
 import Forces from "./Forces";
+import UniqueIdProvider from "./UniqueIdProvider";
 
 class Body implements IUpdatable {
+    id: number;
     pos: Vector;
     v: Vector = Vector.Zero;
     rotation: number = 0;
@@ -15,6 +17,7 @@ class Body implements IUpdatable {
     private forces: Forces = Forces.Zero;
 
     constructor(position: Vector) {
+        this.id = UniqueIdProvider.next();
         this.pos = position;
     }
 
