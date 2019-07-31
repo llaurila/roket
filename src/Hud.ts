@@ -1,8 +1,6 @@
 import IDrawable from "./IDrawable";
 import Camera from "./Camera";
 import { getCenter } from "./Utils";
-import Polygon from "./Polygon";
-import Shapes from "./Shapes";
 import Vector from "./Vector";
 import Fuel from "./Fuel";
 import Ship from "./Ship";
@@ -13,7 +11,7 @@ const LINE_HEIGHT = 18;
 
 class Hud implements IDrawable {
     id: number = UniqueIdProvider.next();
-    items: (() => string)[] = [];
+    items: HudItem[] = [];
     ship: Ship;
     fuelCapsule: Fuel;
 
@@ -26,9 +24,18 @@ class Hud implements IDrawable {
         return true;
     }
 
+    add(getText: () => string, enabled = () => true) {
+        this.items.push(new HudItem(getText, enabled));
+    }
+
     draw(ctx: CanvasRenderingContext2D, camera: Camera) {
+        ctx.save();
+        ctx.resetTransform();
+
         this.drawRadar(ctx, camera);
         this.drawTexts(ctx);
+
+        ctx.restore();
     }
 
     drawRadar(ctx: CanvasRenderingContext2D, camera: Camera): void {
@@ -64,14 +71,28 @@ class Hud implements IDrawable {
         ctx.fillStyle = "#f0f0f0";
         ctx.textBaseline = "top";
 
-        for (let line = 0; line < this.items.length; line++) {
-            ctx.fillText(this.items[line](), 10, 10 + LINE_HEIGHT * line);
+        let line = 0;
+        for (let item of this.items) {
+            if (item.enabled()) {
+                ctx.fillText(this.items[line].getText(), 10, 10 + LINE_HEIGHT * line);
+                line++;
+            }
         }
 
         ctx.restore();
     }
 }
 
+class HudItem {
+    getText: () => string;
+    enabled: () => boolean = () => true;
+
+    constructor(getText: () => string, enabled = () => true) {
+        this.getText = getText;
+        this.enabled = enabled;
+    }
+}
+
 const flipY = (v: Vector) => new Vector(v.x, -v.y);
 
-export default Hud;
+export { Hud };

@@ -15,7 +15,7 @@ export default {
     isDown,
 
     wasPressed: (keyCode: number): boolean => {
-        const down = isDown(32);
+        const down = isDown(keyCode);
         const result = !wasDown[keyCode] && down;
         wasDown[keyCode] = down;
         return result;

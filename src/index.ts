@@ -2,14 +2,16 @@ import Game from './Game';
 import Ship from './Ship';
 import Vector from './Vector';
 import Camera from './Camera';
-import Hud from './Hud';
+import { Hud } from './Hud';
 import Keys from './Keys';
 import Cosmos from './Cosmos';
-import IDrawable from './IDrawable';
 import ShipController from './ShipController';
 import Fuel from './Fuel';
 import Physics from './Physics';
 import { Graphics } from './Graphics';
+import Pointer from './Pointer';
+
+let debugMode = false;
 
 let physics = new Physics();
 let graphics = new Graphics();
@@ -24,21 +26,23 @@ ship.mass = 800;
 physics.add(ship);
 graphics.add(ship);
 
-let fuelCapsule: Fuel = generateFuelCapsule();
+let fuelCapsule: Fuel = generateRandomFuelCapsule();
 
 const hud = new Hud(ship, fuelCapsule);
 //hud.items.push(() => `Altitude: ${ship.pos.y.toFixed(0)} m`);
-hud.items.push(() => `Velocity: ${ship.v.length().toFixed(1)} m/s`);
-hud.items.push(() => `Thrusters: ${getThrusterStatus(ship)}`);
-hud.items.push(() => `Fuel: ${(ship.fuelTank.currentAmount / ship.fuelTank.capacity * 100).toFixed()}% (${ship.fuelTank.currentAmount.toFixed()} kg)`);
-hud.items.push(() => `Physics: ${physics.count}`);
-hud.items.push(() => `Graphics: ${graphics.count}`);
+hud.add(() => `Velocity: ${ship.v.length().toFixed(1)} m/s`);
+hud.add(() => `Thrusters: ${getThrusterStatus(ship)}`);
+hud.add(() => `Fuel: ${(ship.fuelTank.currentAmount / ship.fuelTank.capacity * 100).toFixed()}% (${ship.fuelTank.currentAmount.toFixed()} kg)`);
+hud.add(() => `Physics: ${physics.count}`, () => debugMode);
+hud.add(() => `Graphics: ${graphics.count}`, () => debugMode);
 
-/*hud.items.push(() => {
+hud.add(() => {
     const screen = Pointer.getPosition();
     const world = camera.toWorldCoordinates(game.ctx, screen);
     return `Mouse: ${screen} (screen) ${world} (world)`;
-});*/
+}, () => debugMode);
+
+graphics.add(hud);
 
 game.every(1, () => {
     physics.cleanUp();
@@ -50,6 +54,10 @@ game.start();
 let shipController = new ShipController(ship);
 
 function update(time: number, delta: number) {
+    if (debugButton()) {
+        debugMode = !debugMode;
+    }
+
     shipController.control();
 
     if (fire() && ship.alive) {
@@ -60,7 +68,7 @@ function update(time: number, delta: number) {
 
     if (fuelCapsule.pos.sub(ship.pos).length() < 8) {
         fuelCapsule.collect(ship);
-        hud.fuelCapsule = generateFuelCapsule();
+        hud.fuelCapsule = generateRandomFuelCapsule();
     }
 
     panTowardsShip(delta);
@@ -69,11 +77,7 @@ function update(time: number, delta: number) {
 function draw(ctx: CanvasRenderingContext2D, camera: Camera): void {
     ctx.canvas.width  = window.innerWidth;
     ctx.canvas.height = window.innerHeight;
-    drawObjects(ctx, camera);
-    hud.draw(ctx, camera);
-}
 
-function drawObjects(ctx: CanvasRenderingContext2D, camera: Camera): void {
     ctx.save();
     ctx.transform(1, 0, 0, -1, 0, ctx.canvas.height)
 
@@ -113,8 +117,9 @@ function getThrusterStatus(ship: Ship): string {
 }
 
 const fire = () => Keys.wasPressed(32);
+const debugButton = () => Keys.wasPressed(68);
 
-function generateFuelCapsule(): Fuel {
+function generateRandomFuelCapsule(): Fuel {
     const distance = 100 + Math.random() * 200;
     const angle = Math.random() * Math.PI * 2;
 
