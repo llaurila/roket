@@ -3,8 +3,10 @@ import IUpdatable from "./IUpdatable";
 import { Default as Environment } from "./Environment";
 import Forces from "./Forces";
 import UniqueIdProvider from "./UniqueIdProvider";
+import Physics from "./Physics";
 
 class Body implements IUpdatable {
+    physics?: Physics;
     id: number;
     pos: Vector;
     v: Vector = Vector.Zero;
@@ -21,12 +23,8 @@ class Body implements IUpdatable {
         this.pos = position;
     }
 
-    get alive(): boolean {
+    get alive() {
         return this._alive;
-    }
-
-    set alive(value: boolean) {
-        this._alive = value;
     }
 
     getHeading() {

@@ -5,10 +5,10 @@ import Vector from "./Vector";
 import Camera from "./Camera";
 import Engine from "./Engine";
 import FuelTank from "./FuelTank";
-import Forces from "./Forces";
 import ExplosionParticleEngine from "./ExplosionParticleEngine";
 import Shapes from "./Shapes";
 import Ammo from "./Ammo";
+import { Graphics } from "./Graphics";
 
 const SCALE = 2;
 
@@ -18,17 +18,20 @@ class Ship extends Body implements IDrawable {
     engineLeft: Engine;
     engineRight: Engine;
     fuelTank: FuelTank;
-    explosion: ExplosionParticleEngine;
-
+    graphics?: Graphics;
+    
     constructor(position: Vector) {
         super(position);
         this.fuelTank = new FuelTank(170);
         this.engineLeft = new Engine(this, new Vector(-0.5, -4), -0.2, 7000, this.fuelTank);
         this.engineRight = new Engine(this, new Vector(+0.5, -4), 0.2, 7000, this.fuelTank);
-        this.explosion = new ExplosionParticleEngine(position);
     }
 
-    fire(): Ammo {
+    fire(): void {
+        if (!this.alive) {
+            throw new Error("Ship not alive, can't fire.");
+        }
+
         let ammo = new Ammo(this.pos.add(this.getHeading().mul(5)));
         ammo.rotation = this.rotation;
         ammo.v = this.v;
@@ -38,7 +41,13 @@ class Ship extends Body implements IDrawable {
         ammo.applyForce(F, ammo.centerOfMass);
         this.applyForce(F.neg(), this.centerOfMass);
 
-        return ammo;
+        if (this.physics) {
+            this.physics.add(ammo);
+        }
+
+        if (this.graphics) {
+            this.graphics.add(ammo);
+        }            
     }
 
     update(time: number, delta: number) {
@@ -51,15 +60,22 @@ class Ship extends Body implements IDrawable {
 
             updateEngines([this.engineLeft, this.engineRight], time, delta);
         }
-        else {
-            this.explosion.update(time, delta);
-        }
     }
 
     die(): void {
-        this.alive = false;
-        this.explosion.pos = this.pos;
-        this.explosion.explode(300, 0, 25, this.v);
+        super._alive = false;
+
+        if (this.physics && this.graphics) {
+            const explosion = new ExplosionParticleEngine(this.pos, {
+                particleCount: 300,
+                velocityMin: 0,
+                velocityMax: 25,
+                originVelocity: this.v
+            });
+
+            this.physics.add(explosion);
+            this.graphics.add(explosion);
+        }
     }
 
     getMass(): number {
@@ -86,9 +102,6 @@ class Ship extends Body implements IDrawable {
     
             this.engineLeft.draw(ctx, camera);
             this.engineRight.draw(ctx, camera);
-        }
-        else {
-            this.explosion.draw(ctx, camera);
         }
     }
 }

@@ -11,6 +11,7 @@ class Game {
     running: boolean = false;
     camera: Camera;
     startTime: number = 0;
+    repeatingTasks: IRepeatingTask[] = [];
 
     constructor(
         update: (time: number, delta: number) => void,
@@ -50,6 +51,13 @@ class Game {
 
             this.drawFunc(this.ctx, this.camera);
 
+            for (let task of this.repeatingTasks) {
+                if (time - task.prevRun >= task.interval) {
+                    task.prevRun = time;
+                    task.func();
+                }
+            }
+
             this.prev = time;            
         }
 
@@ -59,6 +67,20 @@ class Game {
     stop() {
         this.running = false;
     }
+
+    every(interval: number, func: () => void) {
+        this.repeatingTasks.push({
+            interval,
+            func,
+            prevRun: 0
+        })
+    }
+}
+
+interface IRepeatingTask {
+    interval: number;
+    func: () => void;
+    prevRun: number;
 }
 
 export default Game;

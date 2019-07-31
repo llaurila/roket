@@ -5,6 +5,8 @@ import Shapes from "./Shapes";
 import Body from "./Body";
 import Vector from "./Vector";
 import Ship from "./Ship";
+import Physics from "./Physics";
+import { Graphics } from "./Graphics";
 
 enum State {
     Pulse,
@@ -19,6 +21,8 @@ class Fuel extends Body implements IDrawable {
     private state: State = State.Pulse;
     private opacity: number = 0;
 
+    graphics?: Graphics;
+
     constructor(position: Vector) {
         super(position);
         this.mass = 25;
@@ -29,8 +33,7 @@ class Fuel extends Body implements IDrawable {
             return;
         }
 
-        this.collected = true;
-        this._alive = false;
+        this.collected = true;        
         
         ship.fuelTank.currentAmount =
             Math.min(ship.fuelTank.capacity,
@@ -56,16 +59,13 @@ class Fuel extends Body implements IDrawable {
             if (this.opacity <= 0) {
                 this.opacity = 0;
                 this.state = State.Dead;
+                super._alive = false;
             }
             break;
         }
     }
 
     draw(ctx: CanvasRenderingContext2D, camera: Camera) {
-        if (this.state == State.Dead) {
-            return;
-        }
-
         const drawContext = {
             pos: this.pos,
             rotation: this.rotation,
@@ -81,10 +81,6 @@ class Fuel extends Body implements IDrawable {
 
         ctx.stroke();
         ctx.restore();
-    }
-
-    get alive() {
-        return true;
     }
 }
 

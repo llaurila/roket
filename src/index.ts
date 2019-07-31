@@ -1,7 +1,6 @@
 import Game from './Game';
 import Ship from './Ship';
 import Vector from './Vector';
-import IUpdatable from './IUpdatable';
 import Camera from './Camera';
 import Hud from './Hud';
 import Keys from './Keys';
@@ -9,19 +8,21 @@ import Cosmos from './Cosmos';
 import IDrawable from './IDrawable';
 import ShipController from './ShipController';
 import Fuel from './Fuel';
+import Physics from './Physics';
+import { Graphics } from './Graphics';
 
-let updatables: IUpdatable[] = [];
-let drawables: IDrawable[] = [];
+let physics = new Physics();
+let graphics = new Graphics();
 
-drawables.push(new Cosmos());
+graphics.add(new Cosmos());
 
 const camera = new Camera(Vector.Zero, 3);
 const game = new Game(update, draw, camera);
 
 const ship = new Ship(Vector.Zero);
 ship.mass = 800;
-updatables.push(ship);
-drawables.push(ship);
+physics.add(ship);
+graphics.add(ship);
 
 let fuelCapsule: Fuel = generateFuelCapsule();
 
@@ -30,6 +31,8 @@ const hud = new Hud(ship, fuelCapsule);
 hud.items.push(() => `Velocity: ${ship.v.length().toFixed(1)} m/s`);
 hud.items.push(() => `Thrusters: ${getThrusterStatus(ship)}`);
 hud.items.push(() => `Fuel: ${(ship.fuelTank.currentAmount / ship.fuelTank.capacity * 100).toFixed()}% (${ship.fuelTank.currentAmount.toFixed()} kg)`);
+hud.items.push(() => `Physics: ${physics.count}`);
+hud.items.push(() => `Graphics: ${graphics.count}`);
 
 /*hud.items.push(() => {
     const screen = Pointer.getPosition();
@@ -37,12 +40,12 @@ hud.items.push(() => `Fuel: ${(ship.fuelTank.currentAmount / ship.fuelTank.capac
     return `Mouse: ${screen} (screen) ${world} (world)`;
 });*/
 
-game.start();
+game.every(1, () => {
+    physics.cleanUp();
+    graphics.cleanUp();
+});
 
-/*setInterval(() => {
-    updatables = updatables.filter(x => x.alive);
-    drawables = drawables.filter(x => x.alive);
-}, 1000);*/
+game.start();
 
 let shipController = new ShipController(ship);
 
@@ -50,14 +53,10 @@ function update(time: number, delta: number) {
     shipController.control();
 
     if (fire() && ship.alive) {
-        const ammo = ship.fire();
-        updatables.push(ammo);
-        drawables.push(ammo);
+        ship.fire();
     }
 
-    for (let updatable of updatables) {
-        updatable.update(time, delta);
-    }
+    physics.update(time, delta);
 
     if (fuelCapsule.pos.sub(ship.pos).length() < 8) {
         fuelCapsule.collect(ship);
@@ -78,9 +77,7 @@ function drawObjects(ctx: CanvasRenderingContext2D, camera: Camera): void {
     ctx.save();
     ctx.transform(1, 0, 0, -1, 0, ctx.canvas.height)
 
-    for (let drawable of drawables) {
-        drawable.draw(ctx, camera);
-    }
+    graphics.draw(ctx, camera);
     
     ctx.restore();
 }
@@ -123,8 +120,8 @@ function generateFuelCapsule(): Fuel {
 
     fuelCapsule = new Fuel(ship.pos.add(Vector.Up.mul(distance).rotate(angle)));
     fuelCapsule.angularVelocity = Math.random() - 0.5;
-    updatables.push(fuelCapsule);
-    drawables.push(fuelCapsule);
+    physics.add(fuelCapsule);
+    graphics.add(fuelCapsule);
 
     return fuelCapsule;
 }

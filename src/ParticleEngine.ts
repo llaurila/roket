@@ -4,14 +4,17 @@ import Vector from "./Vector";
 import Camera from "./Camera";
 import Particle from "./Particle";
 import UniqueIdProvider from "./UniqueIdProvider";
+import Physics from "./Physics";
+import { Graphics } from "./Graphics";
 
 class ParticleEngine implements IDrawable, IUpdatable { 
     id: number;   
     pos: Vector;
     particles: Particle[] = [];
-    
-    timeSinceLastEmitted: number = 0;
+        
     rotation: number = 0;
+    physics?: Physics;
+    graphics?: Graphics;
 
     constructor(position: Vector) {
         this.id = UniqueIdProvider.next();

@@ -8,7 +8,8 @@ class SprayParticleEngine extends ParticleEngine {
     getRate: () => number = () => 0;
     emitting: boolean = false;
     originVelocity: Vector = Vector.Zero;
-
+    timeSinceLastEmitted: number = 0;
+    
     constructor(position: Vector, velocity: () => number) {
         super(position);
         this.velocity = velocity;
