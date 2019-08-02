@@ -19,11 +19,11 @@ class LevelOutro implements IDrawable {
         ctx.save();
         ctx.resetTransform();
 
-        ctx.fillStyle = `#f0f0f0`;
+        ctx.fillStyle = `rgba(241, 241, 241, ${1})`;
 
         if (this.level.failureMessage) {
             ctx.font = `${22}px Nunito`;
-            ctx.textBaseline = "middle";
+            ctx.textBaseline = "bottom";
             ctx.textAlign = "center";
             ctx.fillText(this.level.failureMessage, center.x, center.y - 10);
 
@@ -31,6 +31,17 @@ class LevelOutro implements IDrawable {
             ctx.textBaseline = "top";
             ctx.textAlign = "center";
             ctx.fillText("Press ESC to restart.", center.x, center.y + 20);
+        }
+        else if (this.level.passed) {
+            ctx.font = `${22}px Nunito`;
+            ctx.textBaseline = "bottom";
+            ctx.textAlign = "center";
+            ctx.fillText("Success!", center.x, center.y - 10);
+
+            ctx.font = `${18}px Nunito`;
+            ctx.textBaseline = "top";
+            ctx.textAlign = "center";
+            ctx.fillText("Press Enter to continue.", center.x, center.y + 20);
         }
 
         ctx.restore();

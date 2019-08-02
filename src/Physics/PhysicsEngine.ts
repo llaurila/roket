@@ -13,6 +13,16 @@ class PhysicsEngine {
         return this.objects.size;
     }
 
+    filter(criteria: (obj: IUpdatable) => boolean): IUpdatable[] {
+        let filtered = [];
+        for (let obj of this.objects.values()) {
+            if (criteria(obj)) {
+                filtered.push(obj);
+            }
+        }
+        return filtered;
+    }
+
     add(obj: IUpdatable): void {
         obj.physics = this;
         this.objects.add(obj);

@@ -7,6 +7,9 @@ import ShipController from "./ShipController";
 import Ship from "./Ship";
 import { LevelIntro } from "./LevelIntro";
 import { LevelOutro } from "./LevelOutro";
+import Objective from "./Objective";
+import Pointer from "./Controls/Pointer";
+import { Hud } from "./Hud";
 
 abstract class Level {
     static debugMode: boolean = false;
@@ -18,6 +21,9 @@ abstract class Level {
     ship: Ship = new Ship(Vector.Zero);
     shipController?: ShipController;
     failureMessage?: string;
+    objectives: Objective[] = [];
+    passed: boolean = false;
+    hud: Hud = new Hud(this.ship, this.physics);
 
     abstract get name(): string;
 
@@ -33,6 +39,33 @@ abstract class Level {
         this.graphics.add(this.ship);
 
         this.createObjects();
+        this.createObjectives();
+
+        this.hud = new Hud(this.ship, this.physics);
+
+        this.hud.add(() => `Velocity: ${this.ship.v.length().toFixed(1)} m/s`);
+        this.hud.add(() => `Fuel: ${(this.ship.fuelTank.currentAmount / this.ship.fuelTank.capacity * 100).toFixed()}% (${this.ship.fuelTank.currentAmount.toFixed()} kg)`);
+
+        for (let i = 0; i < this.objectives.length; i++) {
+            this.hud.add(() => {
+                const objective = this.objectives[i];
+                if (objective.cleared) {
+                    return `Objective ${i + 1} CLEARED (${objective.text})`;
+                }
+                return `Objective ${i + 1}: ${objective.text}`;
+            });
+        }
+
+        this.hud.add(() => `Physics: ${this.physics.count}`, () => Level.debugMode);
+        this.hud.add(() => `Graphics: ${this.graphics.count}`, () => Level.debugMode);
+
+        this.hud.add(() => {
+            const screen = Pointer.getPosition();
+            const world = this.camera.toWorldCoordinates(this.ctx, screen);
+            return `Mouse: ${screen} (screen) ${world} (world)`;
+        }, () => Level.debugMode);
+
+        this.graphics.add(this.hud);
 
         const intro = new LevelIntro(this);
         this.graphics.add(intro);
@@ -49,22 +82,55 @@ abstract class Level {
 
     abstract createObjects(): void;
 
+    abstract createObjectives(): void;
+
     update(time: number, delta: number) {
         this.physics.update(time, delta);
 
-        if (!this.ship.alive) {
-            this.failure("Destroyed!");
+        if (!this.ended) {
+            if (!this.ship.alive) {
+                this.failure("Destroyed!");
+            }
+            else if (this.ship.fuelTank.isEmpty()) {
+                this.failure("Out of fuel!");
+            }
+            else if (this.objectives.length > 0) {
+                let numCleared = 0;
+                for (let objective of this.objectives) {
+                    if (objective.cleared) {
+                        numCleared++;
+                    }
+                    else {
+                        if (objective.check()) {
+                            objective.cleared = true;
+                            numCleared++;
+                        }
+                    }
+                }
+    
+                if (numCleared == this.objectives.length) {
+                    this.success();
+                }    
+            }
         }
-        else if (this.ship.fuelTank.isEmpty()) {
-            this.failure("Out of fuel!");
-        }
+    }
+
+    get ended(): boolean {
+        return this.passed || this.failureMessage != undefined;
     }
 
     success(): void {
-
+        if (this.passed) {
+            throw new Error('Already passed.')
+        }
+        this.passed = true;
+        this.graphics.add(new LevelOutro(this));
     }
 
     failure(message: string): void {
+        if (this.failureMessage) {
+            throw new Error('Already failed.')
+        }
         this.failureMessage = message;
         this.graphics.add(new LevelOutro(this));
     }

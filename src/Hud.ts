@@ -2,9 +2,10 @@ import IDrawable from "./Graphics/IDrawable";
 import Camera from "./Graphics/Camera";
 import { getCenter } from "./Utils";
 import Vector from "./Physics/Vector";
-import Fuel from "./Fuel";
 import Ship from "./Ship";
 import UniqueIdProvider from "./UniqueIdProvider";
+import PhysicsEngine from "./Physics/PhysicsEngine";
+import Fuel from "./Fuel";
 
 const FONT_SIZE = 14;
 const LINE_HEIGHT = 18;
@@ -13,11 +14,11 @@ class Hud implements IDrawable {
     id: number = UniqueIdProvider.next();
     items: HudItem[] = [];
     ship: Ship;
-    fuelCapsule: Fuel;
+    physics: PhysicsEngine;
 
-    constructor(ship: Ship, fuelCapsule: Fuel) {
+    constructor(ship: Ship, physics: PhysicsEngine) {
         this.ship = ship;
-        this.fuelCapsule = fuelCapsule;
+        this.physics = physics;
     }
 
     get alive() {
@@ -52,19 +53,25 @@ class Hud implements IDrawable {
         ctx.arc(center.x, center.y, size, 0, 2 * Math.PI);
         ctx.stroke();
 
-        const to = this.fuelCapsule.pos;
+        const from = this.ship.pos;
 
-        if (this.fuelCapsule.alive &&
-            camera.toScreenCoordinates(ctx, to).sub(center).length() > size) {
+        let fuelCapsules = this.physics
+            .filter(obj => obj.alive && obj instanceof Fuel)
+            .map(obj => <Fuel> obj)
+            .sort((a, b) => a.pos.sub(from).length() - b.pos.sub(from).length());
 
-                const from = this.ship.pos;
-            const direction = to.sub(from).normalize();
-            const fuelArrow = center.add(flipY(direction.mul(size)));
-    
-            ctx.fillStyle = `rgba(0, 255, 0, 0.5)`;
-            ctx.beginPath();
-            ctx.arc(fuelArrow.x, fuelArrow.y, 4, 0, 2 * Math.PI);
-            ctx.fill();    
+        if (fuelCapsules.length > 0) {
+            const to = fuelCapsules[0].pos;
+
+            if (camera.toScreenCoordinates(ctx, to).sub(center).length() > size) {
+                const direction = to.sub(from).normalize();
+                const fuelArrow = center.add(flipY(direction.mul(size)));
+        
+                ctx.fillStyle = `rgba(0, 255, 0, 0.5)`;
+                ctx.beginPath();
+                ctx.arc(fuelArrow.x, fuelArrow.y, 4, 0, 2 * Math.PI);
+                ctx.fill();    
+            }
         }
 
         ctx.restore();    

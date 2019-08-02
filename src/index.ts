@@ -3,9 +3,11 @@ import Camera from './Graphics/Camera';
 import Keys from './Controls/Keys';
 import Level from './Level';
 import Introduction from './Levels/Introduction';
+import VelocityControl from './Levels/VelocityControl';
 
 const levelTypes = [
-    Introduction
+    Introduction,
+    VelocityControl
 ];
 
 let currentLevel = 0;
@@ -27,6 +29,13 @@ function loadLevel(number: number) {
     game.start();
 
     function update(time: number, delta: number) {
+        if (continueButton() && level.passed) {
+            if (++currentLevel < levelTypes.length) {
+                game.stop();
+                loadLevel(currentLevel);    
+            }
+        }
+
         if (restartButton()) {
             game.stop();
             loadLevel(currentLevel);
@@ -74,5 +83,6 @@ function loadLevel(number: number) {
     }
 
     const restartButton = () => Keys.wasPressed(27);
+    const continueButton = () => Keys.wasPressed(13);
     const debugButton = () => Keys.wasPressed(68);
 }
