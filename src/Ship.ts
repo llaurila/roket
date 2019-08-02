@@ -104,6 +104,20 @@ class Ship extends Body implements IDrawable {
             this.engineRight.draw(ctx, camera);
         }
     }
+
+    getThrusterStatus(): string {
+        let status = '';
+        if (this.engineLeft.burning) {
+            status += 'LEFT';
+        }
+        if (this.engineRight.burning) {
+            status += ' RIGHT';
+        }
+        if (status.length == 0) {
+            return "OFF";
+        }
+        return status.trim();
+    }
 }
 
 function updateEngines(engines: Engine[], time: number, delta: number) {
