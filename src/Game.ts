@@ -1,5 +1,5 @@
-import { initializeGraphics } from './Graphics';
-import Camera from './Camera';
+import { initializeGraphics } from './Graphics/Graphics';
+import Camera from './Graphics/Camera';
 
 const FREQ_HZ = 60;
 

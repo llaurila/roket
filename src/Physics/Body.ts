@@ -1,12 +1,11 @@
 import Vector from "./Vector";
 import IUpdatable from "./IUpdatable";
-import { Default as Environment } from "./Environment";
 import Forces from "./Forces";
-import UniqueIdProvider from "./UniqueIdProvider";
-import Physics from "./Physics";
+import UniqueIdProvider from "../UniqueIdProvider";
+import PhysicsEngine from "./PhysicsEngine";
 
 class Body implements IUpdatable {
-    physics?: Physics;
+    physics?: PhysicsEngine;
     id: number;
     pos: Vector;
     v: Vector = Vector.Zero;
@@ -72,10 +71,16 @@ class Body implements IUpdatable {
     }
 
     getForces(): Forces {
-        return this.forces.add(new Forces(
-            Environment.G.mul(this.getMass()),
-            0
-        ));
+        let forces = this.forces;
+
+        if (this.physics) {
+            forces = forces.add(new Forces(
+                this.physics.environment.G.mul(this.getMass()),
+                0
+            ));
+        }
+
+        return forces;
     }
 }
 

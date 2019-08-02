@@ -1,7 +1,7 @@
-import IDrawable from "./IDrawable";
-import Camera from "./Camera";
+import IDrawable from "./Graphics/IDrawable";
+import Camera from "./Graphics/Camera";
 import { getCenter } from "./Utils";
-import Vector from "./Vector";
+import Vector from "./Physics/Vector";
 import Fuel from "./Fuel";
 import Ship from "./Ship";
 import UniqueIdProvider from "./UniqueIdProvider";

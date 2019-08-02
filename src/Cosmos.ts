@@ -1,6 +1,6 @@
-import IDrawable from "./IDrawable";
-import Camera from "./Camera";
-import Vector from "./Vector";
+import IDrawable from "./Graphics/IDrawable";
+import Camera from "./Graphics/Camera";
+import Vector from "./Physics/Vector";
 import UniqueIdProvider from "./UniqueIdProvider";
 
 const SEGMENT_SIZE = 200;

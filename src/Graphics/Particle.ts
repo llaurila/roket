@@ -1,8 +1,8 @@
-import Body from "./Body";
+import Body from "../Physics/Body";
 import IDrawable from "./IDrawable";
 import Camera from "./Camera";
-import Vector from "./Vector";
-import { getCenter } from "./Utils";
+import Vector from "../Physics/Vector";
+import { getCenter } from "../Utils";
 import IDrawContext from "./IDrawContext";
 import Polygon from "./Polygon";
 import { getInterpolatedColor } from "./Color";

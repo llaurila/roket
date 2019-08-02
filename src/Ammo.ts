@@ -1,9 +1,9 @@
-import Body from "./Body";
-import Vector from "./Vector";
-import Polygon from "./Polygon";
-import Shapes from "./Shapes";
-import IDrawable from "./IDrawable";
-import Camera from "./Camera";
+import Body from "./Physics/Body";
+import Vector from "./Physics/Vector";
+import Polygon from "./Graphics/Polygon";
+import Shapes from "./Graphics/Shapes";
+import IDrawable from "./Graphics/IDrawable";
+import Camera from "./Graphics/Camera";
 
 const SCALE = 0.8;
 

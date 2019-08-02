@@ -1,4 +1,4 @@
-import Keys from "./Keys";
+import Keys from "./Controls/Keys";
 import Ship from "./Ship";
 
 const

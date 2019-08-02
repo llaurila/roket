@@ -1,5 +1,5 @@
 import Polygon from "./Polygon";
-import Vector from "./Vector";
+import Vector from "../Physics/Vector";
 
 class PolygonMaker {
     pts: Vector[] = [];

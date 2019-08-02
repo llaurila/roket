@@ -1,5 +1,5 @@
-import Vector from "./Vector";
-import IDrawContext from "./IDrawContext";
+import Vector from "./Physics/Vector";
+import IDrawContext from "./Graphics/IDrawContext";
 
 const CCW = 1;
 const CW = -1;

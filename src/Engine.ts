@@ -1,12 +1,11 @@
-import IUpdatable from "./IUpdatable";
-import Vector from "./Vector";
-import IDrawable from "./IDrawable";
-import Camera from "./Camera";
-import ParticleEngine from "./SprayParticleEngine";
+import IUpdatable from "./Physics/IUpdatable";
+import Vector from "./Physics/Vector";
+import Camera from "./Graphics/Camera";
+import ParticleEngine from "./Graphics/SprayParticleEngine";
 import FuelTank from "./FuelTank";
-import Forces from "./Forces";
 import Body from "./Ship";
 import UniqueIdProvider from "./UniqueIdProvider";
+import IDrawable from "./Graphics/IDrawable";
 
 const DEFAULT_CONSUMPTION = 0.0001675;
 

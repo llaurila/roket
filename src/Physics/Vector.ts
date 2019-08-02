@@ -1,5 +1,5 @@
-import { getCenter } from "./Utils";
-import IDrawContext from "./IDrawContext";
+import { getCenter } from "../Utils";
+import IDrawContext from "../Graphics/IDrawContext";
 
 class Vector {
     x: number;

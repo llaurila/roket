@@ -1,14 +1,14 @@
-import Body from "./Body";
-import IDrawable from './IDrawable';
-import Polygon from "./Polygon";
-import Vector from "./Vector";
-import Camera from "./Camera";
+import Body from "./Physics/Body";
+import IDrawable from './Graphics/IDrawable';
+import Polygon from "./Graphics/Polygon";
+import Vector from "./Physics/Vector";
+import Camera from "./Graphics/Camera";
 import Engine from "./Engine";
 import FuelTank from "./FuelTank";
-import ExplosionParticleEngine from "./ExplosionParticleEngine";
-import Shapes from "./Shapes";
+import ExplosionParticleEngine from "./Graphics/ExplosionParticleEngine";
+import Shapes from "./Graphics/Shapes";
 import Ammo from "./Ammo";
-import { Graphics } from "./Graphics";
+import { Graphics } from "./Graphics/Graphics";
 
 const SCALE = 2;
 

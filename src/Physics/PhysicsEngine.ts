@@ -1,7 +1,13 @@
 import IUpdatable from "./IUpdatable";
+import { IEnvironment } from "./Environment";
 
-class Physics {
+class PhysicsEngine {
+    environment: IEnvironment;
     private objects: Set<IUpdatable> = new Set<IUpdatable>();
+
+    constructor(environment: IEnvironment) {
+        this.environment = environment;
+    }
 
     get count() {
         return this.objects.size;
@@ -42,4 +48,4 @@ class Physics {
     }
 }
 
-export default Physics;
+export default PhysicsEngine;

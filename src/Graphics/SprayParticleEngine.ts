@@ -1,6 +1,6 @@
 import ParticleEngine from "./ParticleEngine";
-import Vector from "./Vector";
-import { degToRad, random } from "./Utils";
+import Vector from "../Physics/Vector";
+import { degToRad, random } from "../Utils";
 import Particle from "./Particle";
 
 class SprayParticleEngine extends ParticleEngine {

@@ -1,10 +1,10 @@
 import IDrawable from "./IDrawable";
-import IUpdatable from "./IUpdatable";
-import Vector from "./Vector";
+import IUpdatable from "../Physics/IUpdatable";
+import Vector from "../Physics/Vector";
 import Camera from "./Camera";
 import Particle from "./Particle";
-import UniqueIdProvider from "./UniqueIdProvider";
-import Physics from "./Physics";
+import UniqueIdProvider from "../UniqueIdProvider";
+import PhysicsEngine from "../Physics/PhysicsEngine";
 import { Graphics } from "./Graphics";
 
 class ParticleEngine implements IDrawable, IUpdatable { 
@@ -13,7 +13,7 @@ class ParticleEngine implements IDrawable, IUpdatable {
     particles: Particle[] = [];
         
     rotation: number = 0;
-    physics?: Physics;
+    physics?: PhysicsEngine;
     graphics?: Graphics;
 
     constructor(position: Vector) {

@@ -1,19 +1,20 @@
 import Game from './Game';
 import Ship from './Ship';
-import Vector from './Vector';
-import Camera from './Camera';
+import Vector from './Physics/Vector';
+import Camera from './Graphics/Camera';
 import { Hud } from './Hud';
-import Keys from './Keys';
+import Keys from './Controls/Keys';
 import Cosmos from './Cosmos';
 import ShipController from './ShipController';
 import Fuel from './Fuel';
-import Physics from './Physics';
-import { Graphics } from './Graphics';
-import Pointer from './Pointer';
+import PhysicsEngine from './Physics/PhysicsEngine';
+import { Graphics } from './Graphics/Graphics';
+import Pointer from './Controls/Pointer';
+import { VacuumOfSpace } from './Physics/Environment';
 
 let debugMode = false;
 
-let physics = new Physics();
+let physics = new PhysicsEngine(VacuumOfSpace);
 let graphics = new Graphics();
 
 graphics.add(new Cosmos());

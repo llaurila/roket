@@ -1,5 +1,5 @@
-import Vector from "./Vector";
-import { getCenter } from "./Utils";
+import Vector from "../Physics/Vector";
+import { getCenter } from "../Utils";
 
 class Camera {
     pos: Vector;

@@ -1,12 +1,10 @@
-import IDrawable from "./IDrawable";
-import Camera from "./Camera";
-import Polygon from "./Polygon";
-import Shapes from "./Shapes";
-import Body from "./Body";
-import Vector from "./Vector";
+import IDrawable from "./Graphics/IDrawable";
+import Camera from "./Graphics/Camera";
+import Polygon from "./Graphics/Polygon";
+import Shapes from "./Graphics/Shapes";
+import Body from "./Physics/Body";
 import Ship from "./Ship";
-import Physics from "./Physics";
-import { Graphics } from "./Graphics";
+import { Graphics } from "./Graphics/Graphics";
 
 enum State {
     Pulse,
@@ -21,12 +19,8 @@ class Fuel extends Body implements IDrawable {
     private state: State = State.Pulse;
     private opacity: number = 0;
 
+    amount: number = 25;
     graphics?: Graphics;
-
-    constructor(position: Vector) {
-        super(position);
-        this.mass = 25;
-    }
 
     collect(ship: Ship) {
         if (this.collected) {
@@ -37,7 +31,7 @@ class Fuel extends Body implements IDrawable {
         
         ship.fuelTank.currentAmount =
             Math.min(ship.fuelTank.capacity,
-                ship.fuelTank.currentAmount + this.mass);
+                ship.fuelTank.currentAmount + this.amount);
 
         this.state = State.FadeOut;
     }

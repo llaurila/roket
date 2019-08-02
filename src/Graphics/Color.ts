@@ -1,4 +1,4 @@
-import { interpolate } from "./Utils";
+import { interpolate } from "../Utils";
 
 interface IColor {
     R: number,
