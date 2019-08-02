@@ -3,7 +3,7 @@ import Cosmos from "../Cosmos";
 import ShipController from "../ShipController";
 import Objective from "../Objective";
 
-class Introduction extends Level {
+class VelocityControl extends Level {
     name: string = "Level 2: Velocity Control";
     description: string =
 `Accelerate to great speeds, turn around and decelerate back to full stop.`;
@@ -26,4 +26,4 @@ class Introduction extends Level {
     }
 }
 
-export default Introduction;
+export default VelocityControl;
