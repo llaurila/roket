@@ -4,6 +4,7 @@ import CircleCollider from "./CircleCollider";
 import Body from "./Body";
 
 class PhysicsEngine {
+    time: number = 0;
     environment: IEnvironment;
     private objects: Set<IUpdatable> = new Set<IUpdatable>();
 
@@ -38,6 +39,8 @@ class PhysicsEngine {
     }
 
     update(time: number, delta: number) {
+        this.time = time;
+        
         let objects = Array.from(this.objects);
 
         for (let i = 0; i < objects.length; i++) {

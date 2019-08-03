@@ -44,6 +44,7 @@ abstract class Level {
 
         this.hud = new Hud(this.ship, this.physics);
 
+        this.hud.add(() => `Time: ${this.physics.time.toFixed()} s`);
         this.hud.add(() => `Velocity: ${this.ship.v.length().toFixed(1)} m/s`);
         this.hud.add(() => `Fuel: ${(this.ship.fuelTank.currentAmount / this.ship.fuelTank.capacity * 100).toFixed()}% (${this.ship.fuelTank.currentAmount.toFixed()} kg)`);
 

@@ -1,0 +1,15 @@
+class RNG {
+    private seed: number;
+
+    constructor(seed: number) {
+        this.seed = seed;
+    }
+
+    next(min: number = 0, max: number = 1) {
+        this.seed = (this.seed * 9301 + 49297) % 233280;
+        const rnd = this.seed / 233280;
+        return min + rnd * (max - min);
+    }
+}
+
+export default RNG;

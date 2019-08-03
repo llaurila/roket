@@ -4,10 +4,12 @@ import Keys from './Controls/Keys';
 import Level from './Level';
 import Introduction from './Levels/Introduction';
 import VelocityControl from './Levels/VelocityControl';
+import CollectFuel from './Levels/CollectFuel';
 
 const levelTypes = [
     Introduction,
-    VelocityControl
+    VelocityControl,
+    CollectFuel
 ];
 
 let currentLevel = 0;
