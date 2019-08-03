@@ -10,6 +10,7 @@ import { LevelOutro } from "./LevelOutro";
 import Objective from "./Objective";
 import Pointer from "./Controls/Pointer";
 import { Hud } from "./Hud";
+import Fuel from "./Fuel";
 
 abstract class Level {
     static debugMode: boolean = false;
@@ -84,6 +85,17 @@ abstract class Level {
 
     abstract createObjectives(): void;
 
+    addFuelCapsule(fuelCapsule: Fuel): void {
+        this.physics.add(fuelCapsule);
+        this.graphics.add(fuelCapsule);
+
+        fuelCapsule.onCollision(e => {
+            if (e.target == this.ship) {
+                fuelCapsule.collect(this.ship);
+            }
+        });
+    }
+
     update(time: number, delta: number) {
         this.physics.update(time, delta);
 
@@ -94,25 +106,33 @@ abstract class Level {
             else if (this.ship.fuelTank.isEmpty()) {
                 this.failure("Out of fuel!");
             }
-            else if (this.objectives.length > 0) {
-                let numCleared = 0;
-                for (let objective of this.objectives) {
-                    if (objective.cleared) {
-                        numCleared++;
-                    }
-                    else {
-                        if (objective.check()) {
-                            objective.cleared = true;
-                            numCleared++;
-                        }
-                    }
-                }
-    
-                if (numCleared == this.objectives.length) {
-                    this.success();
-                }    
+            else if (this.objectivesCleared()) {
+                this.success();
             }
         }
+    }
+
+    objectivesCleared(): boolean {
+        if (this.objectives.length > 0) {
+            let numCleared = 0;
+            for (let objective of this.objectives) {
+                if (objective.cleared) {
+                    numCleared++;
+                }
+                else {
+                    if (objective.check()) {
+                        objective.cleared = true;
+                        numCleared++;
+                    }
+                }
+            }
+
+            if (numCleared == this.objectives.length) {
+                return true;
+            }    
+        }
+
+        return false;
     }
 
     get ended(): boolean {

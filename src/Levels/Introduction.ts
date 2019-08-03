@@ -15,10 +15,8 @@ class Introduction extends Level {
     createObjects(): void {
         this.graphics.add(new Cosmos());
 
-        this.physics.add(this.fuelCapsule);
-        this.graphics.add(this.fuelCapsule);
-
         this.fuelCapsule.angularVelocity = 1;
+        this.addFuelCapsule(this.fuelCapsule);
 
         this.shipController = new ShipController(this.ship);
     }
@@ -28,14 +26,6 @@ class Introduction extends Level {
             "Collect a fuel capsule.",
             () => !this.fuelCapsule.alive
         ));
-    }
-
-    update(time: number, delta: number) {
-        super.update(time, delta);
-
-        if (this.fuelCapsule.pos.sub(this.ship.pos).length() < 8) {
-            this.fuelCapsule.collect(this.ship);
-        }
     }
 }
 

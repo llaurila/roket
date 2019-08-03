@@ -3,6 +3,8 @@ import IUpdatable from "./IUpdatable";
 import Forces from "./Forces";
 import UniqueIdProvider from "../UniqueIdProvider";
 import PhysicsEngine from "./PhysicsEngine";
+import CircleCollider from "./CircleCollider";
+import ICollisionEvent from "./ICollisionEvent";
 
 class Body implements IUpdatable {
     physics?: PhysicsEngine;
@@ -13,6 +15,8 @@ class Body implements IUpdatable {
     angularVelocity: number = 0;
     mass: number = 0;
     centerOfMass: Vector = Vector.Zero;
+    circleCollider?: CircleCollider;
+    colliderCallbacks: ((e: ICollisionEvent) => void)[] = [];
 
     protected _alive: boolean = true;
     private forces: Forces = Forces.Zero;
@@ -20,6 +24,18 @@ class Body implements IUpdatable {
     constructor(position: Vector) {
         this.id = UniqueIdProvider.next();
         this.pos = position;
+    }
+
+    onCollision(callback: (e: ICollisionEvent) => void) {
+        this.colliderCallbacks.push(callback);
+    }
+
+    signalCollision(target: Body): void {
+        for (let callback of this.colliderCallbacks) {
+            callback({
+                target
+            });
+        }
     }
 
     get alive() {

@@ -1,5 +1,7 @@
 import IUpdatable from "./IUpdatable";
 import { IEnvironment } from "./Environment";
+import CircleCollider from "./CircleCollider";
+import Body from "./Body";
 
 class PhysicsEngine {
     environment: IEnvironment;
@@ -36,11 +38,27 @@ class PhysicsEngine {
     }
 
     update(time: number, delta: number) {
-        this.objects.forEach(obj => {
-            if (obj.alive) {
-                obj.update(time, delta);
+        let objects = Array.from(this.objects);
+
+        for (let i = 0; i < objects.length; i++) {
+            const a = objects[i];
+
+            if (a.alive) {
+                a.update(time, delta);
+
+                if (a instanceof Body) {
+                    for (let j = i + 1; j < objects.length; j++) {
+                        const b = objects[j];
+                        if (b instanceof Body) {
+                            if (CircleCollider.check(a, b)) {
+                                a.signalCollision(b);
+                                b.signalCollision(a);
+                            }
+                        }
+                    }
+                }
             }
-        });
+        }
     }
 
     cleanUp(): void {

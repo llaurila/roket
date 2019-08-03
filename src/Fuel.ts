@@ -5,6 +5,7 @@ import Shapes from "./Graphics/Shapes";
 import Body from "./Physics/Body";
 import Ship from "./Ship";
 import { Graphics } from "./Graphics/Graphics";
+import CircleCollider from "./Physics/CircleCollider";
 
 enum State {
     Pulse,
@@ -21,6 +22,7 @@ class Fuel extends Body implements IDrawable {
 
     amount: number = 25;
     graphics?: Graphics;
+    circleCollider = new CircleCollider(5);
 
     collect(ship: Ship) {
         if (this.collected) {

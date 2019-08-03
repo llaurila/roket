@@ -9,6 +9,7 @@ import ExplosionParticleEngine from "./Graphics/ExplosionParticleEngine";
 import Shapes from "./Graphics/Shapes";
 import Ammo from "./Ammo";
 import { Graphics } from "./Graphics/Graphics";
+import CircleCollider from "./Physics/CircleCollider";
 
 const SCALE = 2;
 
@@ -19,6 +20,7 @@ class Ship extends Body implements IDrawable {
     engineRight: Engine;
     fuelTank: FuelTank;
     graphics?: Graphics;
+    circleCollider = new CircleCollider(4);
     
     constructor(position: Vector) {
         super(position);
