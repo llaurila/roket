@@ -5,11 +5,13 @@ import Level from './Level';
 import Introduction from './Levels/Introduction';
 import VelocityControl from './Levels/VelocityControl';
 import CollectFuel from './Levels/CollectFuel';
+import GameOfTag from './Levels/GameOfTag';
 
 const levelTypes = [
     Introduction,
     VelocityControl,
-    CollectFuel
+    CollectFuel,
+    GameOfTag
 ];
 
 let currentLevel = 0;
@@ -45,6 +47,22 @@ function loadLevel(number: number) {
 
         if (debugButton()) {
             Level.debugMode = !Level.debugMode;
+        }
+
+        if (Level.debugMode) {
+            if (nextLevelButton()) {
+                if (++currentLevel < levelTypes.length) {
+                    game.stop();
+                    loadLevel(currentLevel);    
+                }   
+            }
+
+            if (previousLevelButton()) {
+                if (currentLevel-- > 0) {
+                    game.stop();
+                    loadLevel(currentLevel);    
+                }   
+            }            
         }
 
         if (level.shipController) {
@@ -87,4 +105,6 @@ function loadLevel(number: number) {
     const restartButton = () => Keys.wasPressed(27);
     const continueButton = () => Keys.wasPressed(13);
     const debugButton = () => Keys.wasPressed(68);
+    const nextLevelButton = () => Keys.wasPressed(76);
+    const previousLevelButton = () => Keys.wasPressed(75);
 }

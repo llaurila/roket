@@ -1,7 +1,7 @@
 import ParticleEngine from "./ParticleEngine";
 import Particle from "./Particle";
 import { random } from "../Utils";
-import Vector from "../Vector";
+import Vector from "../Physics/Vector";
 
 interface IExplosionSpec {
     particleCount: number,

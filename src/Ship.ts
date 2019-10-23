@@ -21,6 +21,7 @@ class Ship extends Body implements IDrawable {
     fuelTank: FuelTank;
     graphics?: Graphics;
     circleCollider = new CircleCollider(4);
+    color: string = "#a0a0a0";
     
     constructor(position: Vector) {
         super(position);
@@ -49,7 +50,7 @@ class Ship extends Body implements IDrawable {
 
         if (this.graphics) {
             this.graphics.add(ammo);
-        }            
+        }
     }
 
     update(time: number, delta: number) {
@@ -95,7 +96,7 @@ class Ship extends Body implements IDrawable {
     
             ctx.save();
             ctx.lineWidth = 1;
-            ctx.strokeStyle = "#a0a0a0";
+            ctx.strokeStyle = this.color;
     
             Ship.Shape.toScreenCoordinates(drawContext).makeClosedPath(ctx);
     

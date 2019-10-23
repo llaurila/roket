@@ -42,6 +42,11 @@ class Vector {
         return this.x * v2.y - this.y * v2.x;
     }
 
+    dot(v2: Vector): number {
+        return this.x * v2.x +
+            this.y * v2.y;
+    }
+
     normalize(): Vector {
         return this.div(this.length());
     }

@@ -16,7 +16,7 @@ enum State {
 class Fuel extends Body implements IDrawable {
     static Shape: Polygon = Shapes.Capsule;
 
-    private collected: boolean = false;
+    collected: boolean = false;
     private state: State = State.Pulse;
     private opacity: number = 0;
 

@@ -2,6 +2,7 @@ import IUpdatable from "./IUpdatable";
 import { IEnvironment } from "./Environment";
 import CircleCollider from "./CircleCollider";
 import Body from "./Body";
+import TriangleCollider from "./TriangleCollider";
 
 class PhysicsEngine {
     time: number = 0;
@@ -53,6 +54,10 @@ class PhysicsEngine {
                     for (let j = i + 1; j < objects.length; j++) {
                         const b = objects[j];
                         if (b instanceof Body) {
+                            /*if (TriangleCollider.check(a, b)) {
+                                a.signalCollision(b);
+                                b.signalCollision(a);
+                            }*/
                             if (CircleCollider.check(a, b)) {
                                 a.signalCollision(b);
                                 b.signalCollision(a);

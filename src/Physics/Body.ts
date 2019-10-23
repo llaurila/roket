@@ -5,6 +5,7 @@ import UniqueIdProvider from "../UniqueIdProvider";
 import PhysicsEngine from "./PhysicsEngine";
 import CircleCollider from "./CircleCollider";
 import ICollisionEvent from "./ICollisionEvent";
+import TriangleCollider from "./TriangleCollider";
 
 class Body implements IUpdatable {
     physics?: PhysicsEngine;
@@ -16,6 +17,7 @@ class Body implements IUpdatable {
     mass: number = 0;
     centerOfMass: Vector = Vector.Zero;
     circleCollider?: CircleCollider;
+    triangleCollider?: TriangleCollider;
     colliderCallbacks: ((e: ICollisionEvent) => void)[] = [];
 
     protected _alive: boolean = true;

@@ -15,7 +15,7 @@ class CollectFuel extends Level {
 
     createObjects(): void {
         this.graphics.add(new Cosmos());
-        this.generateFuelCapsules(10);
+        this.generateFuelCapsules(6);
         this.shipController = new ShipController(this.ship);
     }
 

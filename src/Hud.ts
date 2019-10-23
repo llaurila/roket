@@ -6,6 +6,8 @@ import Ship from "./Ship";
 import UniqueIdProvider from "./UniqueIdProvider";
 import PhysicsEngine from "./Physics/PhysicsEngine";
 import Fuel from "./Fuel";
+import IUpdatable from "./Physics/IUpdatable";
+import Body from "./Physics/Body";
 
 const FONT_SIZE = 14;
 const LINE_HEIGHT = 18;
@@ -55,26 +57,46 @@ class Hud implements IDrawable {
 
         const from = this.ship.pos;
 
-        let fuelCapsules = this.physics
-            .filter(obj => obj.alive && obj instanceof Fuel)
-            .map(obj => <Fuel> obj)
-            .sort((a, b) => a.pos.sub(from).length() - b.pos.sub(from).length());
-
-        if (fuelCapsules.length > 0) {
-            const to = fuelCapsules[0].pos;
-
+        const drawDot = (to: Vector, color: string) => {
             if (camera.toScreenCoordinates(ctx, to).sub(center).length() > size) {
                 const direction = to.sub(from).normalize();
                 const fuelArrow = center.add(flipY(direction.mul(size)));
         
-                ctx.fillStyle = `rgba(0, 255, 0, 0.5)`;
+                ctx.fillStyle = color;
                 ctx.beginPath();
                 ctx.arc(fuelArrow.x, fuelArrow.y, 4, 0, 2 * Math.PI);
                 ctx.fill();    
             }
+        };
+
+        const nearestShip = this.getNearestObject(obj => obj instanceof Ship &&
+            obj != this.ship);
+
+        if (nearestShip) {
+            drawDot(nearestShip.pos, "rgba(255, 0, 255, 0.5)");
+        }
+
+        const nearestFuel = this.getNearestObject(obj => obj instanceof Fuel);
+
+        if (nearestFuel) {
+            drawDot(nearestFuel.pos, "rgba(0, 255, 0, 0.5)");
         }
 
         ctx.restore();    
+    }
+
+    getNearestObject(criteria: (obj: IUpdatable) => boolean) {
+        const from = this.ship.pos;
+
+        let objects = this.physics
+            .filter(obj => obj.alive && obj instanceof Body)
+            .filter(criteria)
+            .map(obj => <Body>obj)
+            .sort((a, b) => a.pos.sub(from).length() - b.pos.sub(from).length());
+        
+        if (objects.length > 0) {
+            return objects[0];
+        }
     }
 
     drawTexts(ctx: CanvasRenderingContext2D): void {
