@@ -1,6 +1,7 @@
 import Game from './Game';
 import Camera from './Graphics/Camera';
 import Keys from './Controls/Keys';
+import GameController from './Controls/GameController';
 import Level from './Level';
 import Introduction from './Levels/Introduction';
 import VelocityControl from './Levels/VelocityControl';
@@ -102,8 +103,8 @@ function loadLevel(number: number) {
         }
     }
 
-    const restartButton = () => Keys.wasPressed(27);
-    const continueButton = () => Keys.wasPressed(13);
+    const restartButton = () => Keys.wasPressed(27) || GameController.wasPressed(9);
+    const continueButton = () => Keys.wasPressed(13) || GameController.wasPressed(0);
     const debugButton = () => Keys.wasPressed(68);
     const nextLevelButton = () => Keys.wasPressed(76);
     const previousLevelButton = () => Keys.wasPressed(75);
