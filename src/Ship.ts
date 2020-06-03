@@ -14,14 +14,14 @@ import CircleCollider from "./Physics/CircleCollider";
 const SCALE = 2;
 
 class Ship extends Body implements IDrawable {
-    static Shape: Polygon = Shapes.Ship.mul(SCALE);
+    public static Shape: Polygon = Shapes.Ship.mul(SCALE);
 
-    engineLeft: Engine;
-    engineRight: Engine;
-    fuelTank: FuelTank;
-    graphics?: Graphics;
-    circleCollider = new CircleCollider(4);
-    color: string = "#a0a0a0";
+    public engineLeft: Engine;
+    public engineRight: Engine;
+    public fuelTank: FuelTank;
+    public graphics?: Graphics;
+    public circleCollider = new CircleCollider(4);
+    public color: string = "#a0a0a0";
     
     constructor(position: Vector) {
         super(position);

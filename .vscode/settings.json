@@ -1,0 +1,9 @@
+{
+    "files.exclude": {
+        ".git/": true,
+        "node_modules/": true,
+        ".cache/": true,
+        "dist/": true
+    },
+    "html.format.wrapLineLength": 79
+}

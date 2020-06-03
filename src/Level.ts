@@ -15,16 +15,16 @@ import Fuel from "./Fuel";
 abstract class Level {
     static debugMode: boolean = false;
 
-    ctx: CanvasRenderingContext2D = initializeGraphics("game");
-    graphics: Graphics = new Graphics();
-    physics: PhysicsEngine = new PhysicsEngine(VacuumOfSpace);
-    camera: Camera = new Camera(Vector.Zero, 3);
-    ship: Ship = new Ship(Vector.Zero);
-    shipController?: ShipController;
-    failureMessage?: string;
-    objectives: Objective[] = [];
-    passed: boolean = false;
-    hud: Hud = new Hud(this.ship, this.physics);
+    public ctx: CanvasRenderingContext2D = initializeGraphics("game");
+    public graphics: Graphics = new Graphics();
+    public physics: PhysicsEngine = new PhysicsEngine(VacuumOfSpace);
+    public camera: Camera = new Camera(Vector.Zero, 3);
+    public ship: Ship = new Ship(Vector.Zero);
+    public shipController?: ShipController;
+    public failureMessage?: string;
+    public objectives: Objective[] = [];
+    public passed: boolean = false;
+    public hud: Hud = new Hud(this.ship, this.physics);
 
     abstract get name(): string;
 

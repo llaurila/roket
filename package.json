@@ -8,7 +8,7 @@
     "build": "parcel build index.html"
   },
   "devDependencies": {
-    "parcel-bundler": "^1.12.3",
-    "typescript": "^3.5.3"
+    "parcel-bundler": "^1.12.4",
+    "typescript": "^3.9.4"
   }
 }

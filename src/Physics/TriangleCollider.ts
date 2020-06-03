@@ -52,4 +52,5 @@ class TriangleCollider {
 function equals(a: number, b: number, tolerance: number) {
     return Math.abs(b - a) <= tolerance;
 }
+
 export default TriangleCollider;

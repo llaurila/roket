@@ -8,17 +8,17 @@ import ICollisionEvent from "./ICollisionEvent";
 import TriangleCollider from "./TriangleCollider";
 
 class Body implements IUpdatable {
-    physics?: PhysicsEngine;
-    id: number;
-    pos: Vector;
-    v: Vector = Vector.Zero;
-    rotation: number = 0;
-    angularVelocity: number = 0;
-    mass: number = 0;
-    centerOfMass: Vector = Vector.Zero;
-    circleCollider?: CircleCollider;
-    triangleCollider?: TriangleCollider;
-    colliderCallbacks: ((e: ICollisionEvent) => void)[] = [];
+    public physics?: PhysicsEngine;
+    public id: number;
+    public pos: Vector;
+    public v: Vector = Vector.Zero;
+    public rotation: number = 0;
+    public angularVelocity: number = 0;
+    public mass: number = 0;
+    public centerOfMass: Vector = Vector.Zero;
+    public circleCollider?: CircleCollider;
+    public triangleCollider?: TriangleCollider;
+    public colliderCallbacks: ((e: ICollisionEvent) => void)[] = [];
 
     protected _alive: boolean = true;
     private forces: Forces = Forces.Zero;
@@ -76,7 +76,7 @@ class Body implements IUpdatable {
                 forces.F.mul(delta).div(this.getMass())
             );
     
-            this.angularVelocity += forces.Torque / this.getMass() * delta;    
+            this.angularVelocity += forces.Torque / this.getMass() * delta;
         }
 
         this.pos = this.pos.add(
