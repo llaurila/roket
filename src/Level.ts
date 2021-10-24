@@ -55,14 +55,15 @@ abstract class Level {
     }
 
     private initHud() {
-        const fuelPercent = this.ship.fuelTank.currentAmount / this.ship.fuelTank.capacity * 100;
-        const fueldKg = this.ship.fuelTank.currentAmount;
-
         this.hud = new Hud(this.ship, this.physics);
 
         this.hud.add(() => `Time: ${this.physics.time.toFixed()} s`);
         this.hud.add(() => `Velocity: ${this.ship.v.length().toFixed(1)} m/s`);
-        this.hud.add(() => `Fuel: ${fuelPercent.toFixed()}% (${fueldKg.toFixed()} kg)`);
+        this.hud.add(() => {
+            const { currentAmount, capacity } = this.ship.fuelTank;
+            const fuelPercent = currentAmount / capacity * 100;
+            return `Fuel: ${fuelPercent.toFixed()}% (${currentAmount.toFixed()} kg)`;
+        });
 
         for (let i = 0; i < this.objectives.length; i++) {
             this.hud.add(() => {

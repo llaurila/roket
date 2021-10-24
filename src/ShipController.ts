@@ -24,8 +24,6 @@ class ShipController {
             this.ship.engineRight.burning = true;
         }
 
-        this.ship.engineRight.burning = ccw();
-
         if (!this.ship.engineLeft.burning && !this.ship.engineRight.burning && burning())
         {
             this.ship.engineLeft.burning = true;
