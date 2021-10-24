@@ -25,13 +25,16 @@ abstract class Level {
     public objectives: Objective[] = [];
     public passed: boolean = false;
     public hud: Hud = new Hud(this.ship, this.physics);
+    public number?: number;
 
     abstract get name(): string;
 
     abstract get description(): string;
 
-    init(ctx: CanvasRenderingContext2D) {
+    init(ctx: CanvasRenderingContext2D, number: number) {
         this.ctx = ctx;
+        this.number = number;
+
         this.graphics = this.getGraphics();
         this.physics = this.getPhysics();
 

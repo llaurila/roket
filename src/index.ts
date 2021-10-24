@@ -24,7 +24,7 @@ function loadLevel(number: number) {
     
     const game = new Game(update, draw, level.camera);
 
-    level.init(game.ctx);
+    level.init(game.ctx, number);
 
     game.every(1, () => {
         level.physics.cleanUp();
