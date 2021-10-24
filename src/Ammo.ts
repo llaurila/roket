@@ -4,14 +4,16 @@ import Polygon from "./Graphics/Polygon";
 import Shapes from "./Graphics/Shapes";
 import IDrawable from "./Graphics/IDrawable";
 import Camera from "./Graphics/Camera";
+import { getColorHexFromRGBA } from "./Graphics/Color";
 
 const SCALE = 0.8;
+const DEFAULT_TTL = 5;
 
 class Ammo extends Body implements IDrawable {
     static Shape: Polygon = Shapes.Ammo.mul(SCALE);
 
-    ttl: number = 5;
-    private age: number = 0;
+    ttl = DEFAULT_TTL;
+    private age = 0;
 
     constructor(position: Vector) {
         super(position);
@@ -44,7 +46,7 @@ class Ammo extends Body implements IDrawable {
         };
 
         ctx.save();
-        ctx.fillStyle = `rgba(255, 0, 0, ${1 - this.relativeAge})`;
+        ctx.fillStyle = getColorHexFromRGBA(1, 0, 0, 1 - this.relativeAge);
 
         Ammo.Shape.toScreenCoordinates(drawContext).makeClosedPath(ctx);
 

@@ -6,10 +6,11 @@ import ShipController from "../ShipController";
 import Objective from "../Objective";
 
 class Introduction extends Level {
-    name: string = "Level 1: Introduction";
-    description: string =
-`Familiarise yourself with the controls and acquire one fuel capsule.`;
+    name = "Level 1: Introduction";
+    description =
+        "Familiarise yourself with the controls and acquire one fuel capsule.";
 
+    // eslint-disable-next-line no-magic-numbers
     fuelCapsule: Fuel = new Fuel(Vector.Up.rotate(-0.3).mul(45));
 
     createObjects(): void {

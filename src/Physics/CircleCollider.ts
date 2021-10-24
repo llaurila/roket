@@ -3,7 +3,7 @@ import Vector from "./Vector";
 
 class CircleCollider {
     radius: number;
-    
+
     constructor(radius: number) {
         this.radius = radius;
     }

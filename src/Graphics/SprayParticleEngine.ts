@@ -3,13 +3,22 @@ import Vector from "../Physics/Vector";
 import { degToRad, random } from "../Utils";
 import Particle from "./Particle";
 
+const MIN_TTL = 0.25;
+const MAX_TTL = 0.75;
+
+const MIN_ANGLE_DEG = 80;
+const MAX_ANGLE_DEG = 100;
+
+const MAX_ANGULAR_VELOCITY = 10;
+
 class SprayParticleEngine extends ParticleEngine {
     velocity: () => number;
+    // eslint-disable-next-line class-methods-use-this
     getRate: () => number = () => 0;
-    emitting: boolean = false;
+    emitting = false;
     originVelocity: Vector = Vector.Zero;
-    timeSinceLastEmitted: number = 0;
-    
+    timeSinceLastEmitted = 0;
+
     constructor(position: Vector, velocity: () => number) {
         super(position);
         this.velocity = velocity;
@@ -30,8 +39,21 @@ class SprayParticleEngine extends ParticleEngine {
     }
 
     emitOne(): void {
+        const angle = degToRad(random(MIN_ANGLE_DEG, MAX_ANGLE_DEG)) - this.rotation;
+        const relativeVelocity = this.velocity();
+
+        const velocity = new Vector(
+            relativeVelocity * Math.cos(angle),
+            -relativeVelocity * Math.sin(angle)
+        ).add(this.originVelocity);
+
         this.particles.push(
-            new Particle(this.pos, Math.random() / 2 + 0.25, degToRad(random(80, 100)) - this.rotation, this.velocity(), this.originVelocity)
+            new Particle(
+                this.pos,
+                random(MIN_TTL, MAX_TTL),
+                velocity,
+                random(-MAX_ANGULAR_VELOCITY, MAX_ANGULAR_VELOCITY)
+            )
         );
         this.timeSinceLastEmitted -= 1 / this.getRate();
     }

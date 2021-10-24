@@ -5,13 +5,13 @@ import Vector from "../Physics/Vector";
 import { getCenter } from "../Utils";
 import IDrawContext from "./IDrawContext";
 import Polygon from "./Polygon";
-import { getInterpolatedColor } from "./Color";
+import { getColorHex, getInterpolatedColor } from "./Color";
 
 const FLAME = [
     {
         Color: {
-            R: 255,
-            G: 255,
+            R: 1,
+            G: 1,
             B: 0,
             A: 0.33
         },
@@ -19,7 +19,7 @@ const FLAME = [
     },
     {
         Color: {
-            R: 255,
+            R: 1,
             G: 0,
             B: 0,
             A: 0.33
@@ -28,18 +28,18 @@ const FLAME = [
     },
     {
         Color: {
-            R: 255,
-            G: 255,
-            B: 255,
+            R: 1,
+            G: 1,
+            B: 1,
             A: 0.33
         },
         Pos: 0.5
     },
     {
         Color: {
-            R: 255,
-            G: 255,
-            B: 255,
+            R: 1,
+            G: 1,
+            B: 1,
             A: 0
         },
         Pos: 1
@@ -54,22 +54,25 @@ class Particle extends Body implements IDrawable {
         new Vector(-1, +1)
     ]);
 
-    age: number = 0;
+    age = 0;
     ttl: number;
 
-    constructor(position: Vector, ttl: number, angle: number, velocity: number, originVelocity = Vector.Zero) {        
+
+    constructor(
+        position: Vector,
+        ttl: number,
+        velocity: Vector,
+        angularVelocity: number
+    ) {
         super(position);
 
         if (ttl <= 0) {
-            throw new Error('Time-to-live needs to be greater than zero.')
+            throw new Error("Time-to-live needs to be greater than zero.");
         }
         this.ttl = ttl;
 
-        this.v = new Vector(
-            velocity * Math.cos(angle),
-            -velocity * Math.sin(angle)
-        ).add(originVelocity);
-
+        this.v = velocity;
+        this.angularVelocity = angularVelocity;
         this.mass = 1;
         this.rotation = Math.random() * Math.PI;
     }
@@ -77,7 +80,7 @@ class Particle extends Body implements IDrawable {
     get relativeAge(): number {
         return this.age / this.ttl;
     }
-    
+
     get alive(): boolean {
         return this.age < this.ttl;
     }
@@ -96,7 +99,7 @@ class Particle extends Body implements IDrawable {
         const color = getInterpolatedColor(FLAME, this.relativeAge);
 
         ctx.save();
-        ctx.fillStyle = `rgba(${color.R.toFixed()}, ${color.G.toFixed()}, ${color.B.toFixed()}, ${color.A})`;
+        ctx.fillStyle = getColorHex(color);
 
         Particle.Shape.mul(1 + this.relativeAge).toScreenCoordinates({
             pos: this.pos,
@@ -112,7 +115,7 @@ class Particle extends Body implements IDrawable {
     update(time: number, delta: number) {
         if (this.alive) {
             super.update(time, delta);
-            this.rotation += delta * 4;
+            //this.rotation += delta * 4;
         }
         this.age += delta;
     }

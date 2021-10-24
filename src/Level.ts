@@ -12,18 +12,20 @@ import Pointer from "./Controls/Pointer";
 import { Hud } from "./Hud";
 import Fuel from "./Fuel";
 
+const DEFAULT_ZOOM = 3;
+
 abstract class Level {
-    static debugMode: boolean = false;
+    static debugMode = false;
 
     public ctx: CanvasRenderingContext2D = initializeGraphics("game");
     public graphics: Graphics = new Graphics();
     public physics: PhysicsEngine = new PhysicsEngine(VacuumOfSpace);
-    public camera: Camera = new Camera(Vector.Zero, 3);
+    public camera: Camera = new Camera(Vector.Zero, DEFAULT_ZOOM);
     public ship: Ship = new Ship(Vector.Zero);
     public shipController?: ShipController;
     public failureMessage?: string;
     public objectives: Objective[] = [];
-    public passed: boolean = false;
+    public passed = false;
     public hud: Hud = new Hud(this.ship, this.physics);
     public number?: number;
 
@@ -45,11 +47,22 @@ abstract class Level {
         this.createObjects();
         this.createObjectives();
 
+        this.initHud();
+
+        const intro = new LevelIntro(this);
+        this.graphics.add(intro);
+        this.physics.add(intro);
+    }
+
+    private initHud() {
+        const fuelPercent = this.ship.fuelTank.currentAmount / this.ship.fuelTank.capacity * 100;
+        const fueldKg = this.ship.fuelTank.currentAmount;
+
         this.hud = new Hud(this.ship, this.physics);
 
         this.hud.add(() => `Time: ${this.physics.time.toFixed()} s`);
         this.hud.add(() => `Velocity: ${this.ship.v.length().toFixed(1)} m/s`);
-        this.hud.add(() => `Fuel: ${(this.ship.fuelTank.currentAmount / this.ship.fuelTank.capacity * 100).toFixed()}% (${this.ship.fuelTank.currentAmount.toFixed()} kg)`);
+        this.hud.add(() => `Fuel: ${fuelPercent.toFixed()}% (${fueldKg.toFixed()} kg)`);
 
         for (let i = 0; i < this.objectives.length; i++) {
             this.hud.add(() => {
@@ -71,18 +84,14 @@ abstract class Level {
         }, () => Level.debugMode);
 
         this.graphics.add(this.hud);
-
-        const intro = new LevelIntro(this);
-        this.graphics.add(intro);
-        this.physics.add(intro);
     }
 
     getGraphics(): Graphics {
-        return new Graphics();
+        return this.graphics;
     }
 
     getPhysics(): PhysicsEngine {
-        return new PhysicsEngine(VacuumOfSpace);
+        return this.physics;
     }
 
     abstract createObjects(): void;
@@ -118,25 +127,30 @@ abstract class Level {
 
     objectivesCleared(): boolean {
         if (this.objectives.length > 0) {
-            let numCleared = 0;
-            for (let objective of this.objectives) {
-                if (objective.cleared) {
-                    numCleared++;
-                }
-                else {
-                    if (objective.check()) {
-                        objective.cleared = true;
-                        numCleared++;
-                    }
-                }
-            }
+            const numCleared = this.getNumberOfClearedObjectives();
 
             if (numCleared == this.objectives.length) {
                 return true;
-            }    
+            }
         }
 
         return false;
+    }
+
+    private getNumberOfClearedObjectives() {
+        let numCleared = 0;
+        for (const objective of this.objectives) {
+            if (objective.cleared) {
+                numCleared++;
+            }
+            else {
+                if (objective.check()) {
+                    objective.cleared = true;
+                    numCleared++;
+                }
+            }
+        }
+        return numCleared;
     }
 
     get ended(): boolean {
@@ -145,7 +159,7 @@ abstract class Level {
 
     success(): void {
         if (this.passed) {
-            throw new Error('Already passed.')
+            throw new Error("Already passed.");
         }
         this.passed = true;
         this.graphics.add(new LevelOutro(this));
@@ -153,7 +167,7 @@ abstract class Level {
 
     failure(message: string): void {
         if (this.failureMessage) {
-            throw new Error('Already failed.')
+            throw new Error("Already failed.");
         }
         this.failureMessage = message;
         this.graphics.add(new LevelOutro(this));

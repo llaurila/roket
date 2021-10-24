@@ -1,29 +1,36 @@
 import Vector from "./Physics/Vector";
 import IDrawContext from "./Graphics/IDrawContext";
 
-const CCW = 1;
-const CW = -1;
+export const CCW = 1;
+export const CW = -1;
 
-function getCenter(ctx: CanvasRenderingContext2D): Vector {
+export function getCenter(ctx: CanvasRenderingContext2D): Vector {
     return new Vector(
         ctx.canvas.width / 2,
         ctx.canvas.height / 2
     );
 }
 
-function degToRad(deg: number) {
-    return deg * Math.PI / 180;
+export function degToRad(deg: number) {
+    const HALF_CIRCLE = 180;
+    return deg * Math.PI / HALF_CIRCLE;
 }
 
-function interpolate(a: number, b: number, p: number) {
-    return a + (b-a) * p;
+export function interpolate(a: number, b: number, p: number) {
+    return a + (b - a) * p;
 }
 
-function random(min: number, max: number): number {
+export function random(min: number, max: number): number {
     return min + Math.random() * (max - min);
 }
 
-function drawLine(ctx: CanvasRenderingContext2D, drawContext: IDrawContext, from: Vector, to: Vector) {
+export function drawLine(
+    ctx: CanvasRenderingContext2D,
+    drawContext: IDrawContext,
+    from: Vector,
+    to: Vector
+): void
+{
     const
         screenFrom = from.toScreenCoordinates(drawContext),
         screenTo = to.toScreenCoordinates(drawContext);
@@ -36,14 +43,4 @@ function drawLine(ctx: CanvasRenderingContext2D, drawContext: IDrawContext, from
     ctx.lineTo(screenTo.x, screenTo.y);
     ctx.stroke();
     ctx.restore();
-}
-
-export {
-    CCW,
-    CW,
-    getCenter,
-    degToRad,
-    interpolate,
-    random,
-    drawLine
 }

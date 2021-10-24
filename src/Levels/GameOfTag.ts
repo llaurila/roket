@@ -7,14 +7,20 @@ import Vector from "../Physics/Vector";
 import Fuel from "../Fuel";
 import RNG from "../RNG";
 
-class GameOfTag extends Level {
-    name: string = "Level 4: Game of Tag";
-    description: string =
-`Catch the other ship.`;
+const RAND_SEED = 89321;
+const OTHER_SHIP_DISTANCE = 40;
+const FUEL_CAPSULE_DISTANCE_MIN = 50;
+const FUEL_CAPSULE_DISTANCE_MAX = 200;
+const CORRECT_HEADING_TOLERANCE = 0.15;
 
-    otherShip: Ship = new Ship(Vector.Up.mul(40));
-    caught: boolean = false;
-    rng: RNG = new RNG(89321);
+class GameOfTag extends Level {
+    name = "Level 4: Game of Tag";
+    description =
+        "Catch the other ship.";
+
+    otherShip: Ship = new Ship(Vector.Up.mul(OTHER_SHIP_DISTANCE));
+    caught = false;
+    rng: RNG = new RNG(RAND_SEED);
 
     createObjects(): void {
         this.graphics.add(new Cosmos());
@@ -41,11 +47,15 @@ class GameOfTag extends Level {
     }
 
     generateNewFuelCapsule() {
-        const fuel = new Fuel(this.ship.pos.add(
-            Vector.Up.rotate(this.rng.next(0, Math.PI * 2)).mul(this.rng.next(50, 200))
-        ));
+        const fuel = new Fuel(
+            this.ship.pos.add(
+                Vector.Up.rotate(this.rng.next(0, Math.PI * 2))
+                    .mul(this.rng.next(
+                        FUEL_CAPSULE_DISTANCE_MIN, FUEL_CAPSULE_DISTANCE_MAX))
+            )
+        );
 
-        fuel.onCollision(e => {
+        fuel.onCollision(() => {
             if (!fuel.collected) {
                 this.generateNewFuelCapsule();
             }
@@ -74,21 +84,25 @@ class GameOfTag extends Level {
 
             if (Math.abs(this.otherShip.angularVelocity) > 0.5) {
                 if (this.otherShip.angularVelocity >= 0) {
-                    this.otherShip.engineLeft.setThrottle(Math.min(this.otherShip.angularVelocity, 1));
+                    this.otherShip.engineLeft.setThrottle(
+                        Math.min(this.otherShip.angularVelocity, 1)
+                    );
                 } else {
-                    this.otherShip.engineRight.setThrottle(Math.min(-this.otherShip.angularVelocity, 1));
+                    this.otherShip.engineRight.setThrottle(
+                        Math.min(-this.otherShip.angularVelocity, 1)
+                    );
                 }
             }
             else {
-                if (Math.abs(turn) < 0.15) {
+                if (Math.abs(turn) < CORRECT_HEADING_TOLERANCE) {
                     this.otherShip.engineLeft.setThrottle(1);
-                    this.otherShip.engineRight.setThrottle(1);        
+                    this.otherShip.engineRight.setThrottle(1);
                 }
                 else if (turn >= 0) {
                     this.otherShip.engineRight.setThrottle(turn);
                 } else {
                     this.otherShip.engineLeft.setThrottle(-turn);
-                }    
+                }
             }
         }
     }

@@ -6,25 +6,32 @@ import ShipController from "../ShipController";
 import Objective from "../Objective";
 import RNG from "../RNG";
 
+const RAND_SEED = 3287;
+const FUEL_CAPSULE_COUNT = 6;
+const FUEL_CAPSULE_DISTANCE_MIN = 45;
+const FUEL_CAPSULE_DISTANCE_MAX = 500;
+
 class CollectFuel extends Level {
-    name: string = "Level 3: Collect Fuel";
-    description: string =
-`Collect all the fuel capsules revealed by the radar.`;
+    name = "Level 3: Collect Fuel";
+    description =
+        "Collect all the fuel capsules revealed by the radar.";
 
     fuelCapsules: Fuel[] = [];
 
     createObjects(): void {
         this.graphics.add(new Cosmos());
-        this.generateFuelCapsules(6);
+        this.generateFuelCapsules(FUEL_CAPSULE_COUNT);
         this.shipController = new ShipController(this.ship);
     }
 
     generateFuelCapsules(count: number): void {
-        const rng = new RNG(3287);
+        const rng = new RNG(RAND_SEED);
 
         for (let i = 0; i < count; i++) {
-            let capsule = new Fuel(
-                Vector.Up.rotate(rng.next(-Math.PI, +Math.PI)).mul(rng.next(45, 500))
+            const capsule = new Fuel(
+                Vector.Up.rotate(rng.next(-Math.PI, +Math.PI))
+                    .mul(rng.next(
+                        FUEL_CAPSULE_DISTANCE_MIN, FUEL_CAPSULE_DISTANCE_MAX))
             );
             capsule.angularVelocity = rng.next(-1, +1);
             this.fuelCapsules.push(capsule);

@@ -1,23 +1,28 @@
-let keysDown: any = {};
-let wasDown: any = {};
+type KeyMap = {
+    [key: string]: boolean
+}
+
+const keysDown: KeyMap = {};
+const wasDown: KeyMap = {};
 
 window.addEventListener("keydown", (e: KeyboardEvent) => {
-    keysDown[e.keyCode] = true;
+    keysDown[e.key] = true;
 });
 
 window.addEventListener("keyup", (e: KeyboardEvent) => {
-    keysDown[e.keyCode] = false;
+    keysDown[e.key] = false;
 });
 
-const isDown = (keyCode: number) => <boolean> keysDown[keyCode];
+const isDown = (key: string) => keysDown[key];
+
+function wasPressed(key: string): boolean {
+    const down = isDown(key);
+    const result = !wasDown[key] && down;
+    wasDown[key] = down;
+    return result;
+}
 
 export default {
     isDown,
-
-    wasPressed: (keyCode: number): boolean => {
-        const down = isDown(keyCode);
-        const result = !wasDown[keyCode] && down;
-        wasDown[keyCode] = down;
-        return result;
-    }
+    wasPressed
 };

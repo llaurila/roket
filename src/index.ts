@@ -1,12 +1,17 @@
-import Game from './Game';
-import Camera from './Graphics/Camera';
-import Keys from './Controls/Keys';
-import GameController from './Controls/GameController';
-import Level from './Level';
-import Introduction from './Levels/Introduction';
-import VelocityControl from './Levels/VelocityControl';
-import CollectFuel from './Levels/CollectFuel';
-import GameOfTag from './Levels/GameOfTag';
+import Game from "./Game";
+import Camera from "./Graphics/Camera";
+import Keys from "./Controls/Keys";
+import Level from "./Level";
+import Introduction from "./Levels/Introduction";
+import VelocityControl from "./Levels/VelocityControl";
+import CollectFuel from "./Levels/CollectFuel";
+import GameOfTag from "./Levels/GameOfTag";
+
+const restartButton = () => Keys.wasPressed("Escape");
+const continueButton = () => Keys.wasPressed("Enter");
+const debugButton = () => Keys.wasPressed("d");
+const nextLevelButton = () => Keys.wasPressed("l");
+const previousLevelButton = () => Keys.wasPressed("k");
 
 const levelTypes = [
     Introduction,
@@ -19,9 +24,9 @@ let currentLevel = 0;
 loadLevel(currentLevel);
 
 function loadLevel(number: number) {
-    let level: Level = new levelTypes[number];
+    const level: Level = new levelTypes[number];
     level.constructor.apply(level);
-    
+
     const game = new Game(update, draw, level.camera);
 
     level.init(game.ctx, number);
@@ -37,7 +42,7 @@ function loadLevel(number: number) {
         if (continueButton() && level.passed) {
             if (++currentLevel < levelTypes.length) {
                 game.stop();
-                loadLevel(currentLevel);    
+                loadLevel(currentLevel);
             }
         }
 
@@ -46,25 +51,7 @@ function loadLevel(number: number) {
             loadLevel(currentLevel);
         }
 
-        if (debugButton()) {
-            Level.debugMode = !Level.debugMode;
-        }
-
-        if (Level.debugMode) {
-            if (nextLevelButton()) {
-                if (++currentLevel < levelTypes.length) {
-                    game.stop();
-                    loadLevel(currentLevel);    
-                }   
-            }
-
-            if (previousLevelButton()) {
-                if (currentLevel-- > 0) {
-                    game.stop();
-                    loadLevel(currentLevel);    
-                }   
-            }            
-        }
+        handleDebug(game);
 
         if (level.shipController) {
             level.shipController.control();
@@ -80,15 +67,17 @@ function loadLevel(number: number) {
         ctx.canvas.height = window.innerHeight;
 
         ctx.save();
-        ctx.transform(1, 0, 0, -1, 0, ctx.canvas.height)
+        ctx.transform(1, 0, 0, -1, 0, ctx.canvas.height);
 
         level.graphics.draw(ctx, camera);
-        
+
         ctx.restore();
     }
 
     function panTowardsShip(delta: number): void {
         const v = level.ship.v.length();
+
+        // eslint-disable-next-line no-magic-numbers
         level.camera.zoom = 5 - Math.min(99, v) / 33;
 
         const target = level.ship.pos.add(
@@ -102,10 +91,29 @@ function loadLevel(number: number) {
             level.camera.pos = level.camera.pos.add(towards.mul(delta));
         }
     }
+}
 
-    const restartButton = () => Keys.wasPressed(27) || GameController.wasPressed(9);
-    const continueButton = () => Keys.wasPressed(13) || GameController.wasPressed(0);
-    const debugButton = () => Keys.wasPressed(68);
-    const nextLevelButton = () => Keys.wasPressed(76);
-    const previousLevelButton = () => Keys.wasPressed(75);
+function handleDebug(game: Game) {
+    if (checkForDebugMode()) {
+        if (nextLevelButton()) {
+            if (++currentLevel < levelTypes.length) {
+                game.stop();
+                loadLevel(currentLevel);
+            }
+        }
+
+        if (previousLevelButton()) {
+            if (currentLevel-- > 0) {
+                game.stop();
+                loadLevel(currentLevel);
+            }
+        }
+    }
+}
+
+function checkForDebugMode(): boolean {
+    if (debugButton()) {
+        Level.debugMode = !Level.debugMode;
+    }
+    return Level.debugMode;
 }

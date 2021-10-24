@@ -8,9 +8,12 @@ import PhysicsEngine from "./Physics/PhysicsEngine";
 import Fuel from "./Fuel";
 import IUpdatable from "./Physics/IUpdatable";
 import Body from "./Physics/Body";
+import { getColorHexFromRGBA, getGrayHex } from "./Graphics/Color";
 
 const FONT_SIZE = 14;
 const LINE_HEIGHT = 18;
+const RADAR_MARGIN = 20;
+const RADAR_CIRCLE_OPACITY = 0.25;
 
 class Hud implements IDrawable {
     id: number = UniqueIdProvider.next();
@@ -23,6 +26,7 @@ class Hud implements IDrawable {
         this.physics = physics;
     }
 
+    // eslint-disable-next-line class-methods-use-this
     get alive() {
         return true;
     }
@@ -46,11 +50,11 @@ class Hud implements IDrawable {
         const size = Math.min(
             ctx.canvas.width,
             ctx.canvas.height
-        ) / 2 - 20;
+        ) / 2 - RADAR_MARGIN;
 
         ctx.save();
 
-        ctx.strokeStyle = `rgba(255, 255, 255, 0.25)`;
+        ctx.strokeStyle = getGrayHex(1, RADAR_CIRCLE_OPACITY);
         ctx.beginPath();
         ctx.arc(center.x, center.y, size, 0, 2 * Math.PI);
         ctx.stroke();
@@ -58,14 +62,16 @@ class Hud implements IDrawable {
         const from = this.ship.pos;
 
         const drawDot = (to: Vector, color: string) => {
+            const RADIUS = 4;
+
             if (camera.toScreenCoordinates(ctx, to).sub(center).length() > size) {
                 const direction = to.sub(from).normalize();
                 const fuelArrow = center.add(flipY(direction.mul(size)));
-        
+
                 ctx.fillStyle = color;
                 ctx.beginPath();
-                ctx.arc(fuelArrow.x, fuelArrow.y, 4, 0, 2 * Math.PI);
-                ctx.fill();    
+                ctx.arc(fuelArrow.x, fuelArrow.y, RADIUS, 0, 2 * Math.PI);
+                ctx.fill();
             }
         };
 
@@ -73,30 +79,32 @@ class Hud implements IDrawable {
             obj != this.ship);
 
         if (nearestShip) {
-            drawDot(nearestShip.pos, "rgba(255, 0, 255, 0.5)");
+            drawDot(nearestShip.pos, getColorHexFromRGBA(1, 0, 1, 0.5));
         }
 
         const nearestFuel = this.getNearestObject(obj => obj instanceof Fuel);
 
         if (nearestFuel) {
-            drawDot(nearestFuel.pos, "rgba(0, 255, 0, 0.5)");
+            drawDot(nearestFuel.pos, getColorHexFromRGBA(0, 1, 0, 0.5));
         }
 
-        ctx.restore();    
+        ctx.restore();
     }
 
-    getNearestObject(criteria: (obj: IUpdatable) => boolean) {
+    getNearestObject(criteria: (obj: IUpdatable) => boolean): Body|undefined {
         const from = this.ship.pos;
 
-        let objects = this.physics
+        const objects = this.physics
             .filter(obj => obj.alive && obj instanceof Body)
             .filter(criteria)
             .map(obj => <Body>obj)
             .sort((a, b) => a.pos.sub(from).length() - b.pos.sub(from).length());
-        
+
         if (objects.length > 0) {
             return objects[0];
         }
+
+        return undefined;
     }
 
     drawTexts(ctx: CanvasRenderingContext2D): void {
@@ -106,7 +114,7 @@ class Hud implements IDrawable {
         ctx.textBaseline = "top";
 
         let line = 0;
-        for (let item of this.items) {
+        for (const item of this.items) {
             if (item.enabled()) {
                 ctx.fillText(this.items[line].getText(), 10, 10 + LINE_HEIGHT * line);
                 line++;
@@ -119,6 +127,7 @@ class Hud implements IDrawable {
 
 class HudItem {
     getText: () => string;
+    // eslint-disable-next-line class-methods-use-this
     enabled: () => boolean = () => true;
 
     constructor(getText: () => string, enabled = () => true) {

@@ -16,13 +16,13 @@ class Polygon {
     translate(v: Vector): Polygon {
         return new Polygon(
             this.pts.map(v_ => v_.add(v))
-        )
+        );
     }
 
     mul(m: number): Polygon {
         return new Polygon(
             this.pts.map(v => v.mul(m))
-        )
+        );
     }
 
     scale(x: number, y: number): Polygon {
@@ -31,7 +31,7 @@ class Polygon {
                 v.x * x,
                 v.y * y
             ))
-        )
+        );
     }
 
     rotate(theta: number): Polygon {
@@ -70,19 +70,19 @@ class Polygon {
             ctx.lineTo(
                 this.pts[i].x,
                 this.pts[i].y
-            )
+            );
         }
 
         ctx.closePath();
     }
 
-    static Make(pts: number[]): Polygon {
-        let v: Vector[] = [];
+    static make(pts: number[]): Polygon {
+        const v: Vector[] = [];
 
         for (let i = 0; i < pts.length; i += 2) {
             v.push(new Vector(
                 pts[i],
-                pts[i+1]
+                pts[i + 1]
             ));
         }
 

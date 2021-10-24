@@ -4,9 +4,9 @@ import ShipController from "../ShipController";
 import Objective from "../Objective";
 
 class VelocityControl extends Level {
-    name: string = "Level 2: Velocity Control";
-    description: string =
-`Accelerate to great speeds, turn around and decelerate back to full stop.`;
+    name = "Level 2: Velocity Control";
+    description =
+        "Accelerate to great speeds, turn around and decelerate back to full stop.";
 
     createObjects(): void {
         this.graphics.add(new Cosmos());
@@ -14,7 +14,7 @@ class VelocityControl extends Level {
     }
 
     createObjectives() {
-        let greatSpeed = new Objective(
+        const greatSpeed = new Objective(
             "Accelerate to 100 m/s.",
             () => this.ship.v.length() >= 100);
         this.objectives.push(greatSpeed);

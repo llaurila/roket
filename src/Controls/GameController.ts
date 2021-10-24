@@ -1,7 +1,8 @@
 let gamepadIndex = -1;
-let pressedButtons: boolean[] = [];
+const pressedButtons: boolean[] = [];
 
-window.addEventListener("gamepadconnected", (e: any) => {
+window.addEventListener("gamepadconnected", e => {
+    // eslint-disable-next-line no-console
     console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
         e.gamepad.index, e.gamepad.id,
         e.gamepad.buttons.length, e.gamepad.axes.length);
@@ -14,28 +15,31 @@ export default {
         return gamepadIndex != -1;
     },
 
-    wasPressed: (buttonIndex: number) => {
-        if (gamepadIndex == -1) {
-            return false;
+    wasPressed: (buttonIndex: number): boolean => {
+        if (gamepadIndex != -1) {
+            const controller = navigator.getGamepads()[gamepadIndex];
+
+            if (controller) {
+                const prev = pressedButtons[buttonIndex];
+                const current = controller.buttons[buttonIndex].pressed;
+
+                pressedButtons[buttonIndex] = current;
+
+                return !prev && current;
+            }
         }
 
-        const controller = navigator.getGamepads()[gamepadIndex] as any;
-
-        const prev = pressedButtons[buttonIndex] as boolean;
-        const current = controller.buttons[buttonIndex].pressed;
-
-        pressedButtons[buttonIndex] = current;
-
-        return !prev && current;
+        throw new Error("Unknown button.");
     },
 
-    getAxis: (axisIndex: number) => {
-        if (gamepadIndex == -1) {
-            return false;
+    getAxis: (axisIndex: number): number => {
+        if (gamepadIndex != -1) {
+            const controller = navigator.getGamepads()[gamepadIndex];
+
+            if (controller) {
+                return controller.axes[axisIndex];
+            }
         }
-
-        const controller = navigator.getGamepads()[gamepadIndex] as any;
-
-        return controller.axes[axisIndex];
+        throw new Error("Unknown axis.");
     }
 };

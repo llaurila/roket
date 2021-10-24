@@ -93,7 +93,7 @@ class Vector {
             .add(drawContext.camera.pos.mul(-1 * zoom));
     }
 
-    toString(decimals: number = 1): string {
+    toString(decimals = 1): string {
         return `[${this.x.toFixed(decimals)}, ${this.y.toFixed(decimals)}]`;
     }
 

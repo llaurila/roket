@@ -1,5 +1,5 @@
-import { initializeGraphics } from './Graphics/Graphics';
-import Camera from './Graphics/Camera';
+import { initializeGraphics } from "./Graphics/Graphics";
+import Camera from "./Graphics/Camera";
 
 const FREQ_HZ = 60;
 
@@ -7,10 +7,10 @@ class Game {
     ctx: CanvasRenderingContext2D;
     updateFunc: (time: number, delta: number) => void;
     drawFunc: (ctx: CanvasRenderingContext2D, camera: Camera) => void;
-    prev: number = 0;
-    running: boolean = false;
+    prev = 0;
+    running = false;
     camera: Camera;
-    startTime: number = 0;
+    startTime = 0;
     repeatingTasks: IRepeatingTask[] = [];
 
     constructor(
@@ -51,19 +51,19 @@ class Game {
 
             this.drawFunc(this.ctx, this.camera);
 
-            for (let task of this.repeatingTasks) {
+            for (const task of this.repeatingTasks) {
                 if (time - task.prevRun >= task.interval) {
                     task.prevRun = time;
                     task.func();
                 }
             }
 
-            this.prev = time;            
-        }
+            this.prev = time;
+        };
 
         window.requestAnimationFrame(gameLoop);
     }
-    
+
     stop() {
         this.running = false;
     }
@@ -73,7 +73,7 @@ class Game {
             interval,
             func,
             prevRun: 0
-        })
+        });
     }
 }
 

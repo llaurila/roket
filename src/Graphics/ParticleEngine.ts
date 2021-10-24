@@ -7,12 +7,12 @@ import UniqueIdProvider from "../UniqueIdProvider";
 import PhysicsEngine from "../Physics/PhysicsEngine";
 import { Graphics } from "./Graphics";
 
-class ParticleEngine implements IDrawable, IUpdatable { 
-    id: number;   
+class ParticleEngine implements IDrawable, IUpdatable {
+    id: number;
     pos: Vector;
     particles: Particle[] = [];
-        
-    rotation: number = 0;
+
+    rotation = 0;
     physics?: PhysicsEngine;
     graphics?: Graphics;
 
@@ -22,21 +22,22 @@ class ParticleEngine implements IDrawable, IUpdatable {
 
         setInterval(() => {
             this.particles = this.particles.filter(p => p.alive);
-        }, 1000)
+        }, 1000);
     }
 
+    // eslint-disable-next-line class-methods-use-this
     get alive() {
         return true;
     }
-    
+
     update(time: number, delta: number) {
-        for (let particle of this.particles) {
+        for (const particle of this.particles) {
             particle.update(time, delta);
         }
     }
 
     draw(ctx: CanvasRenderingContext2D, camera: Camera) {
-        for (let particle of this.particles) {
+        for (const particle of this.particles) {
             if (particle.alive) {
                 particle.draw(ctx, camera);
             }

@@ -1,6 +1,9 @@
 import Polygon from "./Polygon";
 import Vector from "../Physics/Vector";
 
+const FUEL_CAPSULE_WIDTH = 8;
+const FUEL_CAPSULE_HEIGHT = 4;
+
 class PolygonMaker {
     pts: Vector[] = [];
 
@@ -22,23 +25,28 @@ class PolygonMaker {
 }
 
 export default {
-    Ship: Polygon.Make([
-         0,  2,
+    Ship: Polygon.make([
+        0,  2,
         +1, -1,
         -1, -1
     ]),
-    
-    Ammo: Polygon.Make([
+
+    Ammo: Polygon.make([
         0,  2,
-       +1, -1,
-       -1, -1
+        +1, -1,
+        -1, -1
     ]),
 
-    Capsule: makeCapsule(8, 4)
-}
+    Capsule: makeCapsule(FUEL_CAPSULE_WIDTH, FUEL_CAPSULE_HEIGHT)
+};
 
 function makeCapsule(width: number, height: number) {
-    const hw = width / 2, hh = height / 2, seg = height / 4;
+    /* TODO: Rewrite this function. It does not function properly nor it does
+     * make any sense. The width and the height of the generated capsule are
+     * somehow wrong. */
+
+    // eslint-disable-next-line no-magic-numbers
+    const hw = width / 2, seg = height / 4;
 
     const pm = new PolygonMaker();
 

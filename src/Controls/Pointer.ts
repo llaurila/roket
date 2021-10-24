@@ -8,4 +8,4 @@ window.addEventListener("mousemove", (e: MouseEvent) => {
 
 export default {
     getPosition: () => pos
-}
+};

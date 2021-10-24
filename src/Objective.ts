@@ -1,6 +1,6 @@
 class Objective {
     text: string;
-    cleared: boolean = false;
+    cleared = false;
     check: () => boolean;
 
     constructor(text: string, check: () => boolean) {

@@ -4,13 +4,14 @@ import UniqueIdProvider from "./UniqueIdProvider";
 import Level from "./Level";
 import { getCenter } from "./Utils";
 import IUpdatable from "./Physics/IUpdatable";
+import { prepareMessageDraw, prepareTitleDraw, TEXT_LINE_HEIGHT } from "./Typography";
 
 class LevelIntro implements IDrawable, IUpdatable {
     id: number = UniqueIdProvider.next();
     level: Level;
-    fadeOut: boolean = false;
-    opacity: number = 1;
-    alive: boolean = true;
+    fadeOut = false;
+    opacity = 1;
+    alive = true;
 
     constructor(level: Level) {
         this.level = level;
@@ -28,15 +29,11 @@ class LevelIntro implements IDrawable, IUpdatable {
 
         ctx.fillStyle = `rgba(241, 241, 241, ${this.opacity})`;
 
-        ctx.font = `${22}px Nunito`;
-        ctx.textBaseline = "bottom";
-        ctx.textAlign = "center";
-        ctx.fillText(this.level.name, center.x, center.y - 10);
+        prepareTitleDraw(ctx);
+        ctx.fillText(this.level.name, center.x, center.y - TEXT_LINE_HEIGHT);
 
-        ctx.font = `${18}px Nunito`;
-        ctx.textBaseline = "top";
-        ctx.textAlign = "center";
-        ctx.fillText(this.level.description, center.x, center.y + 20);
+        prepareMessageDraw(ctx);
+        ctx.fillText(this.level.description, center.x, center.y + TEXT_LINE_HEIGHT * 2);
 
         ctx.restore();
     }

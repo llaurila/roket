@@ -12,15 +12,15 @@ class Body implements IUpdatable {
     public id: number;
     public pos: Vector;
     public v: Vector = Vector.Zero;
-    public rotation: number = 0;
-    public angularVelocity: number = 0;
-    public mass: number = 0;
+    public rotation = 0;
+    public angularVelocity = 0;
+    public mass = 0;
     public centerOfMass: Vector = Vector.Zero;
     public circleCollider?: CircleCollider;
     public triangleCollider?: TriangleCollider;
     public colliderCallbacks: ((e: ICollisionEvent) => void)[] = [];
 
-    protected _alive: boolean = true;
+    protected _alive = true;
     private forces: Forces = Forces.Zero;
 
     constructor(position: Vector) {
@@ -33,7 +33,7 @@ class Body implements IUpdatable {
     }
 
     signalCollision(target: Body): void {
-        for (let callback of this.colliderCallbacks) {
+        for (const callback of this.colliderCallbacks) {
             callback({
                 target
             });
@@ -53,7 +53,7 @@ class Body implements IUpdatable {
     }
 
     applyForce(F: Vector, point: Vector): void {
-        let Torque = (point.sub(this.centerOfMass)).cross(F);
+        const Torque = (point.sub(this.centerOfMass)).cross(F);
         this.forces = this.forces.add(
             new Forces(F, Torque)
         );
@@ -61,6 +61,7 @@ class Body implements IUpdatable {
 
     getInertia(size: Vector)
     {
+        // eslint-disable-next-line no-magic-numbers
         return this.mass * (size.x * size.x + size.y * size.y) / 12;
     }
 
@@ -75,14 +76,14 @@ class Body implements IUpdatable {
             this.v = this.v.add(
                 forces.F.mul(delta).div(this.getMass())
             );
-    
+
             this.angularVelocity += forces.Torque / this.getMass() * delta;
         }
 
         this.pos = this.pos.add(
             this.v.mul(delta)
         );
-        
+
         this.rotation += this.angularVelocity * delta;
 
         this.forces = Forces.Zero;

@@ -4,10 +4,17 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "lint": "eslint --ext ts src",
+    "lint:fix": "eslint --ext .ts --fix src",
     "dev": "parcel serve index.html",
     "build": "parcel build index.html"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.1.0",
+    "@typescript-eslint/parser": "^5.1.0",
+    "eslint": "^8.1.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.25.2",
     "parcel-bundler": "^1.12.4",
     "typescript": "^3.9.7"
   }

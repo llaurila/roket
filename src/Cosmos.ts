@@ -2,6 +2,10 @@ import IDrawable from "./Graphics/IDrawable";
 import Camera from "./Graphics/Camera";
 import Vector from "./Physics/Vector";
 import UniqueIdProvider from "./UniqueIdProvider";
+import { random } from "./Utils";
+
+const STAR_BRIGHTNESS_MIN = 0.25;
+const STAR_BRIGHTNESS_MAX = 1.00;
 
 const SEGMENT_SIZE = 200;
 const STARS_PER_SEGMENT = 12;
@@ -18,8 +22,9 @@ interface IStarSegment {
 
 class Cosmos implements IDrawable {
     id: number = UniqueIdProvider.next();
-    starSegments: any = {};
+    starSegments: { [key: string]: IStarSegment } = {};
 
+    // eslint-disable-next-line class-methods-use-this
     get alive() {
         return true;
     }
@@ -40,28 +45,28 @@ class Cosmos implements IDrawable {
         for (let x = bottomLeftSegment.x; x <= topRightSegment.x; x++) {
             for (let y = bottomLeftSegment.y; y <= topRightSegment.y; y++) {
                 const segment = this.getSegment(x, y);
-                
-                for (let star of segment.stars) {
+
+                for (const star of segment.stars) {
                     const p = camera.toScreenCoordinates(ctx, star.pos);
                     ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
                     ctx.beginPath();
                     ctx.arc(p.x, p.y, star.size, 0, 2 * Math.PI);
                     ctx.fill();
                 }
-            }    
+            }
         }
 
         ctx.restore();
     }
 
     getSegment(x: number, y: number): IStarSegment {
-        let key = x + "," + y;
+        const key = x + "," + y;
         let segment: IStarSegment = this.starSegments[key];
 
         if (!segment) {
             segment = {
                 stars: generateStars(x, y)
-            }
+            };
             this.starSegments[key] = segment;
         }
 
@@ -70,7 +75,7 @@ class Cosmos implements IDrawable {
 }
 
 function generateStars(x: number, y: number) {
-    let stars: IStar[] = [];
+    const stars: IStar[] = [];
 
     const origin = new Vector(x, y).mul(SEGMENT_SIZE);
 
@@ -81,7 +86,7 @@ function generateStars(x: number, y: number) {
                 Math.random()
             ).mul(SEGMENT_SIZE)),
             size: 1 + Math.random() * 2,
-            opacity: 0.25 + Math.random() * 0.75
+            opacity: random(STAR_BRIGHTNESS_MIN, STAR_BRIGHTNESS_MAX)
         });
     }
 
