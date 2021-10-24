@@ -55,8 +55,8 @@ class GameOfTag extends Level {
             )
         );
 
-        fuel.onCollision(() => {
-            if (!fuel.collected) {
+        fuel.onCollision(e => {
+            if (!fuel.collected && e.target == this.ship) {
                 this.generateNewFuelCapsule();
             }
         });
