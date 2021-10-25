@@ -16,6 +16,8 @@ class ParticleEngine implements IDrawable, IUpdatable {
     physics?: PhysicsEngine;
     graphics?: Graphics;
 
+    private readonly _alive = true;
+
     constructor(position: Vector) {
         this.id = UniqueIdProvider.next();
         this.pos = position;
@@ -25,9 +27,8 @@ class ParticleEngine implements IDrawable, IUpdatable {
         }, 1000);
     }
 
-    // eslint-disable-next-line class-methods-use-this
     get alive() {
-        return true;
+        return this._alive;
     }
 
     update(time: number, delta: number) {

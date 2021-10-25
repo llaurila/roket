@@ -11,10 +11,11 @@ const MAX_ANGLE_DEG = 100;
 
 const MAX_ANGULAR_VELOCITY = 10;
 
+const ZeroRate = () => 0;
+
 class SprayParticleEngine extends ParticleEngine {
     velocity: () => number;
-    // eslint-disable-next-line class-methods-use-this
-    getRate: () => number = () => 0;
+    getRate: () => number = ZeroRate;
     emitting = false;
     originVelocity: Vector = Vector.Zero;
     timeSinceLastEmitted = 0;

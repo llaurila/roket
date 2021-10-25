@@ -28,7 +28,11 @@ export class HudTexts implements IDrawable {
         let line = 0;
         for (const item of this.items) {
             if (item.enabled()) {
-                ctx.fillText(this.items[line].getText(), 10, 10 + config.lineHeight * line);
+                ctx.fillText(
+                    this.items[line].getText(),
+                    10,
+                    10 + config.lineHeight * line
+                );
                 line++;
             }
         }

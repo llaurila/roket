@@ -29,7 +29,8 @@ class GameOfTag extends Level {
         this.physics.add(this.otherShip);
         this.graphics.add(this.otherShip);
 
-        this.otherShip.color = "#ff00ff";
+        this.otherShip.color = { R: 1, G: 0, B: 1, A: 1 };
+
         this.otherShip.mass = 800;
         this.otherShip.rotation = 2;
 

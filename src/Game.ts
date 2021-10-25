@@ -1,7 +1,7 @@
 import { initializeGraphics } from "./Graphics/Graphics";
 import Camera from "./Graphics/Camera";
-
-const FREQ_HZ = 60;
+import { Action, IRecurringTask } from "./types";
+import { Config } from "./config";
 
 class Game {
     ctx: CanvasRenderingContext2D;
@@ -11,7 +11,7 @@ class Game {
     running = false;
     camera: Camera;
     startTime = 0;
-    repeatingTasks: IRepeatingTask[] = [];
+    recurringTasks: IRecurringTask[] = [];
 
     constructor(
         update: (time: number, delta: number) => void,
@@ -43,20 +43,9 @@ class Game {
             const time = (new Date()).getTime() / 1000;
             const delta = time - this.prev;
 
-            const frames = Math.ceil(FREQ_HZ * delta);
-            const frameDelta = delta / frames;
-            for (let frame = 0; frame < frames; frame++) {
-                this.updateFunc(time - this.startTime + frame * frameDelta, frameDelta);
-            }
-
+            this.updatePhysics(delta, time);
             this.drawFunc(this.ctx, this.camera);
-
-            for (const task of this.repeatingTasks) {
-                if (time - task.prevRun >= task.interval) {
-                    task.prevRun = time;
-                    task.func();
-                }
-            }
+            this.runRecurringTasks(time);
 
             this.prev = time;
         };
@@ -64,23 +53,34 @@ class Game {
         window.requestAnimationFrame(gameLoop);
     }
 
+    private updatePhysics(delta: number, time: number) {
+        const frames = Math.ceil(Config.physics.updateFreqHz * delta);
+        const frameDelta = delta / frames;
+        for (let frame = 0; frame < frames; frame++) {
+            this.updateFunc(time - this.startTime + frame * frameDelta, frameDelta);
+        }
+    }
+
+    private runRecurringTasks(time: number) {
+        for (const task of this.recurringTasks) {
+            if (time - task.prevRun >= task.interval) {
+                task.prevRun = time;
+                task.func();
+            }
+        }
+    }
+
     stop() {
         this.running = false;
     }
 
-    every(interval: number, func: () => void) {
-        this.repeatingTasks.push({
+    every(interval: number, func: Action) {
+        this.recurringTasks.push({
             interval,
             func,
             prevRun: 0
         });
     }
-}
-
-interface IRepeatingTask {
-    interval: number;
-    func: () => void;
-    prevRun: number;
 }
 
 export default Game;

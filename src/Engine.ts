@@ -16,6 +16,7 @@ class Engine implements IUpdatable, IDrawable {
     relativeProps: IRelativeProps;
     fuelTank: FuelTank;
 
+    private readonly _alive = true;
     private readonly config: IEngineConfig;
 
     private throttle = 0;
@@ -48,9 +49,8 @@ class Engine implements IUpdatable, IDrawable {
         this.config = config;
     }
 
-    // eslint-disable-next-line class-methods-use-this
     get alive() {
-        return true;
+        return this._alive;
     }
 
     get targetOutput(): number {

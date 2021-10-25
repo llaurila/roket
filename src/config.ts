@@ -15,6 +15,10 @@ import Vector from "./Physics/Vector";
  */
 
 interface IConfig {
+    physics: {
+        updateFreqHz: number;
+    }
+
     typography: {
         fontFamily: string;
         defaultColor: IColor;
@@ -92,6 +96,10 @@ const ENGINE_DEFAULTS = {
 };
 
 export const Config: IConfig = {
+    physics: {
+        updateFreqHz: 60
+    },
+
     typography: {
         fontFamily: "Nunito",
         defaultColor: getGray(0.95),
