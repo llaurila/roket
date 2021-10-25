@@ -9,6 +9,7 @@ const SEGMENT_SIZE = 200;
 
 interface IStar {
     pos: Vector;
+    z: number;
     size: number;
     opacity: number;
 }
@@ -47,8 +48,8 @@ class Cosmos implements IDrawable {
                 const segment = this.getSegment(x, y);
 
                 for (const star of segment.stars) {
-                    const p = camera.toScreenCoordinates(ctx, star.pos);
-                    ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+                    const p = camera.toScreenCoordinates(ctx, star.pos).div(star.z);
+                    ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity / star.z})`;
                     ctx.beginPath();
                     ctx.arc(p.x, p.y, star.size, 0, 2 * Math.PI);
                     ctx.fill();
@@ -59,7 +60,7 @@ class Cosmos implements IDrawable {
         ctx.restore();
     }
 
-    getSegment(x: number, y: number): IStarSegment {
+    private getSegment(x: number, y: number): IStarSegment {
         const key = x + "," + y;
         let segment: IStarSegment = this.starSegments[key];
 
@@ -90,6 +91,7 @@ function generateStars(x: number, y: number) {
                 Math.random(),
                 Math.random()
             ).mul(SEGMENT_SIZE)),
+            z: random(1, 2),
             size: 1 + Math.random() * 2,
             opacity: random(config.starBrighnessMin, config.starBrighnessMax)
         });
