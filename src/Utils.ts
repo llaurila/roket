@@ -44,3 +44,22 @@ export function drawLine(
     ctx.stroke();
     ctx.restore();
 }
+
+export function shortDistance(n: number): string {
+    const LONG = 10000;
+    const MID = 1000;
+
+    let s;
+
+    if (n >= LONG) {
+        s = (n / 1000).toFixed() + "k";
+    }
+    else if (n >= MID) {
+        s = (n / 1000).toFixed(1) + "k";
+    }
+    else {
+        s = n.toFixed();
+    }
+
+    return s + "m";
+}

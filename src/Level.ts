@@ -57,16 +57,18 @@ abstract class Level {
     private initHud() {
         this.hud = new Hud(this.ship, this.physics);
 
-        this.hud.add(() => `Time: ${this.physics.time.toFixed()} s`);
-        this.hud.add(() => `Velocity: ${this.ship.v.length().toFixed(1)} m/s`);
-        this.hud.add(() => {
+        const { texts } = this.hud;
+
+        texts.add(() => `Time: ${this.physics.time.toFixed()} s`);
+        texts.add(() => `Velocity: ${this.ship.v.length().toFixed(1)} m/s`);
+        texts.add(() => {
             const { currentAmount, capacity } = this.ship.fuelTank;
             const fuelPercent = currentAmount / capacity * 100;
             return `Fuel: ${fuelPercent.toFixed()}% (${currentAmount.toFixed()} kg)`;
         });
 
         for (let i = 0; i < this.objectives.length; i++) {
-            this.hud.add(() => {
+            texts.add(() => {
                 const objective = this.objectives[i];
                 if (objective.cleared) {
                     return `Objective ${i + 1} CLEARED (${objective.text})`;
@@ -75,10 +77,10 @@ abstract class Level {
             });
         }
 
-        this.hud.add(() => `Physics: ${this.physics.count}`, () => Level.debugMode);
-        this.hud.add(() => `Graphics: ${this.graphics.count}`, () => Level.debugMode);
+        texts.add(() => `Physics: ${this.physics.count}`, () => Level.debugMode);
+        texts.add(() => `Graphics: ${this.graphics.count}`, () => Level.debugMode);
 
-        this.hud.add(() => {
+        texts.add(() => {
             const screen = Pointer.getPosition();
             const world = this.camera.toWorldCoordinates(this.ctx, screen);
             return `Mouse: ${screen} (screen) ${world} (world)`;
