@@ -2,6 +2,7 @@ import IDrawable from "../Graphics/IDrawable";
 import UniqueIdProvider from "../UniqueIdProvider";
 import { AlwaysEnabled, EnabledSolver, HudItem } from "./HudItem";
 import { Config } from "../config";
+import { getColorHex } from "../Graphics/Color";
 
 export class HudTexts implements IDrawable {
     id: number = UniqueIdProvider.next();
@@ -21,7 +22,7 @@ export class HudTexts implements IDrawable {
 
         ctx.save();
         ctx.font = `${config.fontSize}px ${Config.typography.fontFamily}`;
-        ctx.fillStyle = Config.typography.defaultColor;
+        ctx.fillStyle = getColorHex(Config.typography.defaultColor);
         ctx.textBaseline = "top";
 
         let line = 0;

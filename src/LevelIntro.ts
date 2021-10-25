@@ -4,7 +4,10 @@ import UniqueIdProvider from "./UniqueIdProvider";
 import Level from "./Level";
 import { getCenter } from "./Utils";
 import IUpdatable from "./Physics/IUpdatable";
-import { prepareMessageDraw, prepareTitleDraw, TEXT_LINE_HEIGHT } from "./Typography";
+import { prepareMessageDraw, prepareTitleDraw } from "./Typography";
+import { Config } from "./config";
+
+const { typography } = Config;
 
 class LevelIntro implements IDrawable, IUpdatable {
     id: number = UniqueIdProvider.next();
@@ -23,6 +26,7 @@ class LevelIntro implements IDrawable, IUpdatable {
         }
 
         const center = getCenter(ctx);
+        const lineHeight = typography.defaultLineHeight;
 
         ctx.save();
         ctx.resetTransform();
@@ -30,10 +34,10 @@ class LevelIntro implements IDrawable, IUpdatable {
         ctx.fillStyle = `rgba(241, 241, 241, ${this.opacity})`;
 
         prepareTitleDraw(ctx);
-        ctx.fillText(this.level.name, center.x, center.y - TEXT_LINE_HEIGHT);
+        ctx.fillText(this.level.name, center.x, center.y - lineHeight);
 
         prepareMessageDraw(ctx);
-        ctx.fillText(this.level.description, center.x, center.y + TEXT_LINE_HEIGHT * 2);
+        ctx.fillText(this.level.description, center.x, center.y + lineHeight * 2);
 
         ctx.restore();
     }

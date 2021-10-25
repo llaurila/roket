@@ -1,9 +1,6 @@
 import Polygon from "./Polygon";
 import Vector from "../Physics/Vector";
 
-const FUEL_CAPSULE_WIDTH = 8;
-const FUEL_CAPSULE_HEIGHT = 4;
-
 class PolygonMaker {
     pts: Vector[] = [];
 
@@ -37,7 +34,7 @@ export default {
         -1, -1
     ]),
 
-    Capsule: makeCapsule(FUEL_CAPSULE_WIDTH, FUEL_CAPSULE_HEIGHT)
+    Capsule: makeCapsule(1, 0.5)
 };
 
 function makeCapsule(width: number, height: number) {

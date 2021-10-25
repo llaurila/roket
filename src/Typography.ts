@@ -1,13 +1,15 @@
-export const TEXT_LINE_HEIGHT = 10;
+import { Config } from "./config";
+
+const { typography } = Config;
 
 export function prepareTitleDraw(ctx: CanvasRenderingContext2D) {
-    ctx.font = "22px Nunito";
+    ctx.font = `${typography.titleFontSize}px ${typography.fontFamily}`;
     ctx.textBaseline = "bottom";
     ctx.textAlign = "center";
 }
 
 export function prepareMessageDraw(ctx: CanvasRenderingContext2D) {
-    ctx.font = "18px Nunito";
+    ctx.font = `${typography.messageFontSize}px ${typography.fontFamily}`;
     ctx.textBaseline = "top";
     ctx.textAlign = "center";
 }

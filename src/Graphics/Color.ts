@@ -37,11 +37,22 @@ export function getInterpolatedColor(steps: IColorStep[], pos: number): IColor {
     return steps[steps.length - 1].Color;
 }
 
-export function getGrayHex(luminance: number, alpha = 1): string {
+export function getGray(luminance: number, alpha = 1): IColor {
     const c = Math.floor(luminance * COLOR_CHANNEL_MAX);
-    return `rgba(${c}, ${c}, ${c}, ${alpha})`;
+
+    return {
+        R: c,
+        G: c,
+        B: c,
+        A: alpha
+    };
 }
 
+export function getGrayHex(luminance: number, alpha = 1): string {
+    return getColorHex(
+        getGray(luminance, alpha)
+    );
+}
 
 export function getColorHexFromRGBA(r: number, g: number, b: number, alpha = 1): string {
     return `rgba(${getCC(r)}, ${getCC(g)}, ${getCC(b)}, ${alpha})`;

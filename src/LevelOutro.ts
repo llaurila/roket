@@ -2,10 +2,11 @@ import IDrawable from "./Graphics/IDrawable";
 import UniqueIdProvider from "./UniqueIdProvider";
 import Level from "./Level";
 import { getCenter } from "./Utils";
-import { getGrayHex } from "./Graphics/Color";
-import { prepareMessageDraw, prepareTitleDraw, TEXT_LINE_HEIGHT } from "./Typography";
+import { prepareMessageDraw, prepareTitleDraw } from "./Typography";
+import { Config } from "./config";
+import { getColorHex } from "./Graphics/Color";
 
-const TEXT_BRIGHTNESS = 0.95;
+const { typography } = Config;
 
 class LevelOutro implements IDrawable {
     id: number = UniqueIdProvider.next();
@@ -20,7 +21,7 @@ class LevelOutro implements IDrawable {
         ctx.save();
         ctx.resetTransform();
 
-        ctx.fillStyle = getGrayHex(TEXT_BRIGHTNESS);
+        ctx.fillStyle = getColorHex(typography.defaultColor);
 
         if (this.level.failureMessage) {
             drawFailure(ctx, this.level.failureMessage);
@@ -35,24 +36,24 @@ class LevelOutro implements IDrawable {
 
 function drawSuccess(ctx: CanvasRenderingContext2D) {
     const center = getCenter(ctx);
+    const lineHeight = typography.defaultLineHeight;
 
     prepareTitleDraw(ctx);
-    ctx.fillText("Success!", center.x, center.y - TEXT_LINE_HEIGHT);
+    ctx.fillText("Success!", center.x, center.y - lineHeight);
 
     prepareMessageDraw(ctx);
-    ctx.fillText("Press Enter to continue.", center.x, center.y + TEXT_LINE_HEIGHT * 2);
+    ctx.fillText("Press Enter to continue.", center.x, center.y + lineHeight * 2);
 }
 
 function drawFailure(ctx: CanvasRenderingContext2D, message: string) {
     const center = getCenter(ctx);
+    const lineHeight = typography.defaultLineHeight;
 
     prepareTitleDraw(ctx);
-    ctx.fillText(message, center.x, center.y - TEXT_LINE_HEIGHT);
+    ctx.fillText(message, center.x, center.y - lineHeight);
 
-    ctx.font = "18px Nunito";
-    ctx.textBaseline = "top";
-    ctx.textAlign = "center";
-    ctx.fillText("Press ESC to restart.", center.x, center.y + TEXT_LINE_HEIGHT * 2);
+    prepareMessageDraw(ctx);
+    ctx.fillText("Press ESC to restart.", center.x, center.y + lineHeight * 2);
 }
 
 

@@ -10,49 +10,48 @@ import Shapes from "./Graphics/Shapes";
 import Ammo from "./Ammo";
 import { Graphics } from "./Graphics/Graphics";
 import CircleCollider from "./Physics/CircleCollider";
+import { Config } from "./config";
+import { degToRad } from "./Utils";
+import { getColorHex } from "./Graphics/Color";
 
-const SCALE = 2;
-const COLLIDER_RADIUS = 4;
-const INITIAL_FUEL_TANK_CAPACITY = 170;
-const ENGINE_MAX_THRUST = 7000;
-const ENGINE_ANGLE = 0.2;
-const ENGINE_POSITION_Y = -4;
+const SHAPE_LENGTH = 3;
 const AMMO_START_POS = 5;
 const AMMO_FORCE = 10000;
-const MAX_SAFE_ANGULAR_VELOCITY = 20;
+
+const { ship } = Config;
 
 class Ship extends Body implements IDrawable {
-    public static Shape: Polygon = Shapes.Ship.mul(SCALE);
+    public static Shape: Polygon = Shapes.Ship.mul(ship.length / SHAPE_LENGTH);
 
     public engineLeft: Engine;
     public engineRight: Engine;
     public fuelTank: FuelTank;
     public graphics?: Graphics;
-    public circleCollider = new CircleCollider(COLLIDER_RADIUS);
-    public color = "#a0a0a0";
+    public circleCollider = new CircleCollider(ship.length / 2 * ship.colliderRelativeSize);
+    public color = ship.color;
 
     constructor(position: Vector) {
         super(position);
-        this.fuelTank = new FuelTank(INITIAL_FUEL_TANK_CAPACITY);
+        this.fuelTank = new FuelTank(ship.fuelTankCapacity);
 
         this.engineLeft = new Engine(
             this,
             {
-                position: new Vector(-0.5, ENGINE_POSITION_Y),
-                rotation: -ENGINE_ANGLE
+                position: ship.engineLeft.position,
+                rotation: degToRad(ship.engineLeft.angle)
             },
-            ENGINE_MAX_THRUST,
-            this.fuelTank
+            this.fuelTank,
+            ship.engineLeft
         );
 
         this.engineRight = new Engine(
             this,
             {
-                position: new Vector(+0.5, ENGINE_POSITION_Y),
-                rotation: ENGINE_ANGLE
+                position: ship.engineRight.position,
+                rotation: degToRad(ship.engineRight.angle)
             },
-            ENGINE_MAX_THRUST,
-            this.fuelTank
+            this.fuelTank,
+            ship.engineLeft
         );
     }
 
@@ -85,7 +84,7 @@ class Ship extends Body implements IDrawable {
         super.update(time, delta);
 
         if (this.alive) {
-            if (Math.abs(this.angularVelocity) > MAX_SAFE_ANGULAR_VELOCITY) {
+            if (Math.abs(this.angularVelocity) > ship.maxSafeAngularVelocity) {
                 this.die();
             }
 
@@ -124,7 +123,7 @@ class Ship extends Body implements IDrawable {
 
             ctx.save();
             ctx.lineWidth = 1;
-            ctx.strokeStyle = this.color;
+            ctx.strokeStyle = getColorHex(this.color);
 
             Ship.Shape.toScreenCoordinates(drawContext).makeClosedPath(ctx);
 

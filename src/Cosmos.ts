@@ -3,12 +3,9 @@ import Camera from "./Graphics/Camera";
 import Vector from "./Physics/Vector";
 import UniqueIdProvider from "./UniqueIdProvider";
 import { random } from "./Utils";
-
-const STAR_BRIGHTNESS_MIN = 0.25;
-const STAR_BRIGHTNESS_MAX = 1.00;
+import { Config } from "./config";
 
 const SEGMENT_SIZE = 200;
-const STARS_PER_SEGMENT = 12;
 
 interface IStar {
     pos: Vector;
@@ -20,13 +17,16 @@ interface IStarSegment {
     stars: IStar[];
 }
 
+const config = Config.cosmos;
+
 class Cosmos implements IDrawable {
     id: number = UniqueIdProvider.next();
     starSegments: { [key: string]: IStarSegment } = {};
 
-    // eslint-disable-next-line class-methods-use-this
+    readonly _alive = true;
+
     get alive() {
-        return true;
+        return this._alive;
     }
 
     draw(ctx: CanvasRenderingContext2D, camera: Camera) {
@@ -79,14 +79,19 @@ function generateStars(x: number, y: number) {
 
     const origin = new Vector(x, y).mul(SEGMENT_SIZE);
 
-    for (let i = 0; i < STARS_PER_SEGMENT; i++) {
+    const segmentArea = SEGMENT_SIZE * SEGMENT_SIZE;
+    const SQ_KM = 1000 * 1000;
+
+    const starsPerSegment = segmentArea / SQ_KM * config.starDensity;
+
+    for (let i = 0; i < starsPerSegment; i++) {
         stars.push({
             pos: origin.add(new Vector(
                 Math.random(),
                 Math.random()
             ).mul(SEGMENT_SIZE)),
             size: 1 + Math.random() * 2,
-            opacity: random(STAR_BRIGHTNESS_MIN, STAR_BRIGHTNESS_MAX)
+            opacity: random(config.starBrighnessMin, config.starBrighnessMax)
         });
     }
 

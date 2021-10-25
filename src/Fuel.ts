@@ -6,13 +6,8 @@ import Body from "./Physics/Body";
 import Ship from "./Ship";
 import { Graphics } from "./Graphics/Graphics";
 import CircleCollider from "./Physics/CircleCollider";
-import { getColorHexFromRGBA } from "./Graphics/Color";
-
-const AMOUNT_OF_FUEL = 25;
-const COLLIDER_RADIUS = 5;
-const OPACITY_MIN = 0.75;
-const OPACITY_MAX = 1.00;
-const PULSE_HZ = 0.5;
+import { getColorHex } from "./Graphics/Color";
+import { Config } from "./config";
 
 enum State {
     Pulse,
@@ -20,16 +15,18 @@ enum State {
     Dead
 }
 
+const config = Config.fuelCapsule;
+
 class Fuel extends Body implements IDrawable {
-    static Shape: Polygon = Shapes.Capsule;
+    static Shape: Polygon = Shapes.Capsule.mul(config.length);
 
     collected = false;
     private state: State = State.Pulse;
     private opacity = 0;
 
-    amount = AMOUNT_OF_FUEL;
+    amount = config.volume;
     graphics?: Graphics;
-    circleCollider = new CircleCollider(COLLIDER_RADIUS);
+    circleCollider = new CircleCollider(config.length / 2 * config.colliderRelativeSize);
 
     collect(ship: Ship) {
         if (this.collected) {
@@ -54,12 +51,13 @@ class Fuel extends Body implements IDrawable {
 
         switch (this.state) {
         case State.Pulse:
-            this.opacity = OPACITY_MIN +
-                Math.sin(time * Math.PI * 2 * PULSE_HZ) * (OPACITY_MAX - OPACITY_MIN);
+            this.opacity = config.opacityMin +
+                Math.sin(time * Math.PI * 2 * config.pulseHz) *
+                    (config.opacityMax - config.opacityMin);
             break;
 
         case State.FadeOut:
-            this.opacity -= delta * (Math.PI * 2 * PULSE_HZ);
+            this.opacity -= delta * (Math.PI * 2 * config.pulseHz);
             if (this.opacity <= 0) {
                 this.opacity = 0;
                 this.state = State.Dead;
@@ -79,7 +77,11 @@ class Fuel extends Body implements IDrawable {
 
         ctx.save();
         ctx.lineWidth = 1;
-        ctx.strokeStyle = getColorHexFromRGBA(0, 1, 0, this.opacity);
+
+        ctx.strokeStyle = getColorHex({
+            ...config.color,
+            A: this.opacity
+        });
 
         Fuel.Shape.toScreenCoordinates(drawContext).makeClosedPath(ctx);
 

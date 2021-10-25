@@ -1,4 +1,4 @@
-const FUEL_MASS = 0.75;
+import { Config } from "./config";
 
 class FuelTank {
     capacity: number;
@@ -23,7 +23,7 @@ class FuelTank {
     }
 
     getMass(): number {
-        return this.currentAmount * FUEL_MASS;
+        return this.currentAmount * Config.fuel.mass;
     }
 }
 

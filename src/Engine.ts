@@ -8,19 +8,15 @@ import UniqueIdProvider from "./UniqueIdProvider";
 import IDrawable from "./Graphics/IDrawable";
 import { random } from "./Utils";
 import { IRelativeProps } from "./types";
-
-const DEFAULT_CONSUMPTION = 0.0001675;
-const PARTICLE_VELOCITY_MIN = 20;
-const PARTICLE_VELOCITY_MAX = 80;
-const MAX_PARTICLE_RATE = 200;
+import { IEngineConfig } from "./config";
 
 class Engine implements IUpdatable, IDrawable {
     id: number;
     parent: Body;
     relativeProps: IRelativeProps;
-    maxThrust: number;
-    consumption: number = DEFAULT_CONSUMPTION;
     fuelTank: FuelTank;
+
+    private readonly config: IEngineConfig;
 
     private throttle = 0;
     private output = 0;
@@ -29,20 +25,27 @@ class Engine implements IUpdatable, IDrawable {
     constructor(
         parent: Body,
         relativeProps: IRelativeProps,
-        maxThrust: number,
-        fuelTank: FuelTank
+        fuelTank: FuelTank,
+        config: IEngineConfig
     ) {
         this.id = UniqueIdProvider.next();
         this.parent = parent;
         this.relativeProps = relativeProps;
-        this.maxThrust = maxThrust;
         this.fuelTank = fuelTank;
+
         this.particleEngine = new ParticleEngine(
             parent.pos.add(relativeProps.position),
             () => {
-                const scale = PARTICLE_VELOCITY_MAX - PARTICLE_VELOCITY_MIN;
-                return random(PARTICLE_VELOCITY_MIN, this.throttle * scale);
+                const scale = config.particleVelocityMax -
+                config.particleVelocityMin;
+
+                return random(
+                    config.particleVelocityMin,
+                    this.throttle * scale
+                );
             });
+
+        this.config = config;
     }
 
     // eslint-disable-next-line class-methods-use-this
@@ -51,7 +54,11 @@ class Engine implements IUpdatable, IDrawable {
     }
 
     get targetOutput(): number {
-        return this.maxThrust * this.throttle;
+        return this.config.maxThrust * this.throttle;
+    }
+
+    get relativeOutput(): number {
+        return this.output / this.config.maxThrust;
     }
 
     get burning() {
@@ -93,10 +100,15 @@ class Engine implements IUpdatable, IDrawable {
             this.output = 0;
         }
         else {
-            const MAX_CHANGE = 20000;
-            let change = this.targetOutput - this.output;
-            change = Math.min(change, delta * MAX_CHANGE);
-            change = Math.max(change, delta * -MAX_CHANGE);
+            const { maxOutputChangeRate } = this.config;
+
+            const targetChange = this.targetOutput - this.output;
+
+            const change = Math.max(
+                Math.min(targetChange, maxOutputChangeRate * delta),
+                -maxOutputChangeRate  * delta
+            );
+
             this.output += change;
         }
 
@@ -105,12 +117,13 @@ class Engine implements IUpdatable, IDrawable {
         this.particleEngine.rotation = this.worldRotation;
 
         if (this.output > 0) {
-            this.fuelTank.consume(this.consumption * this.output * delta);
+            this.fuelTank.consume(this.config.consumption * this.output * delta);
         }
 
         if (this.output > 0) {
             if (!this.particleEngine.emitting) {
-                this.particleEngine.start(() => this.throttle * MAX_PARTICLE_RATE);
+                this.particleEngine.start(
+                    () => this.relativeOutput * this.config.particleRateMax);
             }
         }
         else {
