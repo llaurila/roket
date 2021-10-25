@@ -6,6 +6,7 @@ import { random } from "./Utils";
 import { Config } from "./config";
 
 const SEGMENT_SIZE = 200;
+const MAX_Z = 2;
 
 interface IStar {
     pos: Vector;
@@ -90,8 +91,8 @@ function generateStars(x: number, y: number) {
             pos: origin.add(new Vector(
                 Math.random(),
                 Math.random()
-            ).mul(SEGMENT_SIZE)),
-            z: random(1, 2),
+            ).mul(SEGMENT_SIZE * MAX_Z)),
+            z: random(1, MAX_Z),
             size: 1 + Math.random() * 2,
             opacity: random(config.starBrighnessMin, config.starBrighnessMax)
         });
