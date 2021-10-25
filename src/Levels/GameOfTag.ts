@@ -6,6 +6,7 @@ import Ship from "../Ship";
 import Vector from "../Physics/Vector";
 import Fuel from "../Fuel";
 import RNG from "../RNG";
+import { Config } from "../config";
 
 const RAND_SEED = 89321;
 const OTHER_SHIP_DISTANCE = 40;
@@ -31,7 +32,7 @@ class GameOfTag extends Level {
 
         this.otherShip.color = { R: 1, G: 0, B: 1, A: 1 };
 
-        this.otherShip.mass = 800;
+        this.otherShip.mass = Config.ship.mass;
         this.otherShip.rotation = 2;
 
         this.otherShip.onCollision(e => {

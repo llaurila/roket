@@ -48,6 +48,7 @@ interface IConfig {
     }
 
     ship: {
+        mass: number;
         length: number;
         colliderRelativeSize: number;
         fuelTankCapacity: number;
@@ -129,6 +130,7 @@ export const Config: IConfig = {
     },
 
     ship: {
+        mass: 800,
         length: 6,
         colliderRelativeSize: 1.6,
         fuelTankCapacity: 170,

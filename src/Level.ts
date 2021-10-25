@@ -11,6 +11,7 @@ import Objective from "./Objective";
 import Pointer from "./Controls/Pointer";
 import { Hud } from "./Hud";
 import Fuel from "./Fuel";
+import { Config } from "./config";
 
 const DEFAULT_ZOOM = 3;
 
@@ -40,7 +41,7 @@ abstract class Level {
         this.graphics = this.getGraphics();
         this.physics = this.getPhysics();
 
-        this.ship.mass = 800;
+        this.ship.mass = Config.ship.mass;
         this.physics.add(this.ship);
         this.graphics.add(this.ship);
 
