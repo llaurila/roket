@@ -6,11 +6,15 @@
   "scripts": {
     "lint": "eslint --ext ts src",
     "lint:fix": "eslint --ext .ts --fix src",
+    "test": "ts-node node_modules/jasmine/bin/jasmine --config=jasmine.json",
+    "test-coverage": "nyc -r text -e .ts -x \"tests/*.test.ts\" npm run test",
     "dev": "parcel serve index.html",
     "clean": "rimraf dist",
     "build": "parcel build index.html"
   },
   "devDependencies": {
+    "@types/jasmine": "^3.10.1",
+    "@types/node": "^16.11.6",
     "@typescript-eslint/eslint-plugin": "^5.1.0",
     "@typescript-eslint/parser": "^5.1.0",
     "eslint": "^7",
@@ -18,8 +22,11 @@
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.1",
+    "jasmine": "^3.10.0",
+    "nyc": "^15.1.0",
     "parcel-bundler": "^1.12.5",
     "rimraf": "^3.0.2",
+    "ts-node": "^10.4.0",
     "typescript": "^4.4.4"
   },
   "dependencies": {}

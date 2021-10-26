@@ -118,7 +118,7 @@ class Engine implements IUpdatable, IDrawable {
 
         if (this.output > 0) {
             this.fuelTank.consume(this.config.consumption * this.output * delta);
-            
+
             if (!this.particleEngine.emitting) {
                 this.particleEngine.start(
                     () => this.relativeOutput * this.config.particleRateMax);
