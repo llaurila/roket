@@ -8,7 +8,7 @@ import UniqueIdProvider from "./UniqueIdProvider";
 import IDrawable from "./Graphics/IDrawable";
 import { random } from "./Utils";
 import { IRelativeProps } from "./types";
-import { IEngineConfig } from "./config";
+import { IEngineConfig } from "./config.types";
 
 class Engine implements IUpdatable, IDrawable {
     id: number;

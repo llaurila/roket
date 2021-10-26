@@ -12,9 +12,9 @@ const FUEL_CAPSULE_DISTANCE_MIN = 45;
 const FUEL_CAPSULE_DISTANCE_MAX = 500;
 
 class CollectFuel extends Level {
-    name = "Level 3: Collect Fuel";
+    name = "LEVEL 3: COLLECT FUEL";
     description =
-        "Collect all the fuel capsules revealed by the radar.";
+        "COLLECT ALL THE FUEL CAPSULES REVEALED BY THE RADAR.";
 
     fuelCapsules: Fuel[] = [];
 
@@ -41,7 +41,7 @@ class CollectFuel extends Level {
 
     createObjectives() {
         this.objectives.push(new Objective(
-            `Collect ${this.fuelCapsules.length} fuel capsules.`,
+            `COLLECT ${this.fuelCapsules.length} FUEL CAPSULES.`,
             () => !this.fuelCapsules.some(f => f.alive)
         ));
     }

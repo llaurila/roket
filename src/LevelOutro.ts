@@ -1,60 +1,41 @@
 import IDrawable from "./Graphics/IDrawable";
 import UniqueIdProvider from "./UniqueIdProvider";
 import Level from "./Level";
-import { getCenter } from "./Utils";
-import { prepareMessageDraw, prepareTitleDraw } from "./Typography";
-import { Config } from "./config";
-import { getColorHex } from "./Graphics/Color";
+import Alert from "./UIWindow/Alert";
+import IUpdatable from "./Physics/IUpdatable";
+import Camera from "./Graphics/Camera";
 
-const { typography } = Config;
-
-class LevelOutro implements IDrawable {
+class LevelOutro implements IDrawable, IUpdatable {
     id: number = UniqueIdProvider.next();
     level: Level;
     alive = true;
 
+    alert: Alert;
+
     constructor(level: Level) {
         this.level = level;
+        this.alert = new Alert();
     }
 
-    draw(ctx: CanvasRenderingContext2D) {
-        ctx.save();
-        ctx.resetTransform();
-
-        ctx.fillStyle = getColorHex(typography.defaultColor);
+    draw(ctx: CanvasRenderingContext2D, camera: Camera) {
+        let title = "MISSION SUCCESS";
+        let message = "PRESS <ENTER> TO CONTINUE.";
 
         if (this.level.failureMessage) {
-            drawFailure(ctx, this.level.failureMessage);
-        }
-        else if (this.level.passed) {
-            drawSuccess(ctx);
+            title = "MISSION FAILED";
+            message = this.level.failureMessage + " " + message;
         }
 
-        ctx.restore();
+        this.alert.title = title;
+        this.alert.content = message;
+        this.alert.error = Boolean(this.level.failureMessage);
+
+        this.alert.draw(ctx, camera);
+    }
+
+    update(time: number, delta: number) {
+        this.alert.update(time, delta);
     }
 }
-
-function drawSuccess(ctx: CanvasRenderingContext2D) {
-    const center = getCenter(ctx);
-    const lineHeight = typography.defaultLineHeight;
-
-    prepareTitleDraw(ctx);
-    ctx.fillText("Success!", center.x, center.y - lineHeight);
-
-    prepareMessageDraw(ctx);
-    ctx.fillText("Press Enter to continue.", center.x, center.y + lineHeight * 2);
-}
-
-function drawFailure(ctx: CanvasRenderingContext2D, message: string) {
-    const center = getCenter(ctx);
-    const lineHeight = typography.defaultLineHeight;
-
-    prepareTitleDraw(ctx);
-    ctx.fillText(message, center.x, center.y - lineHeight);
-
-    prepareMessageDraw(ctx);
-    ctx.fillText("Press ESC to restart.", center.x, center.y + lineHeight * 2);
-}
-
 
 export { LevelOutro };

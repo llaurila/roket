@@ -4,7 +4,7 @@ import Polygon from "./Graphics/Polygon";
 import Shapes from "./Graphics/Shapes";
 import IDrawable from "./Graphics/IDrawable";
 import Camera from "./Graphics/Camera";
-import { getColorHexFromRGBA } from "./Graphics/Color";
+import { getColorStringFromRGBA } from "./Graphics/Color";
 
 const SCALE = 0.8;
 const DEFAULT_TTL = 5;
@@ -46,7 +46,7 @@ class Ammo extends Body implements IDrawable {
         };
 
         ctx.save();
-        ctx.fillStyle = getColorHexFromRGBA(1, 0, 0, 1 - this.relativeAge);
+        ctx.fillStyle = getColorStringFromRGBA(1, 0, 0, 1 - this.relativeAge);
 
         Ammo.Shape.toScreenCoordinates(drawContext).makeClosedPath(ctx);
 

@@ -1,15 +1,24 @@
-import { Config } from "./config";
+export function getTextLines(
+    ctx: CanvasRenderingContext2D,
+    text: string,
+    maxWidth: number
+): string[]
+{
+    const words = text.split(" ");
+    const lines: string[] = [];
+    let currentLine = words[0];
 
-const { typography } = Config;
+    for (let i = 1; i < words.length; i++) {
+        const word = words[i];
+        const width = ctx.measureText(currentLine + " " + word).width;
+        if (width < maxWidth) {
+            currentLine += " " + word;
+        } else {
+            lines.push(currentLine);
+            currentLine = word;
+        }
+    }
 
-export function prepareTitleDraw(ctx: CanvasRenderingContext2D) {
-    ctx.font = `${typography.titleFontSize}px ${typography.fontFamily}`;
-    ctx.textBaseline = "bottom";
-    ctx.textAlign = "center";
-}
-
-export function prepareMessageDraw(ctx: CanvasRenderingContext2D) {
-    ctx.font = `${typography.messageFontSize}px ${typography.fontFamily}`;
-    ctx.textBaseline = "top";
-    ctx.textAlign = "center";
+    lines.push(currentLine);
+    return lines;
 }

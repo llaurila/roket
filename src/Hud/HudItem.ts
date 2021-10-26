@@ -1,13 +1,18 @@
-export type EnabledSolver = () => boolean;
+import { Config } from "../config";
+import { IColor } from "../Graphics/Color";
 
-export const AlwaysEnabled: EnabledSolver = () => true;
+export type GetColor = () => IColor|null;
+
+export const DefaultColor: GetColor = () => Config.typography.defaultColor;
+
+export const HudItemDisabled: GetColor = () => null;
 
 export class HudItem {
     getText: () => string;
-    enabled: EnabledSolver;
+    getColor: GetColor;
 
-    constructor(getText: () => string, enabled: EnabledSolver = AlwaysEnabled) {
+    constructor(getText: () => string, getColor: GetColor = DefaultColor) {
         this.getText = getText;
-        this.enabled = enabled;
+        this.getColor = getColor;
     }
 }

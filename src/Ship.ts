@@ -12,7 +12,7 @@ import { Graphics } from "./Graphics/Graphics";
 import CircleCollider from "./Physics/CircleCollider";
 import { Config } from "./config";
 import { degToRad } from "./Utils";
-import { getColorHex } from "./Graphics/Color";
+import { getColorString } from "./Graphics/Color";
 
 const SHAPE_LENGTH = 3;
 const AMMO_START_POS = 5;
@@ -123,7 +123,7 @@ class Ship extends Body implements IDrawable {
 
             ctx.save();
             ctx.lineWidth = 1;
-            ctx.strokeStyle = getColorHex(this.color);
+            ctx.strokeStyle = getColorString(this.color);
 
             Ship.Shape.toScreenCoordinates(drawContext).makeClosedPath(ctx);
 

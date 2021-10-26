@@ -5,7 +5,7 @@ import UniqueIdProvider from "../UniqueIdProvider";
 import PhysicsEngine from "../Physics/PhysicsEngine";
 import Fuel from "../Fuel";
 import Body from "../Physics/Body";
-import { getColorHex, getColorHexFromRGBA } from "../Graphics/Color";
+import { getColorString, getColorStringFromRGBA } from "../Graphics/Color";
 import { RadarDrawer } from "./RadarDrawer";
 import { Config } from "../config";
 
@@ -43,7 +43,7 @@ export class Radar implements IDrawable {
         const nearestFuel = this.getNearestFuel();
 
         if (nearestFuel) {
-            drawer.drawDot(nearestFuel.pos, getColorHex(config.fuelColor));
+            drawer.drawDot(nearestFuel.pos, getColorString(config.fuelColor));
         }
     }
 
@@ -51,7 +51,7 @@ export class Radar implements IDrawable {
         const nearestShip = this.getNearestAlienShip();
 
         if (nearestShip) {
-            drawer.drawDot(nearestShip.pos, getColorHexFromRGBA(1, 0, 1, 0.5));
+            drawer.drawDot(nearestShip.pos, getColorStringFromRGBA(1, 0, 1, 0.5));
         }
     }
 

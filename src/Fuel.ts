@@ -6,7 +6,7 @@ import Body from "./Physics/Body";
 import Ship from "./Ship";
 import { Graphics } from "./Graphics/Graphics";
 import CircleCollider from "./Physics/CircleCollider";
-import { getColorHex } from "./Graphics/Color";
+import { getColorString } from "./Graphics/Color";
 import { Config } from "./config";
 
 enum State {
@@ -78,7 +78,7 @@ class Fuel extends Body implements IDrawable {
         ctx.save();
         ctx.lineWidth = 1;
 
-        ctx.strokeStyle = getColorHex({
+        ctx.strokeStyle = getColorString({
             ...config.color,
             A: this.opacity
         });

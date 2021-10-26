@@ -1,3 +1,4 @@
+/* eslint-disable no-magic-numbers */
 import Level from "../Level";
 import Cosmos from "../Cosmos";
 import ShipController from "../ShipController";
@@ -9,19 +10,20 @@ import RNG from "../RNG";
 import { Config } from "../config";
 
 const RAND_SEED = 89321;
-const OTHER_SHIP_DISTANCE = 40;
+const OTHER_SHIP_OFFSET = new Vector(-20, 60);
 const FUEL_CAPSULE_DISTANCE_MIN = 50;
 const FUEL_CAPSULE_DISTANCE_MAX = 200;
 const CORRECT_HEADING_TOLERANCE = 0.15;
 
 class GameOfTag extends Level {
-    name = "Level 4: Game of Tag";
+    name = "LEVEL 4: GAME OF TAG";
     description =
-        "Catch the other ship.";
+        "CATCH THE OTHER SHIP.";
 
-    otherShip: Ship = new Ship(Vector.Up.mul(OTHER_SHIP_DISTANCE));
-    caught = false;
     rng: RNG = new RNG(RAND_SEED);
+    otherShip: Ship = new Ship(OTHER_SHIP_OFFSET);
+    started = false;
+    caught = false;
 
     createObjects(): void {
         this.graphics.add(new Cosmos());
@@ -41,9 +43,6 @@ class GameOfTag extends Level {
                 this.otherShip.die();
             }
         });
-
-        this.otherShip.engineLeft.setThrottle(1);
-        this.otherShip.engineRight.setThrottle(1);
 
         this.generateNewFuelCapsule();
     }
@@ -68,7 +67,7 @@ class GameOfTag extends Level {
 
     createObjectives() {
         this.objectives.push(new Objective(
-            "Catch the other ship.",
+            "CATCH THE OTHER SHIP.",
             () => this.caught
         ));
     }
@@ -76,35 +75,44 @@ class GameOfTag extends Level {
     update(time: number, delta: number) {
         super.update(time, delta);
 
-        if (time > 2) {
-            const target = this.ship.pos.add(this.ship.v.neg());
-            const toTarget = target.sub(this.otherShip.pos).normalize();
-            const turn = this.otherShip.getHeading().cross(toTarget);
+        if (!this.started && this.ship.v.length() > 0) {
+            this.otherShip.v = this.otherShip.getHeading().mul(10);
+            this.started = true;
+        }
 
-            this.otherShip.engineLeft.setThrottle(0);
-            this.otherShip.engineRight.setThrottle(0);
+        if (this.started) {
+            this.makeNpcDecisions();
+        }
+    }
 
-            if (Math.abs(this.otherShip.angularVelocity) > 0.5) {
-                if (this.otherShip.angularVelocity >= 0) {
-                    this.otherShip.engineLeft.setThrottle(
-                        Math.min(this.otherShip.angularVelocity, 1)
-                    );
-                } else {
-                    this.otherShip.engineRight.setThrottle(
-                        Math.min(-this.otherShip.angularVelocity, 1)
-                    );
-                }
+    private makeNpcDecisions() {
+        const target = this.ship.pos.add(this.ship.v.neg());
+        const toTarget = target.sub(this.otherShip.pos).normalize();
+        const turn = this.otherShip.getHeading().cross(toTarget);
+
+        this.otherShip.engineLeft.setThrottle(0);
+        this.otherShip.engineRight.setThrottle(0);
+
+        if (Math.abs(this.otherShip.angularVelocity) > 0.5) {
+            if (this.otherShip.angularVelocity >= 0) {
+                this.otherShip.engineLeft.setThrottle(
+                    Math.min(this.otherShip.angularVelocity, 1)
+                );
+            } else {
+                this.otherShip.engineRight.setThrottle(
+                    Math.min(-this.otherShip.angularVelocity, 1)
+                );
             }
-            else {
-                if (Math.abs(turn) < CORRECT_HEADING_TOLERANCE) {
-                    this.otherShip.engineLeft.setThrottle(1);
-                    this.otherShip.engineRight.setThrottle(1);
-                }
-                else if (turn >= 0) {
-                    this.otherShip.engineRight.setThrottle(turn);
-                } else {
-                    this.otherShip.engineLeft.setThrottle(-turn);
-                }
+        }
+        else {
+            if (Math.abs(turn) < CORRECT_HEADING_TOLERANCE) {
+                this.otherShip.engineLeft.setThrottle(1);
+                this.otherShip.engineRight.setThrottle(1);
+            }
+            else if (turn >= 0) {
+                this.otherShip.engineRight.setThrottle(turn);
+            } else {
+                this.otherShip.engineLeft.setThrottle(-turn);
             }
         }
     }

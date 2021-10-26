@@ -1,8 +1,8 @@
 import IDrawable from "../Graphics/IDrawable";
 import UniqueIdProvider from "../UniqueIdProvider";
-import { AlwaysEnabled, EnabledSolver, HudItem } from "./HudItem";
+import { DefaultColor, GetColor, HudItem } from "./HudItem";
 import { Config } from "../config";
-import { getColorHex } from "../Graphics/Color";
+import { getColorString } from "../Graphics/Color";
 
 export class HudTexts implements IDrawable {
     id: number = UniqueIdProvider.next();
@@ -13,8 +13,8 @@ export class HudTexts implements IDrawable {
         return this._alive;
     }
 
-    add(getText: () => string, enabled: EnabledSolver = AlwaysEnabled) {
-        this.items.push(new HudItem(getText, enabled));
+    add(getText: () => string, getColor: GetColor = DefaultColor) {
+        this.items.push(new HudItem(getText, getColor));
     }
 
     draw(ctx: CanvasRenderingContext2D) {
@@ -22,12 +22,14 @@ export class HudTexts implements IDrawable {
 
         ctx.save();
         ctx.font = `${config.fontSize}px ${Config.typography.fontFamily}`;
-        ctx.fillStyle = getColorHex(Config.typography.defaultColor);
         ctx.textBaseline = "top";
 
         let line = 0;
         for (const item of this.items) {
-            if (item.enabled()) {
+            const color = item.getColor();
+            if (color != null) {
+                ctx.fillStyle = getColorString(color);
+
                 ctx.fillText(
                     this.items[line].getText(),
                     10,

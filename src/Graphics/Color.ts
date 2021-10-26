@@ -49,16 +49,16 @@ export function getGray(luminance: number, alpha = 1): IColor {
 }
 
 export function getGrayHex(luminance: number, alpha = 1): string {
-    return getColorHex(
+    return getColorString(
         getGray(luminance, alpha)
     );
 }
 
-export function getColorHexFromRGBA(r: number, g: number, b: number, alpha = 1): string {
+export function getColorStringFromRGBA(r: number, g: number, b: number, alpha = 1): string {
     return `rgba(${getCC(r)}, ${getCC(g)}, ${getCC(b)}, ${alpha})`;
 }
 
-export function getColorHex(color: IColor): string {
+export function getColorString(color: IColor): string {
     return `rgba(${getCC(color.R)}, ${getCC(color.G)}, ${getCC(color.B)}, ${color.A})`;
 }
 

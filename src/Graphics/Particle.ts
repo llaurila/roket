@@ -5,7 +5,7 @@ import Vector from "../Physics/Vector";
 import { getCenter } from "../Utils";
 import IDrawContext from "./IDrawContext";
 import Polygon from "./Polygon";
-import { getColorHex, getInterpolatedColor } from "./Color";
+import { getColorString, getInterpolatedColor } from "./Color";
 
 const FLAME = [
     {
@@ -99,7 +99,7 @@ class Particle extends Body implements IDrawable {
         const color = getInterpolatedColor(FLAME, this.relativeAge);
 
         ctx.save();
-        ctx.fillStyle = getColorHex(color);
+        ctx.fillStyle = getColorString(color);
 
         Particle.Shape.mul(1 + this.relativeAge).toScreenCoordinates({
             pos: this.pos,
