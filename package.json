@@ -7,6 +7,7 @@
     "lint": "eslint --ext ts src",
     "lint:fix": "eslint --ext .ts --fix src",
     "dev": "parcel serve index.html",
+    "clean": "rimraf dist",
     "build": "parcel build index.html"
   },
   "devDependencies": {
@@ -18,6 +19,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.1",
     "parcel-bundler": "^1.12.5",
+    "rimraf": "^3.0.2",
     "typescript": "^4.4.4"
   },
   "dependencies": {}

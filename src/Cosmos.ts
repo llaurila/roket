@@ -39,8 +39,8 @@ class Cosmos implements IDrawable {
                 ctx, new Vector(ctx.canvas.width, 0));
 
         const
-            bottomLeftSegment = bottomLeft.div(SEGMENT_SIZE).floor(),
-            topRightSegment = topRight.div(SEGMENT_SIZE).ceil();
+            bottomLeftSegment = bottomLeft.div(SEGMENT_SIZE).floor().sub(Vector.One),
+            topRightSegment = topRight.div(SEGMENT_SIZE).ceil().add(Vector.One);
 
         ctx.save();
 

@@ -101,6 +101,10 @@ class Vector {
         return new Vector(0, 0);
     }
 
+    static get One() {
+        return new Vector(1, 1);
+    }
+    
     static get Up() {
         return new Vector(0, 1);
     }
