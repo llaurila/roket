@@ -13,10 +13,9 @@ import { Hud } from "./Hud";
 import Fuel from "./Fuel";
 import { Config } from "./config";
 import { DefaultColor, HudItemDisabled } from "./Hud/HudItem";
+import { UI } from "./UI/UI";
 
 const DEFAULT_ZOOM = 3;
-
-const defaultColor = DefaultColor;
 
 abstract class Level {
     static debugMode = false;
@@ -30,7 +29,7 @@ abstract class Level {
     public failureMessage?: string;
     public objectives: Objective[] = [];
     public passed = false;
-    public hud: Hud = new Hud(this.ship, this.physics);
+    public hud: Hud = new Hud(this);
     public number?: number;
 
     abstract get name(): string;
@@ -53,39 +52,29 @@ abstract class Level {
 
         this.initHud();
 
+        this.initUI();
+
         const intro = new LevelIntro(this);
         this.graphics.add(intro);
         this.physics.add(intro);
     }
 
-    private initHud() {
-        this.hud = new Hud(this.ship, this.physics);
+    private initUI() {
+        const ui = new UI(this);
+        this.graphics.add(ui);
+    }
 
+    private initHud() {
         const { texts } = this.hud;
 
         const NUM_LENGTH = 5;
         const getNum = (n: number, f = 0) => n.toFixed(f).padStart(NUM_LENGTH);
-
-        texts.add(() => `MISSION TIME ${getNum(this.physics.time)} s`);
-        texts.add(() => `VELOCITY     ${getNum(this.ship.v.length(), 1)} m/s`);
 
         texts.add(() => {
             const { currentAmount, capacity } = this.ship.fuelTank;
             const fuelPercent = currentAmount / capacity * 100;
             return `FUEL        ${getNum(fuelPercent)}% (${currentAmount.toFixed()} KG)`;
         });
-
-        texts.add(() => "");
-
-        for (let i = 0; i < this.objectives.length; i++) {
-            texts.add(() => {
-                const objective = this.objectives[i];
-                return `OBJECTIVE ${i + 1}: ${objective.text}`;
-            }, () => {
-                const objective = this.objectives[i];
-                return objective.cleared ? Config.typography.emphasisColor : defaultColor();
-            });
-        }
 
         const debugColor = Level.debugMode ? DefaultColor : HudItemDisabled;
         texts.add(() => `PHYSICS  ${this.physics.count}`, debugColor);
@@ -100,13 +89,9 @@ abstract class Level {
         this.graphics.add(this.hud);
     }
 
-    getGraphics(): Graphics {
-        return this.graphics;
-    }
+    getGraphics = () => this.graphics;
 
-    getPhysics(): PhysicsEngine {
-        return this.physics;
-    }
+    getPhysics = () => this.physics;
 
     abstract createObjects(): void;
 
@@ -128,10 +113,10 @@ abstract class Level {
 
         if (!this.ended) {
             if (!this.ship.alive) {
-                this.failure("Your ship has been destroyed.");
+                this.failure("YOUR SHIP HAS BEEN DESTROYED.");
             }
             else if (this.ship.fuelTank.isEmpty()) {
-                this.failure("You ran out of fuel.");
+                this.failure("YOU RAN OUT OF FUEL.");
             }
             else if (this.objectivesCleared()) {
                 this.success();

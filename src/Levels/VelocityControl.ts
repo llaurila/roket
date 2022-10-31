@@ -15,12 +15,12 @@ class VelocityControl extends Level {
 
     createObjectives() {
         const greatSpeed = new Objective(
-            "ACCELERATE TO 100 M/S.",
+            "ACCELERATE TO 100 M/S",
             () => this.ship.v.length() >= 100);
         this.objectives.push(greatSpeed);
 
         this.objectives.push(new Objective(
-            "DECELERATE BACK TO LESS THAN 10 M/S.",
+            "DECELERATE BACK TO LESS THAN 10 M/S",
             () => greatSpeed.cleared && this.ship.v.length() < 10
         ));
     }

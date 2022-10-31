@@ -38,12 +38,10 @@ export function getInterpolatedColor(steps: IColorStep[], pos: number): IColor {
 }
 
 export function getGray(luminance: number, alpha = 1): IColor {
-    const c = Math.floor(luminance * COLOR_CHANNEL_MAX);
-
     return {
-        R: c,
-        G: c,
-        B: c,
+        R: luminance,
+        G: luminance,
+        B: luminance,
         A: alpha
     };
 }

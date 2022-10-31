@@ -2,7 +2,7 @@ import { Config } from "../config";
 import Camera from "../Graphics/Camera";
 import { getGrayHex } from "../Graphics/Color";
 import Vector from "../Physics/Vector";
-import { getCenter, shortDistance } from "../Utils";
+import { getCenter, formatDistance } from "../Utils";
 
 const config = Config.radar;
 
@@ -61,7 +61,7 @@ export class RadarDrawer {
             ctx.textBaseline = "middle";
             ctx.textAlign = "center";
 
-            ctx.fillText(shortDistance(distanceToTarget), labelPos.x, labelPos.y);
+            ctx.fillText(formatDistance(distanceToTarget), labelPos.x, labelPos.y);
         }
     }
 }

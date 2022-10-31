@@ -28,11 +28,16 @@ export const Config: IConfig = {
         messageFontSize: 18,
         defaultLineHeight: 10,
         errorColor: { R: 0.55, G: 0.12, B: 0.16, A: 1 },
-        emphasisColor: { R: 1.00, G: 0.50, B: 0.00, A: 1 }
+        emphasisColor: { R: 0.90, G: 0.50, B: 0.17, A: 1 }
     },
 
     ui: {
+        control: {
+            backgroundColor: { R: 0, G: 0, B: 0, A: 0.2 }
+        },
+
         window: {
+            margin: 6,
             backgroundColorTop: { R: 0.00, G: 0.21, B: 0.21, A: WINDOW_ALPHA },
             backgroundColorBottom: { R: 0.02, G: 0.04, B: 0.07, A: WINDOW_ALPHA },
             borderColor: { R: 0.10, G: 0.95, B: 0.95, A: 1 },
@@ -41,7 +46,6 @@ export const Config: IConfig = {
             titleBackgroundColorError: { R: 0.01, G: 0.10, B: 0.12, A: WINDOW_ALPHA },
             titleFontColor: getGray(1),
             titleHeight: 30,
-            titleMargin: 6,
             titlePadding: 8,
             titleFontSize: 14,
             fadeOutDuration: 0.5
@@ -53,6 +57,16 @@ export const Config: IConfig = {
             fontColor: DEFAULT_FONT_COLOR,
             lineHeight: 20,
             padding: 16
+        },
+
+        missionControl: {
+            windowWidth: 300,
+            fontSize: 12,
+            lineHeight: 16
+        },
+
+        objectives: {
+            successColor: { R: 1.00, G: 0.92, B: 0, A: 1 }
         }
     },
 
@@ -65,7 +79,7 @@ export const Config: IConfig = {
         margin: 20,
         circleOpacity: 0.25,
         dotRadius: 4,
-        labelOffset: 25,
+        labelOffset: 28,
         fontSize: 10,
         fuelColor: { R: 0, G: 1, B: 0, A: 0.5 }
     },

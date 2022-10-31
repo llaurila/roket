@@ -30,12 +30,12 @@ export interface IConfig {
 
     ui: {
         window: {
+            margin: number;
             backgroundColorTop: IColor;
             backgroundColorBottom: IColor;
             borderColor: IColor;
             borderWidth: number;
             titleHeight: number;
-            titleMargin: number;
             titleBackgroundColor: IColor;
             titleBackgroundColorError: IColor;
             titleFontColor: IColor;
@@ -50,6 +50,20 @@ export interface IConfig {
             fontColor: IColor;
             lineHeight: number;
             padding: number;
+        }
+
+        missionControl: {
+            windowWidth: number;
+            fontSize: number;
+            lineHeight: number;
+        }
+
+        control: {
+            backgroundColor: IColor;
+        }
+
+        objectives: {
+            successColor: IColor;
         }
     }
 

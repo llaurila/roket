@@ -108,6 +108,14 @@ class Vector {
     static get Up() {
         return new Vector(0, 1);
     }
+
+    static get UnitX() {
+        return new Vector(1, 0);
+    }
+
+    static get UnitY() {
+        return new Vector(0, 1);
+    }
 }
 
 export default Vector;

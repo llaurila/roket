@@ -1,7 +1,7 @@
 import Body from "./Body";
 import Vector from "./Vector";
 
-class Triagle {
+class Triangle {
     a: Vector;
     b: Vector;
     c: Vector;
@@ -22,18 +22,18 @@ class Triagle {
 }
 
 class TriangleCollider {
-    pts: Triagle;
+    pts: Triangle;
 
     constructor(a: Vector, b: Vector, c: Vector) {
-        this.pts = new Triagle(a, b, c);
+        this.pts = new Triangle(a, b, c);
     }
 
     containsPoint(v: Vector): boolean {
         const TOLERANCE = 0.01;
 
-        const t1 = new Triagle(v, this.pts.b, this.pts.c);
-        const t2 = new Triagle(this.pts.a, v, this.pts.c);
-        const t3 = new Triagle(this.pts.a, this.pts.b, v);
+        const t1 = new Triangle(v, this.pts.b, this.pts.c);
+        const t2 = new Triangle(this.pts.a, v, this.pts.c);
+        const t3 = new Triangle(this.pts.a, this.pts.b, v);
 
         return equals(
             this.pts.getArea(),

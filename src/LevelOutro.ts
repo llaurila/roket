@@ -23,7 +23,7 @@ class LevelOutro implements IDrawable, IUpdatable {
 
         if (this.level.failureMessage) {
             title = "MISSION FAILED";
-            message = this.level.failureMessage + " " + message;
+            message = this.level.failureMessage + " PRESS <ESC> TO RESTART.";
         }
 
         this.alert.title = title;

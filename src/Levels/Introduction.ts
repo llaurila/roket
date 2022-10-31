@@ -25,7 +25,7 @@ class Introduction extends Level {
 
     createObjectives() {
         this.objectives.push(new Objective(
-            "COLLECT A FUEL CAPSULE.",
+            "COLLECT A FUEL CAPSULE",
             () => !this.fuelCapsule.alive
         ));
     }

@@ -39,9 +39,13 @@ class CollectFuel extends Level {
         }
     }
 
+    collected = () => this.fuelCapsules.length - this.fuelCapsules.filter(f => f.alive).length;
+
     createObjectives() {
+        const total = this.fuelCapsules.length;
+
         this.objectives.push(new Objective(
-            `COLLECT ${this.fuelCapsules.length} FUEL CAPSULES.`,
+            () => `COLLECT FUEL CAPSULES (${this.collected()} OF ${total})`,
             () => !this.fuelCapsules.some(f => f.alive)
         ));
     }

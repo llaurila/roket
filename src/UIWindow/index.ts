@@ -10,6 +10,11 @@ import { getCenter } from "../Utils";
 
 const config = Config.ui.window;
 
+export enum WindowPosition {
+    Absolute,
+    Center
+}
+
 export class UIWindow implements IDrawable, IUpdatable {
     public id: number = UniqueIdProvider.next();
     alive = true;
@@ -17,11 +22,15 @@ export class UIWindow implements IDrawable, IUpdatable {
     width: number;
     height: number;
 
-    title = "Roket";
+    title = "ROKET";
     error = false;
 
     fadeOut = false;
     opacity = 1;
+
+    position = WindowPosition.Center;
+    absolutePosition = Vector.Zero;
+    relativePosition = Vector.Zero;
 
     constructor(width: number, height: number) {
         this.width = width;
@@ -39,6 +48,10 @@ export class UIWindow implements IDrawable, IUpdatable {
         this.drawContent(ctx);
 
         ctx.restore();
+    }
+
+    private getHeight(ctx: CanvasRenderingContext2D): number {
+        return Math.min(this.height, ctx.canvas.height - Config.ui.window.margin * 2);
     }
 
     private drawTitle(ctx: CanvasRenderingContext2D) {
@@ -71,23 +84,31 @@ export class UIWindow implements IDrawable, IUpdatable {
         contentRect.stroke(ctx);
     }
 
-    private getTitleRect(ctx: CanvasRenderingContext2D) {
-        const rect = this.getContentRect(ctx);
+    private getTitleRect(ctx: CanvasRenderingContext2D): Rectangle {
+        let topLeft: Vector;
+        const size = new Vector(this.width, config.titleHeight);
 
-        rect.topLeft.x -= config.borderWidth;
-        rect.topLeft.y -= config.titleHeight + config.titleMargin + config.borderWidth;
+        if (this.position == WindowPosition.Absolute) {
+            topLeft = this.absolutePosition.add(this.relativePosition);
+        }
+        else {
+            const center = getCenter(ctx);
+            topLeft = (
+                new Vector(center.x - this.width / 2, center.y - this.getHeight(ctx) / 2)
+            ).add(this.relativePosition);
+        }
 
-        rect.size.x += config.borderWidth * 2;
-        rect.size.y = config.titleHeight + config.borderWidth * 2;
-
-        return rect;
+        return new Rectangle(topLeft, size);
     }
 
-    protected getContentRect(ctx: CanvasRenderingContext2D) {
-        const center = getCenter(ctx);
-        const size = new Vector(this.width, this.height);
-        const topLeft = center.sub(size.div(2));
-        return new Rectangle(topLeft, size);
+    protected getContentRect(ctx: CanvasRenderingContext2D): Rectangle {
+        const titleRect = this.getTitleRect(ctx);
+        const titleSpace = titleRect.size.y + config.margin;
+
+        return new Rectangle(
+            titleRect.topLeft.add(Vector.UnitY.mul(titleSpace)),
+            new Vector(this.width, this.getHeight(ctx) - titleSpace)
+        );
     }
 
     update(time: number, delta: number) {

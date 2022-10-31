@@ -1,12 +1,12 @@
-class Objective {
-    text: string;
-    cleared = false;
-    check: () => boolean;
+type ObjecttiveText = string | (() => string);
 
-    constructor(text: string, check: () => boolean) {
-        this.text = text;
-        this.check = check;
-    }
+class Objective {
+    cleared = false;
+
+    constructor(
+        public text: ObjecttiveText,
+        public check: () => boolean
+    ) {}
 }
 
 export default Objective;

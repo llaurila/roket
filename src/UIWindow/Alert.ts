@@ -22,7 +22,7 @@ export default class Alert extends UIWindow {
         ctx.resetTransform();
 
         this.updateContent(ctx);
-        this.height = this.getContentHeight();
+        this.height = this.getWindowHeight();
 
         super.draw(ctx, camera);
 
@@ -46,8 +46,11 @@ export default class Alert extends UIWindow {
         );
     }
 
-    private getContentHeight(): number {
-        return config.lineHeight * this.lines.length + config.padding * 2;
+    private getWindowHeight(): number {
+        return config.lineHeight * this.lines.length +
+            config.padding * 2 +
+            Config.ui.window.titleHeight +
+            Config.ui.window.margin;
     }
 
     private drawText(ctx: CanvasRenderingContext2D): void {

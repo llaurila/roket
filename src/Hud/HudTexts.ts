@@ -4,6 +4,8 @@ import { DefaultColor, GetColor, HudItem } from "./HudItem";
 import { Config } from "../config";
 import { getColorString } from "../Graphics/Color";
 
+const OFFSET_X = 320;
+
 export class HudTexts implements IDrawable {
     id: number = UniqueIdProvider.next();
     private readonly _alive = true;
@@ -32,7 +34,7 @@ export class HudTexts implements IDrawable {
 
                 ctx.fillText(
                     this.items[line].getText(),
-                    10,
+                    OFFSET_X,
                     10 + config.lineHeight * line
                 );
                 line++;

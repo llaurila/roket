@@ -1,25 +1,24 @@
 import IDrawable from "../Graphics/IDrawable";
 import Camera from "../Graphics/Camera";
-import Ship from "../Ship";
 import UniqueIdProvider from "../UniqueIdProvider";
-import PhysicsEngine from "../Physics/PhysicsEngine";
 import { HudTexts } from "./HudTexts";
 import { Radar } from "./Radar";
+import Level from "../Level";
+import { FuelGauge } from "./FuelGauge";
 
 export class Hud implements IDrawable {
     public id: number = UniqueIdProvider.next();
     public readonly texts = new HudTexts();
 
-    private readonly _alive = true;
+    alive = true;
 
     private readonly radar: Radar;
+    private readonly fuelGauge: FuelGauge;
 
-    constructor(ship: Ship, physics: PhysicsEngine) {
+    constructor(private level: Level) {
+        const { ship, physics } = level;
         this.radar = new Radar(ship, physics);
-    }
-
-    get alive() {
-        return this._alive;
+        this.fuelGauge = new FuelGauge(ship);
     }
 
     draw(ctx: CanvasRenderingContext2D, camera: Camera) {
@@ -27,6 +26,7 @@ export class Hud implements IDrawable {
         ctx.resetTransform();
 
         this.radar.draw(ctx, camera);
+        this.fuelGauge.draw(ctx);
         this.texts.draw(ctx);
 
         ctx.restore();

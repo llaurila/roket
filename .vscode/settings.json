@@ -3,7 +3,9 @@
         ".git/": true,
         "node_modules/": true,
         ".cache/": true,
-        "dist/": true
+        "dist/": true,
+        "yarn.lock": true,
+        ".nyc_output": true
     },
     "html.format.wrapLineLength": 79
 }
