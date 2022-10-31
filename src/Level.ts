@@ -67,15 +67,6 @@ abstract class Level {
     private initHud() {
         const { texts } = this.hud;
 
-        const NUM_LENGTH = 5;
-        const getNum = (n: number, f = 0) => n.toFixed(f).padStart(NUM_LENGTH);
-
-        texts.add(() => {
-            const { currentAmount, capacity } = this.ship.fuelTank;
-            const fuelPercent = currentAmount / capacity * 100;
-            return `FUEL        ${getNum(fuelPercent)}% (${currentAmount.toFixed()} KG)`;
-        });
-
         const debugColor = Level.debugMode ? DefaultColor : HudItemDisabled;
         texts.add(() => `PHYSICS  ${this.physics.count}`, debugColor);
         texts.add(() => `GRAPHICS ${this.graphics.count}`, debugColor);
