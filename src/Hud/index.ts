@@ -15,7 +15,7 @@ export class Hud implements IDrawable {
     private readonly radar: Radar;
     private readonly fuelGauge: FuelGauge;
 
-    constructor(private level: Level) {
+    constructor(level: Level) {
         const { ship, physics } = level;
         this.radar = new Radar(ship, physics);
         this.fuelGauge = new FuelGauge(ship);

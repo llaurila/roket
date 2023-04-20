@@ -38,7 +38,7 @@ export class UIWindow implements IDrawable, IUpdatable {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    draw(ctx: CanvasRenderingContext2D, camera: Camera) {
+    draw(ctx: CanvasRenderingContext2D, _camera: Camera) {
         ctx.save();
         ctx.resetTransform();
 
@@ -111,7 +111,7 @@ export class UIWindow implements IDrawable, IUpdatable {
         );
     }
 
-    update(time: number, delta: number) {
+    update(_time: number, delta: number) {
         if (this.fadeOut) {
             this.opacity = Math.max(0, this.opacity - delta / config.fadeOutDuration);
             if (this.opacity == 0) {

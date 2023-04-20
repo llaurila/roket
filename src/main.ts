@@ -25,7 +25,7 @@ loadLevel(currentLevel);
 
 function loadLevel(number: number) {
     const level: Level = new levelTypes[number];
-    level.constructor.apply(level);
+    //level.constructor.apply(level);
 
     const game = new Game(update, draw, level.camera);
 

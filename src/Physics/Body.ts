@@ -65,7 +65,7 @@ class Body implements IUpdatable {
         return this.mass * (size.x * size.x + size.y * size.y) / 12;
     }
 
-    update(time: number, delta: number) {
+    update(_time: number, delta: number) {
         if (!this.alive) {
             return;
         }
