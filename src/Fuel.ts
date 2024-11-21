@@ -61,7 +61,7 @@ class Fuel extends Body implements IDrawable {
             if (this.opacity <= 0) {
                 this.opacity = 0;
                 this.state = State.Dead;
-                super._alive = false;
+                this._alive = false;
             }
             break;
         }

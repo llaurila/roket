@@ -93,7 +93,7 @@ class Ship extends Body implements IDrawable {
     }
 
     die(): void {
-        super._alive = false;
+        this._alive = false;
 
         if (this.physics && this.graphics) {
             const explosion = new ExplosionParticleEngine(this.pos, {
