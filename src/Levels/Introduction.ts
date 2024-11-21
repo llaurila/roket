@@ -11,7 +11,7 @@ class Introduction extends Level {
         "FAMILIARISE YOURSELF WITH THE CONTROLS AND ACQUIRE ONE FUEL CAPSULE. " +
         "ACCELERATE (ARROW UP) TO START.";
 
-    // eslint-disable-next-line no-magic-numbers
+     
     fuelCapsule: Fuel = new Fuel(Vector.Up.rotate(-0.3).mul(45));
 
     createObjects(): void {

@@ -42,7 +42,7 @@ function makeCapsule(width: number, height: number) {
      * make any sense. The width and the height of the generated capsule are
      * somehow wrong. */
 
-    // eslint-disable-next-line no-magic-numbers
+     
     const hw = width / 2, seg = height / 4;
 
     const pm = new PolygonMaker();

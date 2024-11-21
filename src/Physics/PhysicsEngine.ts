@@ -22,7 +22,7 @@ class PhysicsEngine {
         const objects = this
             .filter(obj => obj.alive && obj instanceof Body)
             .filter(criteria)
-            .map(obj => <Body>obj)
+            .map(obj => (obj as Body))
             .sort((a, b) => a.pos.sub(pos).length() - b.pos.sub(pos).length());
 
         if (objects.length > 0) {

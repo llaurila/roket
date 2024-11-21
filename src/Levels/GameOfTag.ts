@@ -1,4 +1,4 @@
-/* eslint-disable no-magic-numbers */
+ 
 import Level from "../Level";
 import Cosmos from "../Cosmos";
 import ShipController from "../ShipController";

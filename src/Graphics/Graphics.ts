@@ -44,13 +44,13 @@ class Graphics {
 }
 
 function initializeGraphics(elementId: string): CanvasRenderingContext2D {
-    const canvas = <HTMLCanvasElement>document.getElementById(elementId);
+    const canvas = document.getElementById(elementId) as HTMLCanvasElement;
 
     if (canvas == null) {
         throw new Error(`Canvas '${elementId}' not found.`);
     }
 
-    return <CanvasRenderingContext2D> canvas.getContext("2d");
+    return canvas.getContext("2d") as CanvasRenderingContext2D;
 }
 
 export { Graphics, initializeGraphics };

@@ -61,7 +61,7 @@ class Body implements IUpdatable {
 
     getInertia(size: Vector)
     {
-        // eslint-disable-next-line no-magic-numbers
+         
         return this.mass * (size.x * size.x + size.y * size.y) / 12;
     }
 

@@ -23,7 +23,7 @@ const config = Config.cosmos;
 
 class Cosmos implements IDrawable {
     id: number = UniqueIdProvider.next();
-    starSegments: { [key: string]: IStarSegment } = {};
+    starSegments: Record<string, IStarSegment> = {};
 
     readonly _alive = true;
 

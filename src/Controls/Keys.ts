@@ -1,6 +1,4 @@
-type KeyMap = {
-    [key: string]: boolean
-}
+type KeyMap = Record<string, boolean>;
 
 const keysDown: KeyMap = {};
 const wasDown: KeyMap = {};
