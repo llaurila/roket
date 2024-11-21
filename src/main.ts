@@ -76,8 +76,8 @@ function loadLevel(number: number) {
 
     function panTowardsShip(delta: number): void {
         const v = level.ship.v.length();
-
          
+        // eslint-disable-next-line no-magic-numbers
         level.camera.zoom = 5 - Math.min(99, v) / 33;
 
         const target = level.ship.pos.add(

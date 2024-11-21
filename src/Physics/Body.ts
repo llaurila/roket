@@ -59,12 +59,6 @@ class Body implements IUpdatable {
         );
     }
 
-    getInertia(size: Vector)
-    {
-         
-        return this.mass * (size.x * size.x + size.y * size.y) / 12;
-    }
-
     update(_time: number, delta: number) {
         if (!this.alive) {
             return;

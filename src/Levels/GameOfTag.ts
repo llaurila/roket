@@ -9,11 +9,13 @@ import Fuel from "../Fuel";
 import RNG from "../RNG";
 import { Config } from "../config";
 
+/* eslint-disable no-magic-numbers */
 const RAND_SEED = 89321;
 const OTHER_SHIP_OFFSET = new Vector(-20, 60);
 const FUEL_CAPSULE_DISTANCE_MIN = 50;
 const FUEL_CAPSULE_DISTANCE_MAX = 200;
 const CORRECT_HEADING_TOLERANCE = 0.15;
+/* eslint-enable no-magic-numbers */
 
 class GameOfTag extends Level {
     name = "LEVEL 4: GAME OF TAG";
@@ -73,10 +75,12 @@ class GameOfTag extends Level {
     }
 
     update(time: number, delta: number) {
+        const INITIAL_SPEED = 10;
+
         super.update(time, delta);
 
         if (!this.started && this.ship.v.length() > 0) {
-            this.otherShip.v = this.otherShip.getHeading().mul(10);
+            this.otherShip.v = this.otherShip.getHeading().mul(INITIAL_SPEED);
             this.started = true;
         }
 

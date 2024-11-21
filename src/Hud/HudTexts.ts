@@ -5,6 +5,7 @@ import { Config } from "../config";
 import { getColorString } from "../Graphics/Color";
 
 const OFFSET_X = 320;
+const OFFSET_Y = 10;
 
 export class HudTexts implements IDrawable {
     id: number = UniqueIdProvider.next();
@@ -35,7 +36,7 @@ export class HudTexts implements IDrawable {
                 ctx.fillText(
                     this.items[line].getText(),
                     OFFSET_X,
-                    10 + config.lineHeight * line
+                    OFFSET_Y + config.lineHeight * line
                 );
                 line++;
             }

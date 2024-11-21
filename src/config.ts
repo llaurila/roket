@@ -1,4 +1,5 @@
- 
+/* eslint-disable no-magic-numbers */ 
+
 import { IConfig } from "./config.types";
 import { getGray } from "./Graphics/Color";
 import Vector from "./Physics/Vector";

@@ -1,3 +1,4 @@
+/* eslint-disable no-magic-numbers */
 class RNG {
     private seed: number;
 

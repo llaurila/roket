@@ -3,6 +3,9 @@ import Cosmos from "../Cosmos";
 import ShipController from "../ShipController";
 import Objective from "../Objective";
 
+const LOW_SPEED_THRESHOLD = 10;
+const HIGH_SPEED_THRESHOLD = 100;
+
 class VelocityControl extends Level {
     name = "LEVEL 2: VELOCITY CONTROL";
     description =
@@ -16,12 +19,12 @@ class VelocityControl extends Level {
     createObjectives() {
         const greatSpeed = new Objective(
             "ACCELERATE TO 100 M/S",
-            () => this.ship.v.length() >= 100);
+            () => this.ship.v.length() >= HIGH_SPEED_THRESHOLD);
         this.objectives.push(greatSpeed);
 
         this.objectives.push(new Objective(
             "DECELERATE BACK TO LESS THAN 10 M/S",
-            () => greatSpeed.cleared && this.ship.v.length() < 10
+            () => greatSpeed.cleared && this.ship.v.length() < LOW_SPEED_THRESHOLD
         ));
     }
 }
