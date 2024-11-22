@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 /* eslint-disable no-magic-numbers */ 
 
-import { IConfig } from "./config.types";
+import type { IConfig } from "./config.types";
 import { getGray } from "./Graphics/Color";
 import Vector from "./Physics/Vector";
 

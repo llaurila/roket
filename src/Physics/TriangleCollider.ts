@@ -1,18 +1,18 @@
-import Body from "./Body";
-import Vector from "./Vector";
+import type Body from "./Body";
+import type Vector from "./Vector";
 
 class Triangle {
-    a: Vector;
-    b: Vector;
-    c: Vector;
+    public a: Vector;
+    public b: Vector;
+    public c: Vector;
 
-    constructor(a: Vector, b: Vector, c: Vector) {
+    public constructor(a: Vector, b: Vector, c: Vector) {
         this.a = a;
         this.b = b;
         this.c = c;
     }
 
-    getArea(): number {
+    public getArea(): number {
         return Math.abs(
             (this.a.x * (this.b.y - this.c.y) +
             this.b.x * (this.c.y - this.a.y) +
@@ -22,13 +22,13 @@ class Triangle {
 }
 
 class TriangleCollider {
-    pts: Triangle;
+    public pts: Triangle;
 
-    constructor(a: Vector, b: Vector, c: Vector) {
+    public constructor(a: Vector, b: Vector, c: Vector) {
         this.pts = new Triangle(a, b, c);
     }
 
-    containsPoint(v: Vector): boolean {
+    public containsPoint(v: Vector): boolean {
         const TOLERANCE = 0.01;
 
         const t1 = new Triangle(v, this.pts.b, this.pts.c);
@@ -43,7 +43,7 @@ class TriangleCollider {
     }
 
     // eslint-disable-next-line complexity 
-    static check(a: Body, b: Body): boolean {
+    public static check(a: Body, b: Body): boolean {
         if (a.triangleCollider && b.triangleCollider) {
             return a.triangleCollider.containsPoint(b.triangleCollider.pts.a) ||
                 a.triangleCollider.containsPoint(b.triangleCollider.pts.b) ||

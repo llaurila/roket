@@ -1,28 +1,28 @@
 import { Config } from "./config";
 
 class FuelTank {
-    capacity: number;
-    currentAmount: number;
+    public capacity: number;
+    public currentAmount: number;
 
-    constructor(capacity: number) {
+    public constructor(capacity: number) {
         this.currentAmount = this.capacity = capacity;
     }
 
-    consume(amount: number): void {
+    public consume(amount: number): void {
         this.currentAmount = Math.max(0,
             this.currentAmount - amount
         );
     }
 
-    isEmpty(): boolean {
+    public isEmpty(): boolean {
         return this.currentAmount <= 0;
     }
 
-    hasFuel(): boolean {
+    public hasFuel(): boolean {
         return this.currentAmount > 0;
     }
 
-    getMass(): number {
+    public getMass(): number {
         return this.currentAmount * Config.fuel.mass;
     }
 }

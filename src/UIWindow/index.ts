@@ -1,9 +1,9 @@
 import { Config } from "../config";
-import Camera from "../Graphics/Camera";
+import type Camera from "../Graphics/Camera";
 import { getColorString } from "../Graphics/Color";
-import IDrawable from "../Graphics/IDrawable";
+import type IDrawable from "../Graphics/IDrawable";
 import Rectangle from "../Graphics/Rectangle";
-import IUpdatable from "../Physics/IUpdatable";
+import type IUpdatable from "../Physics/IUpdatable";
 import Vector from "../Physics/Vector";
 import UniqueIdProvider from "../UniqueIdProvider";
 import { getCenter } from "../Utils";
@@ -18,28 +18,27 @@ export enum WindowPosition {
 
 export class UIWindow implements IDrawable, IUpdatable {
     public id: number = UniqueIdProvider.next();
-    alive = true;
+    public alive = true;
 
-    width: number;
-    height: number;
+    public width: number;
+    public height: number;
 
-    title = "ROKET";
-    error = false;
+    public title = "ROKET";
+    public error = false;
 
-    fadeOut = false;
-    opacity = 1;
+    public fadeOut = false;
+    public opacity = 1;
 
-    position = WindowPosition.Center;
-    absolutePosition = Vector.Zero;
-    relativePosition = Vector.Zero;
+    public position = WindowPosition.Center;
+    public absolutePosition = Vector.Zero;
+    public relativePosition = Vector.Zero;
 
-    constructor(width: number, height: number) {
+    public constructor(width: number, height: number) {
         this.width = width;
         this.height = height;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    draw(ctx: CanvasRenderingContext2D, _camera: Camera) {
+    public draw(ctx: CanvasRenderingContext2D, _camera: Camera) {
         ctx.save();
         ctx.resetTransform();
 
@@ -112,7 +111,7 @@ export class UIWindow implements IDrawable, IUpdatable {
         );
     }
 
-    update(_time: number, delta: number) {
+    public update(_time: number, delta: number) {
         if (this.fadeOut) {
             this.opacity = Math.max(0, this.opacity - delta / config.fadeOutDuration);
             if (this.opacity == 0) {

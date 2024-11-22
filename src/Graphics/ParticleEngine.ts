@@ -1,24 +1,23 @@
-import IDrawable from "./IDrawable";
-import IUpdatable from "../Physics/IUpdatable";
-import Vector from "../Physics/Vector";
-import Camera from "./Camera";
-import Particle from "./Particle";
+import type IDrawable from "./IDrawable";
+import type IUpdatable from "../Physics/IUpdatable";
+import type Vector from "../Physics/Vector";
+import type Camera from "./Camera";
+import type Particle from "./Particle";
 import UniqueIdProvider from "../UniqueIdProvider";
-import PhysicsEngine from "../Physics/PhysicsEngine";
-import { Graphics } from "./Graphics";
+import type PhysicsEngine from "../Physics/PhysicsEngine";
+import type { Graphics } from "./Graphics";
 
 class ParticleEngine implements IDrawable, IUpdatable {
-    id: number;
-    pos: Vector;
-    particles: Particle[] = [];
-
-    rotation = 0;
-    physics?: PhysicsEngine;
-    graphics?: Graphics;
+    public id: number;
+    public pos: Vector;
+    public particles: Particle[] = [];
+    public rotation = 0;
+    public physics?: PhysicsEngine;
+    public graphics?: Graphics;
 
     private readonly _alive = true;
 
-    constructor(position: Vector) {
+    public constructor(position: Vector) {
         this.id = UniqueIdProvider.next();
         this.pos = position;
 
@@ -27,17 +26,17 @@ class ParticleEngine implements IDrawable, IUpdatable {
         }, 1000);
     }
 
-    get alive() {
+    public get alive() {
         return this._alive;
     }
 
-    update(time: number, delta: number) {
+    public update(time: number, delta: number) {
         for (const particle of this.particles) {
             particle.update(time, delta);
         }
     }
 
-    draw(ctx: CanvasRenderingContext2D, camera: Camera) {
+    public draw(ctx: CanvasRenderingContext2D, camera: Camera) {
         for (const particle of this.particles) {
             if (particle.alive) {
                 particle.draw(ctx, camera);

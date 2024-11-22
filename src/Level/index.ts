@@ -3,19 +3,19 @@ import { VacuumOfSpace } from "../Physics/Environment";
 import { Graphics, initializeGraphics } from "../Graphics/Graphics";
 import Camera from "../Graphics/Camera";
 import Vector from "../Physics/Vector";
-import ShipController from "../ShipController";
+import type ShipController from "../ShipController";
 import Ship from "../Ship";
 import { LevelIntro } from "../LevelIntro";
-import Objective from "../Objective";
+import type Objective from "../Objective";
 import { Hud } from "../Hud";
-import Fuel from "../Fuel";
+import type Fuel from "../Fuel";
 import { Config } from "../config";
 import { getNumberOfClearedObjectives, initHud, initUI, LevelEndController } from "./utils";
 
 const DEFAULT_ZOOM = 3;
 
 abstract class Level {
-    static debugMode = false;
+    public static debugMode = false;
 
     public ctx: CanvasRenderingContext2D = initializeGraphics("game");
     public graphics: Graphics = new Graphics();
@@ -31,11 +31,11 @@ abstract class Level {
 
     private endController = new LevelEndController(this);
 
-    abstract get name(): string;
+    public abstract get name(): string;
 
-    abstract get description(): string;
+    public abstract get description(): string;
 
-    init(ctx: CanvasRenderingContext2D, number: number) {
+    public init(ctx: CanvasRenderingContext2D, number: number) {
         this.ctx = ctx;
         this.number = number;
 
@@ -57,15 +57,15 @@ abstract class Level {
         this.physics.add(intro);
     }
 
-    getGraphics = () => this.graphics;
+    public getGraphics = () => this.graphics;
 
-    getPhysics = () => this.physics;
+    public getPhysics = () => this.physics;
 
-    abstract createObjects(): void;
+    public abstract createObjects(): void;
 
-    abstract createObjectives(): void;
+    public abstract createObjectives(): void;
 
-    addFuelCapsule(fuelCapsule: Fuel): void {
+    public addFuelCapsule(fuelCapsule: Fuel): void {
         this.physics.add(fuelCapsule);
         this.graphics.add(fuelCapsule);
 
@@ -76,28 +76,28 @@ abstract class Level {
         });
     }
 
-    update(time: number, delta: number) {
+    public update(time: number, delta: number) {
         this.physics.update(time, delta);
         if (!this.ended) this.endController?.checkForCompletion();
     }
 
-    objectivesCleared(): boolean {
+    public objectivesCleared(): boolean {
         if (this.objectives.length == 0) return false;
         const numCleared = getNumberOfClearedObjectives(this.objectives);
         return numCleared == this.objectives.length;
     }
 
-    get ended(): boolean {
+    public get ended(): boolean {
         return this.passed || this.failureMessage != undefined;
     }
 
-    success(): void {
+    public success(): void {
         if (this.passed) throw new Error("Already passed.");
         this.passed = true;
         this.endController.showOutro();
     }
 
-    failure(message: string): void {
+    public failure(message: string): void {
         if (this.failureMessage) throw new Error("Already failed.");
         this.failureMessage = message;
         this.endController.showOutro();

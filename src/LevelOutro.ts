@@ -1,23 +1,22 @@
-import IDrawable from "./Graphics/IDrawable";
+import type IDrawable from "./Graphics/IDrawable";
 import UniqueIdProvider from "./UniqueIdProvider";
-import Level from "./Level";
+import type Level from "./Level";
 import Alert from "./UIWindow/Alert";
-import IUpdatable from "./Physics/IUpdatable";
-import Camera from "./Graphics/Camera";
+import type IUpdatable from "./Physics/IUpdatable";
+import type Camera from "./Graphics/Camera";
 
 class LevelOutro implements IDrawable, IUpdatable {
-    id: number = UniqueIdProvider.next();
-    level: Level;
-    alive = true;
+    public id: number = UniqueIdProvider.next();
+    public level: Level;
+    public alive = true;
+    public alert: Alert;
 
-    alert: Alert;
-
-    constructor(level: Level) {
+    public constructor(level: Level) {
         this.level = level;
         this.alert = new Alert();
     }
 
-    draw(ctx: CanvasRenderingContext2D, camera: Camera) {
+    public draw(ctx: CanvasRenderingContext2D, camera: Camera) {
         let title = "MISSION SUCCESS";
         let message = "PRESS <ENTER> TO CONTINUE.";
 
@@ -33,7 +32,7 @@ class LevelOutro implements IDrawable, IUpdatable {
         this.alert.draw(ctx, camera);
     }
 
-    update(time: number, delta: number) {
+    public update(time: number, delta: number) {
         this.alert.update(time, delta);
     }
 }

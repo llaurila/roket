@@ -1,5 +1,5 @@
-import IDrawable from "../Graphics/IDrawable";
-import Ship from "../Ship";
+import type IDrawable from "../Graphics/IDrawable";
+import type Ship from "../Ship";
 import UniqueIdProvider from "../UniqueIdProvider";
 import { getColorString, getInterpolatedColor } from "../Graphics/Color";
 import { Config } from "../config";
@@ -13,13 +13,13 @@ export class FuelGauge implements IDrawable {
 
     private _alive = true;
 
-    constructor(private ship: Ship) {}
+    public constructor(private ship: Ship) {}
 
-    get alive() {
+    public get alive() {
         return this._alive;
     }
 
-    draw(ctx: CanvasRenderingContext2D): void {
+    public draw(ctx: CanvasRenderingContext2D): void {
         const { currentAmount, capacity } = this.ship.fuelTank;
         const relative = currentAmount / capacity;
 

@@ -1,6 +1,7 @@
-import IDrawable from "../Graphics/IDrawable";
+import type IDrawable from "../Graphics/IDrawable";
 import UniqueIdProvider from "../UniqueIdProvider";
-import { DefaultColor, GetColor, HudItem } from "./HudItem";
+import type { GetColor} from "./HudItem";
+import { DefaultColor, HudItem } from "./HudItem";
 import { Config } from "../config";
 import { getColorString } from "../Graphics/Color";
 
@@ -8,19 +9,19 @@ const OFFSET_X = 320;
 const OFFSET_Y = 10;
 
 export class HudTexts implements IDrawable {
-    id: number = UniqueIdProvider.next();
+    public id: number = UniqueIdProvider.next();
     private readonly _alive = true;
     private items: HudItem[] = [];
 
-    get alive() {
+    public get alive() {
         return this._alive;
     }
 
-    add(getText: () => string, getColor: GetColor = DefaultColor) {
+    public add(getText: () => string, getColor: GetColor = DefaultColor) {
         this.items.push(new HudItem(getText, getColor));
     }
 
-    draw(ctx: CanvasRenderingContext2D) {
+    public draw(ctx: CanvasRenderingContext2D) {
         const { hud: config } = Config;
 
         ctx.save();

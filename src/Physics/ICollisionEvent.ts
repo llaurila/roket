@@ -1,4 +1,4 @@
-import Body from "./Body";
+import type Body from "./Body";
 
 interface ICollisionEvent {
     target: Body;

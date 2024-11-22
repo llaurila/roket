@@ -1,8 +1,8 @@
-import IUpdatable from "./IUpdatable";
-import { IEnvironment } from "./Environment";
+import type IUpdatable from "./IUpdatable";
+import type { IEnvironment } from "./Environment";
 import { PhysicsEngineUpdater } from "./PhysicsEngineUpdater";
 import Body from "./Body";
-import Vector from "./Vector";
+import type Vector from "./Vector";
 
 class PhysicsEngine {
     public time = 0;
@@ -10,15 +10,15 @@ class PhysicsEngine {
 
     private objects: Set<IUpdatable> = new Set<IUpdatable>();
 
-    constructor(environment: IEnvironment) {
+    public constructor(environment: IEnvironment) {
         this.environment = environment;
     }
 
-    get count() {
+    public get count() {
         return this.objects.size;
     }
 
-    getNearestObject(pos: Vector, criteria: (obj: IUpdatable) => boolean): Body|undefined {
+    public getNearestObject(pos: Vector, criteria: (obj: IUpdatable) => boolean): Body|undefined {
         const objects = this
             .filter(obj => obj.alive && obj instanceof Body)
             .filter(criteria)
@@ -32,7 +32,7 @@ class PhysicsEngine {
         return undefined;
     }
 
-    filter(criteria: (obj: IUpdatable) => boolean): IUpdatable[] {
+    public filter(criteria: (obj: IUpdatable) => boolean): IUpdatable[] {
         const filtered = [];
         for (const obj of this.objects.values()) {
             if (criteria(obj)) {
@@ -42,19 +42,19 @@ class PhysicsEngine {
         return filtered;
     }
 
-    add(obj: IUpdatable): void {
+    public add(obj: IUpdatable): void {
         obj.physics = this;
         this.objects.add(obj);
     }
 
-    remove(obj: IUpdatable): void {
+    public remove(obj: IUpdatable): void {
         if (!this.objects.delete(obj)) {
             throw new Error("Object not part of this world.");
         }
         obj.physics = undefined;
     }
 
-    update(time: number, delta: number) {
+    public update(time: number, delta: number) {
         this.time = time;
 
         const objects = Array.from(this.objects);
@@ -63,7 +63,7 @@ class PhysicsEngine {
         updater.update();
     }
 
-    cleanUp(): void {
+    public cleanUp(): void {
         const toDelete: IUpdatable[] = [];
 
         this.objects.forEach(obj => {

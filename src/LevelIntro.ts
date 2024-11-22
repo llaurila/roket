@@ -1,24 +1,23 @@
-import IDrawable from "./Graphics/IDrawable";
-import Camera from "./Graphics/Camera";
+import type IDrawable from "./Graphics/IDrawable";
+import type Camera from "./Graphics/Camera";
 import UniqueIdProvider from "./UniqueIdProvider";
-import Level from "./Level";
-import IUpdatable from "./Physics/IUpdatable";
+import type Level from "./Level";
+import type IUpdatable from "./Physics/IUpdatable";
 import Alert from "./UIWindow/Alert";
 
 class LevelIntro implements IDrawable, IUpdatable {
-    id: number = UniqueIdProvider.next();
-    level: Level;
-    opacity = 1;
-    alive = true;
+    public id: number = UniqueIdProvider.next();
+    public level: Level;
+    public opacity = 1;
+    public alive = true;
+    public alert: Alert;
 
-    alert: Alert;
-
-    constructor(level: Level) {
+    public constructor(level: Level) {
         this.level = level;
         this.alert = new Alert();
     }
 
-    draw(ctx: CanvasRenderingContext2D, camera: Camera) {
+    public draw(ctx: CanvasRenderingContext2D, camera: Camera) {
         if (camera.pos.x != 0 || camera.pos.y != 0) {
             this.alert.fadeOut = true;
         }
@@ -28,7 +27,7 @@ class LevelIntro implements IDrawable, IUpdatable {
         this.alert.draw(ctx, camera);
     }
 
-    update(time: number, delta: number) {
+    public update(time: number, delta: number) {
         this.alert.update(time, delta);
     }
 }

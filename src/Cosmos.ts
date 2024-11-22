@@ -1,5 +1,5 @@
-import IDrawable from "./Graphics/IDrawable";
-import Camera from "./Graphics/Camera";
+import type IDrawable from "./Graphics/IDrawable";
+import type Camera from "./Graphics/Camera";
 import Vector from "./Physics/Vector";
 import UniqueIdProvider from "./UniqueIdProvider";
 import { random } from "./Utils";
@@ -22,16 +22,16 @@ interface IStarSegment {
 const config = Config.cosmos;
 
 class Cosmos implements IDrawable {
-    id: number = UniqueIdProvider.next();
-    starSegments: Record<string, IStarSegment> = {};
+    public id: number = UniqueIdProvider.next();
+    public starSegments: Record<string, IStarSegment> = {};
 
-    readonly _alive = true;
+    private readonly _alive = true;
 
-    get alive() {
+    public get alive() {
         return this._alive;
     }
 
-    draw(ctx: CanvasRenderingContext2D, camera: Camera) {
+    public draw(ctx: CanvasRenderingContext2D, camera: Camera) {
         const
             bottomLeft = camera.toWorldCoordinates(
                 ctx, new Vector(0, ctx.canvas.height)),

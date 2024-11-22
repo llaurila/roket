@@ -1,22 +1,22 @@
 import Vector from "./Vector";
 
 class Forces {
-    F: Vector;
-    Torque: number;
+    public F: Vector;
+    public Torque: number;
 
-    constructor(f: Vector, torque: number) {
+    public constructor(f: Vector, torque: number) {
         this.F = f;
         this.Torque = torque;
     }
 
-    add(other: Forces): Forces {
+    public add(other: Forces): Forces {
         return new Forces(
             this.F.add(other.F),
             this.Torque + other.Torque
         );
     }
 
-    static get Zero() {
+    public static get Zero() {
         return new Forces(Vector.Zero, 0);
     }
 }

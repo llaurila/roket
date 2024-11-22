@@ -1,5 +1,5 @@
-import Vector from "../Physics/Vector";
-import Camera from "./Camera";
+import type Vector from "../Physics/Vector";
+import type Camera from "./Camera";
 
 interface IDrawContext {
     pos: Vector;

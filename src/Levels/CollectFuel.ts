@@ -12,19 +12,18 @@ const FUEL_CAPSULE_DISTANCE_MIN = 45;
 const FUEL_CAPSULE_DISTANCE_MAX = 500;
 
 class CollectFuel extends Level {
-    name = "LEVEL 3: COLLECT FUEL";
-    description =
-        "COLLECT ALL THE FUEL CAPSULES REVEALED BY THE RADAR.";
+    public name = "LEVEL 3: COLLECT FUEL";
+    public description = "COLLECT ALL THE FUEL CAPSULES REVEALED BY THE RADAR.";
 
-    fuelCapsules: Fuel[] = [];
+    public fuelCapsules: Fuel[] = [];
 
-    createObjects(): void {
+    public createObjects(): void {
         this.graphics.add(new Cosmos());
         this.generateFuelCapsules(FUEL_CAPSULE_COUNT);
         this.shipController = new ShipController(this.ship);
     }
 
-    generateFuelCapsules(count: number): void {
+    public generateFuelCapsules(count: number): void {
         const rng = new RNG(RAND_SEED);
 
         for (let i = 0; i < count; i++) {
@@ -39,9 +38,10 @@ class CollectFuel extends Level {
         }
     }
 
-    collected = () => this.fuelCapsules.length - this.fuelCapsules.filter(f => f.alive).length;
+    public collected = () =>
+        this.fuelCapsules.length - this.fuelCapsules.filter(f => f.alive).length;
 
-    createObjectives() {
+    public createObjectives() {
         const total = this.fuelCapsules.length;
 
         this.objectives.push(new Objective(

@@ -1,10 +1,10 @@
-import IDrawable from "./Graphics/IDrawable";
-import Camera from "./Graphics/Camera";
-import Polygon from "./Graphics/Polygon";
+import type IDrawable from "./Graphics/IDrawable";
+import type Camera from "./Graphics/Camera";
+import type Polygon from "./Graphics/Polygon";
 import Shapes from "./Graphics/Shapes";
 import Body from "./Physics/Body";
-import Ship from "./Ship";
-import { Graphics } from "./Graphics/Graphics";
+import type Ship from "./Ship";
+import type { Graphics } from "./Graphics/Graphics";
 import CircleCollider from "./Physics/CircleCollider";
 import { getColorString } from "./Graphics/Color";
 import { Config } from "./config";
@@ -18,17 +18,18 @@ enum State {
 const config = Config.fuelCapsule;
 
 class Fuel extends Body implements IDrawable {
-    static Shape: Polygon = Shapes.Capsule.mul(config.length);
+    public static Shape: Polygon = Shapes.Capsule.mul(config.length);
 
-    collected = false;
+    public collected = false;
+
+    public amount = config.volume;
+    public graphics?: Graphics;
+    public circleCollider = new CircleCollider(config.length / 2 * config.colliderRelativeSize);
+
     private state: State = State.Pulse;
     private opacity = 0;
 
-    amount = config.volume;
-    graphics?: Graphics;
-    circleCollider = new CircleCollider(config.length / 2 * config.colliderRelativeSize);
-
-    collect(ship: Ship) {
+    public collect(ship: Ship) {
         if (this.collected) {
             return;
         }
@@ -42,7 +43,7 @@ class Fuel extends Body implements IDrawable {
         this.state = State.FadeOut;
     }
 
-    update(time: number, delta: number) {
+    public update(time: number, delta: number) {
         super.update(time, delta);
 
         if (this.state == State.Dead || !this.alive) {
@@ -52,7 +53,7 @@ class Fuel extends Body implements IDrawable {
         this.updateGfx(time, delta);
     }
 
-    updateGfx(time: number, delta: number) {
+    public updateGfx(time: number, delta: number) {
         switch (this.state) {
         case State.Pulse:
             this.pulse(time);
@@ -79,7 +80,7 @@ class Fuel extends Body implements IDrawable {
         }
     }
 
-    draw(ctx: CanvasRenderingContext2D, camera: Camera) {
+    public draw(ctx: CanvasRenderingContext2D, camera: Camera) {
         const drawContext = {
             pos: this.pos,
             rotation: this.rotation,

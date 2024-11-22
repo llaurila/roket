@@ -7,16 +7,16 @@ const LOW_SPEED_THRESHOLD = 10;
 const HIGH_SPEED_THRESHOLD = 100;
 
 class VelocityControl extends Level {
-    name = "LEVEL 2: VELOCITY CONTROL";
-    description =
+    public name = "LEVEL 2: VELOCITY CONTROL";
+    public description =
         "ACCELERATE TO GREAT SPEEDS, TURN AROUND AND DECELERATE BACK TO FULL STOP.";
 
-    createObjects(): void {
+    public createObjects(): void {
         this.graphics.add(new Cosmos());
         this.shipController = new ShipController(this.ship);
     }
 
-    createObjectives() {
+    public createObjectives() {
         const greatSpeed = new Objective(
             "ACCELERATE TO 100 M/S",
             () => this.ship.v.length() >= HIGH_SPEED_THRESHOLD);

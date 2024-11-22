@@ -1,11 +1,11 @@
 import Vector from "./Vector";
-import IUpdatable from "./IUpdatable";
+import type IUpdatable from "./IUpdatable";
 import Forces from "./Forces";
 import UniqueIdProvider from "../UniqueIdProvider";
-import PhysicsEngine from "./PhysicsEngine";
-import CircleCollider from "./CircleCollider";
-import ICollisionEvent from "./ICollisionEvent";
-import TriangleCollider from "./TriangleCollider";
+import type PhysicsEngine from "./PhysicsEngine";
+import type CircleCollider from "./CircleCollider";
+import type ICollisionEvent from "./ICollisionEvent";
+import type TriangleCollider from "./TriangleCollider";
 
 class Body implements IUpdatable {
     public physics?: PhysicsEngine;
@@ -23,16 +23,16 @@ class Body implements IUpdatable {
     protected _alive = true;
     private forces: Forces = Forces.Zero;
 
-    constructor(position: Vector) {
+    public constructor(position: Vector) {
         this.id = UniqueIdProvider.next();
         this.pos = position;
     }
 
-    onCollision(callback: (e: ICollisionEvent) => void) {
+    public onCollision(callback: (e: ICollisionEvent) => void) {
         this.colliderCallbacks.push(callback);
     }
 
-    signalCollision(target: Body): void {
+    public signalCollision(target: Body): void {
         for (const callback of this.colliderCallbacks) {
             callback({
                 target
@@ -40,26 +40,26 @@ class Body implements IUpdatable {
         }
     }
 
-    get alive() {
+    public get alive() {
         return this._alive;
     }
 
-    getHeading() {
+    public getHeading() {
         return Vector.Up.rotate(this.rotation);
     }
 
-    getMass(): number {
+    public getMass(): number {
         return this.mass;
     }
 
-    applyForce(F: Vector, point: Vector): void {
+    public applyForce(F: Vector, point: Vector): void {
         const Torque = (point.sub(this.centerOfMass)).cross(F);
         this.forces = this.forces.add(
             new Forces(F, Torque)
         );
     }
 
-    update(_time: number, delta: number) {
+    public update(_time: number, delta: number) {
         if (!this.alive) {
             return;
         }
@@ -83,7 +83,7 @@ class Body implements IUpdatable {
         this.forces = Forces.Zero;
     }
 
-    getForces(): Forces {
+    public getForces(): Forces {
         let forces = this.forces;
 
         if (this.physics) {

@@ -1,25 +1,25 @@
 import Body from "../../Physics/Body";
-import IDrawable from "../IDrawable";
-import Camera from "../Camera";
+import type IDrawable from "../IDrawable";
+import type Camera from "../Camera";
 import Vector from "../../Physics/Vector";
 import { getCenter } from "../../Utils";
-import IDrawContext from "../IDrawContext";
+import type IDrawContext from "../IDrawContext";
 import Polygon from "../Polygon";
 import { getColorString, getInterpolatedColor } from "../Color";
 import { FLAME } from "./flame";
 
 class Particle extends Body implements IDrawable {
-    static Shape: Polygon = new Polygon([
+    public static Shape: Polygon = new Polygon([
         new Vector(-1, -1),
         new Vector(+1, -1),
         new Vector(+1, +1),
         new Vector(-1, +1)
     ]);
 
-    age = 0;
-    ttl: number;
+    public age = 0;
+    public ttl: number;
 
-    constructor(
+    public constructor(
         position: Vector,
         ttl: number,
         velocity: Vector,
@@ -38,15 +38,15 @@ class Particle extends Body implements IDrawable {
         this.rotation = Math.random() * Math.PI;
     }
 
-    get relativeAge(): number {
+    public get relativeAge(): number {
         return this.age / this.ttl;
     }
 
-    get alive(): boolean {
+    public get alive(): boolean {
         return this.age < this.ttl;
     }
 
-    toScreenCoordinates(drawContext: IDrawContext): Vector {
+    public toScreenCoordinates(drawContext: IDrawContext): Vector {
         const origin = getCenter(drawContext.ctx);
         const zoom = drawContext.camera.zoom;
 
@@ -56,7 +56,7 @@ class Particle extends Body implements IDrawable {
             .add(drawContext.camera.pos.mul(-1 * zoom));
     }
 
-    draw(ctx: CanvasRenderingContext2D, camera: Camera) {
+    public draw(ctx: CanvasRenderingContext2D, camera: Camera) {
         const color = getInterpolatedColor(FLAME, this.relativeAge);
 
         ctx.save();
@@ -73,7 +73,7 @@ class Particle extends Body implements IDrawable {
         ctx.restore();
     }
 
-    update(time: number, delta: number) {
+    public update(time: number, delta: number) {
         if (this.alive) {
             super.update(time, delta);
         }

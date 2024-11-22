@@ -1,19 +1,19 @@
 import Body from "./Body";
 import CircleCollider from "./CircleCollider";
-import IUpdatable from "./IUpdatable";
+import type IUpdatable from "./IUpdatable";
 
 export class PhysicsEngineUpdater {
     private time: number;
     private delta: number;
     private objects: IUpdatable[];
 
-    constructor(time: number, delta: number, objects: IUpdatable[]) {
+    public constructor(time: number, delta: number, objects: IUpdatable[]) {
         this.time = time;
         this.delta = delta;
         this.objects = objects;
     }
 
-    update() {
+    public update() {
         const { objects } = this;
         for (let i = 0; i < objects.length; i++) {
             this.updateObject(objects[i], i + 1);

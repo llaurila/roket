@@ -1,6 +1,6 @@
 import { UIWindow } from ".";
 import { Config } from "../config";
-import Camera from "../Graphics/Camera";
+import type Camera from "../Graphics/Camera";
 import { getColorString } from "../Graphics/Color";
 import Rectangle from "../Graphics/Rectangle";
 import { getTextLines } from "../Typography";
@@ -8,16 +8,16 @@ import { getTextLines } from "../Typography";
 const config = Config.ui.alert;
 
 export default class Alert extends UIWindow {
-    content = "";
+    public content = "";
 
     private contentRect: Rectangle = Rectangle.Zero;
     private lines: string[] = [];
 
-    constructor() {
+    public constructor() {
         super(config.windowWidth, 0);
     }
 
-    draw(ctx: CanvasRenderingContext2D, camera: Camera) {
+    public draw(ctx: CanvasRenderingContext2D, camera: Camera) {
         ctx.save();
         ctx.resetTransform();
 

@@ -1,8 +1,8 @@
-import Engine from ".";
-import { IEngineConfig } from "../config.types";
-import Camera from "../Graphics/Camera";
+import type Engine from ".";
+import type { IEngineConfig } from "../config.types";
+import type Camera from "../Graphics/Camera";
 import SprayParticleEngine from "../Graphics/SprayParticleEngine";
-import Vector from "../Physics/Vector";
+import type Vector from "../Physics/Vector";
 import { random } from "../Utils";
 
 class ParticleEngineController {
@@ -12,7 +12,7 @@ class ParticleEngineController {
     private engine: Engine;
     private config: IEngineConfig;
 
-    constructor(
+    public constructor(
         engine: Engine,
         pos: Vector,
         config: IEngineConfig
@@ -32,7 +32,7 @@ class ParticleEngineController {
         );
     }
 
-    update(time: number, delta: number) {
+    public update(time: number, delta: number) {
         this.particleEngine.pos = this.engine.worldPosition;
         this.particleEngine.originVelocity = this.engine.parent.v;
         this.particleEngine.rotation = this.engine.worldRotation;
@@ -47,7 +47,7 @@ class ParticleEngineController {
         this.particleEngine.update(time, delta);
     }
 
-    draw(ctx: CanvasRenderingContext2D, camera: Camera) {
+    public draw(ctx: CanvasRenderingContext2D, camera: Camera) {
         this.particleEngine.draw(ctx, camera);
     }
 

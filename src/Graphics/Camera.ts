@@ -2,27 +2,27 @@ import Vector from "../Physics/Vector";
 import { getCenter } from "../Utils";
 
 class Camera {
-    pos: Vector;
-    zoom: number;
+    public pos: Vector;
+    public zoom: number;
 
-    constructor(position: Vector, zoom: number) {
+    public constructor(position: Vector, zoom: number) {
         this.pos = position;
         this.zoom = zoom;
     }
 
-    toScreenCoordinates(ctx: CanvasRenderingContext2D, p: Vector): Vector {
+    public toScreenCoordinates(ctx: CanvasRenderingContext2D, p: Vector): Vector {
         return p
             .mul(this.zoom)
             .add(getCenter(ctx))
             .add(this.pos.mul(-1 * this.zoom));
     }
 
-    toWorldCoordinates(ctx: CanvasRenderingContext2D, p: Vector): Vector {
+    public toWorldCoordinates(ctx: CanvasRenderingContext2D, p: Vector): Vector {
         const origin = this.getOrigin(ctx);
         return flipY(p.sub(origin)).div(this.zoom);
     }
 
-    getOrigin(ctx: CanvasRenderingContext2D): Vector {
+    public getOrigin(ctx: CanvasRenderingContext2D): Vector {
         return new Vector(
             ctx.canvas.width / 2,
             ctx.canvas.height / 2

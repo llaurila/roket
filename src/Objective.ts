@@ -1,10 +1,10 @@
-type ObjecttiveText = string | (() => string);
+type ObjectiveText = string | (() => string);
 
 class Objective {
-    cleared = false;
+    public cleared = false;
 
-    constructor(
-        public text: ObjecttiveText,
+    public constructor(
+        public text: ObjectiveText,
         public check: () => boolean
     ) {}
 }

@@ -1,6 +1,6 @@
-import { ConditionalAction } from "../types";
+import type { ConditionalAction } from "../types";
 import Level from ".";
-import Objective from "../Objective";
+import type Objective from "../Objective";
 import { LevelOutro } from "../LevelOutro";
 import { DefaultColor, HudItemDisabled } from "../Hud/HudItem";
 import Pointer from "../Controls/Pointer";
@@ -21,7 +21,7 @@ export function initHud(level: Level) {
     texts.add(() => {
         const screen = Pointer.getPosition();
         const world = level.camera.toWorldCoordinates(level.ctx, screen);
-        return `MOUSE: ${screen} (SCREEN) ${world} (WORLD)`;
+        return `MOUSE: ${screen.toString()} (SCREEN) ${world.toString()} (WORLD)`;
     }, debugColor);
 
     level.graphics.add(level.hud);
@@ -53,12 +53,12 @@ export class LevelEndController {
     private level: Level;
     private rules: ConditionalAction[];
 
-    constructor(level: Level) {
+    public constructor(level: Level) {
         this.level = level;
         this.rules = getCompletionRules(level);
     }
 
-    checkForCompletion() {
+    public checkForCompletion() {
         this.rules.forEach(rule => {
             if (rule.condition()) {
                 rule.action();
@@ -67,7 +67,7 @@ export class LevelEndController {
         });
     }
 
-    showOutro(): void {
+    public showOutro(): void {
         const outro = new LevelOutro(this.level);
         this.level.physics.add(outro);
         this.level.graphics.add(outro);

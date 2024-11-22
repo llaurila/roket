@@ -14,14 +14,14 @@ interface IExplosionSpec {
 }
 
 class ExplosionParticleEngine extends ParticleEngine {
-    ttl = DEFAULT_TTL;
+    public ttl = DEFAULT_TTL;
 
-    constructor(pos: Vector, explosion: IExplosionSpec) {
+    public constructor(pos: Vector, explosion: IExplosionSpec) {
         super(pos);
         this.explode(explosion);
     }
 
-    explode(explosion: IExplosionSpec): void {
+    public explode(explosion: IExplosionSpec): void {
         for (let i = 0; i < explosion.particleCount; i++) {
             this.particles.push(
                 this.generateParticle(explosion)
@@ -48,12 +48,12 @@ class ExplosionParticleEngine extends ParticleEngine {
         );
     }
 
-    update(time: number, delta: number) {
+    public update(time: number, delta: number) {
         super.update(time, delta);
         this.ttl -= delta;
     }
 
-    get alive() {
+    public get alive() {
         return this.ttl > 0;
     }
 }

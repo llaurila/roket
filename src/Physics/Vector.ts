@@ -1,89 +1,89 @@
 import { getCenter } from "../Utils";
-import IDrawContext from "../Graphics/IDrawContext";
+import type IDrawContext from "../Graphics/IDrawContext";
 
 class Vector {
-    x: number;
-    y: number;
+    public x: number;
+    public y: number;
 
-    constructor(x: number, y: number) {
+    public constructor(x: number, y: number) {
         this.x = x;
         this.y = y;
     }
 
-    add(v2: Vector): Vector {
+    public add(v2: Vector): Vector {
         return new Vector(
             this.x + v2.x,
             this.y + v2.y
         );
     }
 
-    sub(v2: Vector): Vector {
+    public sub(v2: Vector): Vector {
         return new Vector(
             this.x - v2.x,
             this.y - v2.y
         );
     }
 
-    mul(m: number): Vector {
+    public mul(m: number): Vector {
         return new Vector(
             this.x * m,
             this.y * m
         );
     }
 
-    div(d: number): Vector {
+    public div(d: number): Vector {
         return new Vector(
             this.x / d,
             this.y / d
         );
     }
 
-    cross(v2: Vector): number {
+    public cross(v2: Vector): number {
         return this.x * v2.y - this.y * v2.x;
     }
 
-    dot(v2: Vector): number {
+    public dot(v2: Vector): number {
         return this.x * v2.x +
             this.y * v2.y;
     }
 
-    normalize(): Vector {
+    public normalize(): Vector {
         return this.div(this.length());
     }
 
-    length(): number {
+    public length(): number {
         return Math.sqrt(this.x * this.x + this.y * this.y);
     }
 
-    rotate(theta: number): Vector {
+    public rotate(theta: number): Vector {
         return new Vector(
             Math.cos(theta) * this.x - Math.sin(theta) * this.y,
             Math.sin(theta) * this.x + Math.cos(theta) * this.y
         );
     }
 
-    floor(): Vector {
+    public floor(): Vector {
         return new Vector(
             Math.floor(this.x),
             Math.floor(this.y)
         );
     }
 
-    ceil(): Vector {
+    public ceil(): Vector {
         return new Vector(
             Math.ceil(this.x),
             Math.ceil(this.y)
         );
     }
 
-    neg(): Vector {
+    public neg(): Vector {
         return new Vector(
             -this.x,
             -this.y
         );
     }
 
-    toScreenCoordinates(drawContext: IDrawContext): Vector {
+    public toScreenCoordinates(drawContext: IDrawContext): Vector {
         const origin = getCenter(drawContext.ctx);
         const zoom = drawContext.camera.zoom;
 
@@ -93,27 +93,27 @@ class Vector {
             .add(drawContext.camera.pos.mul(-1 * zoom));
     }
 
-    toString(decimals = 1): string {
+    public toString(decimals = 1): string {
         return `[${this.x.toFixed(decimals)}, ${this.y.toFixed(decimals)}]`;
     }
 
-    static get Zero() {
+    public static get Zero() {
         return new Vector(0, 0);
     }
 
-    static get One() {
+    public static get One() {
         return new Vector(1, 1);
     }
 
-    static get Up() {
+    public static get Up() {
         return new Vector(0, 1);
     }
 
-    static get UnitX() {
+    public static get UnitX() {
         return new Vector(1, 0);
     }
 
-    static get UnitY() {
+    public static get UnitY() {
         return new Vector(0, 1);
     }
 }

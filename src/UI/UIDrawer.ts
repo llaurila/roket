@@ -1,6 +1,6 @@
 import { Config } from "../config";
 import { getColorString, getGray } from "../Graphics/Color";
-import Objective from "../Objective";
+import type Objective from "../Objective";
 
 const config = Config.ui;
 
@@ -19,14 +19,14 @@ export default class UIDrawer {
     private ctx: CanvasRenderingContext2D;
     private lineNumber = 0;
 
-    constructor(ctx: CanvasRenderingContext2D) {
+    public constructor(ctx: CanvasRenderingContext2D) {
         ctx.font = `${config.missionControl.fontSize}px ${Config.typography.fontFamily}`;
         ctx.textBaseline = "top";
 
         this.ctx = ctx;
     }
 
-    drawTitle(text: string): void {
+    public drawTitle(text: string): void {
         const LINE_HEIGHT = 1.25;
 
         this.lineNumber += 1;
@@ -46,7 +46,7 @@ export default class UIDrawer {
         this.lineNumber += 2;
     }
 
-    drawNumericField(
+    public drawNumericField(
         label: string,
         value: string
     ): void
@@ -62,7 +62,7 @@ export default class UIDrawer {
         this.lineNumber += 1;
     }
 
-    drawObjective(objective: Objective) {
+    public drawObjective(objective: Objective) {
         const MARGIN_TOP = 4;
 
         const y = getLineY(this.lineNumber) - MARGIN_TOP;

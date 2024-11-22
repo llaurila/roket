@@ -1,31 +1,31 @@
 import Vector from "../Physics/Vector";
 import { getCenter } from "../Utils";
-import IDrawContext from "./IDrawContext";
+import type IDrawContext from "./IDrawContext";
 
 class Polygon {
-    pts: Vector[];
+    public pts: Vector[];
 
-    constructor(points: Vector[]) {
+    public constructor(points: Vector[]) {
         this.pts = points;
     }
 
-    get first(): Vector {
+    public get first(): Vector {
         return this.pts[0];
     }
 
-    translate(v: Vector): Polygon {
+    public translate(v: Vector): Polygon {
         return new Polygon(
             this.pts.map(v_ => v_.add(v))
         );
     }
 
-    mul(m: number): Polygon {
+    public mul(m: number): Polygon {
         return new Polygon(
             this.pts.map(v => v.mul(m))
         );
     }
 
-    scale(x: number, y: number): Polygon {
+    public scale(x: number, y: number): Polygon {
         return new Polygon(
             this.pts.map(v => new Vector(
                 v.x * x,
@@ -34,13 +34,13 @@ class Polygon {
         );
     }
 
-    rotate(theta: number): Polygon {
+    public rotate(theta: number): Polygon {
         return new Polygon(
             this.pts.map(v => v.rotate(theta))
         );
     }
 
-    toScreenCoordinates(drawContext?: IDrawContext): Polygon {
+    public toScreenCoordinates(drawContext?: IDrawContext): Polygon {
         if (drawContext == undefined) {
             return this.scale(1, -1);
         }
@@ -55,13 +55,13 @@ class Polygon {
             .translate(drawContext.camera.pos.mul(-1 * zoom));
     }
 
-    toWorldCoordinates(drawContext: IDrawContext): Polygon {
+    public toWorldCoordinates(drawContext: IDrawContext): Polygon {
         return this
             .rotate(drawContext.rotation)
             .translate(drawContext.pos);
     }
 
-    makeClosedPath(ctx: CanvasRenderingContext2D) {
+    public makeClosedPath(ctx: CanvasRenderingContext2D) {
         ctx.beginPath();
 
         ctx.moveTo(this.first.x, this.first.y);
@@ -76,7 +76,7 @@ class Polygon {
         ctx.closePath();
     }
 
-    static make(pts: number[]): Polygon {
+    public static make(pts: number[]): Polygon {
         const v: Vector[] = [];
 
         for (let i = 0; i < pts.length; i += 2) {

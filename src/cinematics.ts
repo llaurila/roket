@@ -1,4 +1,4 @@
-import Level from "./Level";
+import type Level from "./Level";
 
 export function panTowardsShip(level: Level, delta: number): void {
     const v = level.ship.v.length();

@@ -1,14 +1,14 @@
 import Body from "../Physics/Body";
-import IDrawable from "../Graphics/IDrawable";
-import Polygon from "../Graphics/Polygon";
-import Vector from "../Physics/Vector";
-import Camera from "../Graphics/Camera";
-import Engine from "../Engine";
+import type IDrawable from "../Graphics/IDrawable";
+import type Polygon from "../Graphics/Polygon";
+import type Vector from "../Physics/Vector";
+import type Camera from "../Graphics/Camera";
+import type Engine from "../Engine";
 import FuelTank from "../FuelTank";
 import ExplosionParticleEngine from "../Graphics/ExplosionParticleEngine";
 import Shapes from "../Graphics/Shapes";
 import Ammo from "../Ammo";
-import { Graphics } from "../Graphics/Graphics";
+import type { Graphics } from "../Graphics/Graphics";
 import CircleCollider from "../Physics/CircleCollider";
 import { Config } from "../config";
 import { getColorString } from "../Graphics/Color";
@@ -27,14 +27,14 @@ class Ship extends Body implements IDrawable {
     public circleCollider = new CircleCollider(ship.length / 2 * ship.colliderRelativeSize);
     public color = ship.color;
 
-    constructor(position: Vector) {
+    public constructor(position: Vector) {
         super(position);
         this.fuelTank = new FuelTank(ship.fuelTankCapacity);
         this.engineLeft = initLeftEngine(this);
         this.engineRight = initRightEngine(this);
     }
 
-    fire(): void {
+    public fire(): void {
         if (!this.alive)  throw new Error("Ship not alive, can't fire.");
         this.fireInternal();
     }
@@ -56,7 +56,7 @@ class Ship extends Body implements IDrawable {
         this.graphics?.add(ammo);
     }
 
-    update(time: number, delta: number) {
+    public update(time: number, delta: number) {
         super.update(time, delta);
 
         if (this.alive) {
@@ -68,7 +68,7 @@ class Ship extends Body implements IDrawable {
         }
     }
 
-    die(): void {
+    public die(): void {
         this._alive = false;
 
         if (this.physics && this.graphics) {
@@ -84,11 +84,11 @@ class Ship extends Body implements IDrawable {
         }
     }
 
-    getMass(): number {
+    public getMass(): number {
         return super.getMass() + this.fuelTank.getMass();
     }
 
-    draw(ctx: CanvasRenderingContext2D, camera: Camera) {
+    public draw(ctx: CanvasRenderingContext2D, camera: Camera) {
         if (this.alive) {
             const drawContext = {
                 pos: this.pos,

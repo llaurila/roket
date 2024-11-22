@@ -1,6 +1,6 @@
 import Fuel from "../../Fuel";
 import Vector from "../../Physics/Vector";
-import GameOfTag from ".";
+import type GameOfTag from ".";
 import LevelConfig from "./config";
 
 export function generateFuelCapsule(level: GameOfTag) {

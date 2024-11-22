@@ -1,5 +1,5 @@
 import Game from "./Game";
-import Camera from "./Graphics/Camera";
+import type Camera from "./Graphics/Camera";
 import Keys from "./Controls/Keys";
 import Level from "./Level";
 import Introduction from "./Levels/Introduction";

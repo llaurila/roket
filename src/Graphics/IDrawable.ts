@@ -1,5 +1,5 @@
-import Camera from "./Camera";
-import { Graphics } from "./Graphics";
+import type Camera from "./Camera";
+import type { Graphics } from "./Graphics";
 
 interface IDrawable {
     id: number;

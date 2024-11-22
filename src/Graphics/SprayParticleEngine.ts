@@ -14,32 +14,32 @@ const MAX_ANGULAR_VELOCITY = 10;
 const ZeroRate = () => 0;
 
 class SprayParticleEngine extends ParticleEngine {
-    velocity: () => number;
-    getRate: () => number = ZeroRate;
-    emitting = false;
-    originVelocity: Vector = Vector.Zero;
-    timeSinceLastEmitted = 0;
+    public velocity: () => number;
+    public getRate: () => number = ZeroRate;
+    public emitting = false;
+    public originVelocity: Vector = Vector.Zero;
+    public timeSinceLastEmitted = 0;
 
-    constructor(position: Vector, velocity: () => number) {
+    public constructor(position: Vector, velocity: () => number) {
         super(position);
         this.velocity = velocity;
     }
 
-    start(getRate: () => number): void {
+    public start(getRate: () => number): void {
         this.getRate = getRate;
         this.timeSinceLastEmitted = 0;
         this.emitting = true;
     }
 
-    stop(): void {
+    public stop(): void {
         this.emitting = false;
     }
 
-    get shouldEmit(): boolean {
+    public get shouldEmit(): boolean {
         return this.timeSinceLastEmitted > (1 / this.getRate());
     }
 
-    emitOne(): void {
+    public emitOne(): void {
         const angle = degToRad(random(MIN_ANGLE_DEG, MAX_ANGLE_DEG)) - this.rotation;
         const relativeVelocity = this.velocity();
 
@@ -56,10 +56,11 @@ class SprayParticleEngine extends ParticleEngine {
                 random(-MAX_ANGULAR_VELOCITY, MAX_ANGULAR_VELOCITY)
             )
         );
+        
         this.timeSinceLastEmitted -= 1 / this.getRate();
     }
 
-    update(time: number, delta: number) {
+    public update(time: number, delta: number) {
         super.update(time, delta);
 
         if (this.emitting) {

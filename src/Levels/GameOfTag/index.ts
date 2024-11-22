@@ -11,17 +11,17 @@ import { generateFuelCapsule } from "./fuel";
 import NPC_AI from "./NPC_AI";
 
 class GameOfTag extends Level {
-    name = "LEVEL 4: GAME OF TAG";
-    description = "CATCH THE OTHER SHIP.";
+    public name = "LEVEL 4: GAME OF TAG";
+    public description = "CATCH THE OTHER SHIP.";
 
-    rng: RNG = new RNG(LevelConfig.RAND_SEED);
-    enemy: Ship = new Ship(LevelConfig.OTHER_SHIP_OFFSET);
-    ai?: NPC_AI;
+    public rng: RNG = new RNG(LevelConfig.RAND_SEED);
+    public enemy: Ship = new Ship(LevelConfig.OTHER_SHIP_OFFSET);
+    public ai?: NPC_AI;
     
-    started = false;
-    caught = false;
+    public started = false;
+    public caught = false;
 
-    createObjects(): void {
+    public createObjects(): void {
         this.graphics.add(new Cosmos());
         this.shipController = new ShipController(this.ship);
 
@@ -45,7 +45,7 @@ class GameOfTag extends Level {
         this.generateNewFuelCapsule();
     }
 
-    generateNewFuelCapsule() {
+    public generateNewFuelCapsule() {
         const fuel = generateFuelCapsule(this);
 
         fuel.onCollision(e => {
@@ -57,14 +57,14 @@ class GameOfTag extends Level {
         this.addFuelCapsule(fuel);
     }
 
-    createObjectives() {
+    public createObjectives() {
         this.objectives.push(new Objective(
             "CATCH THE OTHER SHIP.",
             () => this.caught
         ));
     }
 
-    update(time: number, delta: number) {
+    public update(time: number, delta: number) {
         super.update(time, delta);
 
         if (this.started) {

@@ -2,21 +2,21 @@ import Polygon from "./Polygon";
 import Vector from "../Physics/Vector";
 
 class PolygonMaker {
-    pts: Vector[] = [];
+    public pts: Vector[] = [];
 
-    get last(): Vector {
+    public get last(): Vector {
         return this.pts[this.pts.length - 1];
     }
 
-    abs(x: number, y: number) {
+    public abs(x: number, y: number) {
         this.pts.push(new Vector(x, y));
     }
 
-    rel(x: number, y: number) {
+    public rel(x: number, y: number) {
         this.abs(this.last.x + x, this.last.y + y);
     }
 
-    getPolygon(): Polygon {
+    public getPolygon(): Polygon {
         return new Polygon(this.pts);
     }
 }

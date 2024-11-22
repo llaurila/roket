@@ -1,19 +1,19 @@
 import { initializeGraphics } from "./Graphics/Graphics";
-import Camera from "./Graphics/Camera";
-import { Action, IRecurringTask } from "./types";
+import type Camera from "./Graphics/Camera";
+import type { Action, IRecurringTask } from "./types";
 import { Config } from "./config";
 
 class Game {
-    ctx: CanvasRenderingContext2D;
-    updateFunc: (time: number, delta: number) => void;
-    drawFunc: (ctx: CanvasRenderingContext2D, camera: Camera) => void;
-    prev = 0;
-    running = false;
-    camera: Camera;
-    startTime = 0;
-    recurringTasks: IRecurringTask[] = [];
+    public ctx: CanvasRenderingContext2D;
+    public updateFunc: (time: number, delta: number) => void;
+    public drawFunc: (ctx: CanvasRenderingContext2D, camera: Camera) => void;
+    public prev = 0;
+    public running = false;
+    public camera: Camera;
+    public startTime = 0;
+    public recurringTasks: IRecurringTask[] = [];
 
-    constructor(
+    public constructor(
         update: (time: number, delta: number) => void,
         draw: (ctx: CanvasRenderingContext2D, camera: Camera) => void,
         camera: Camera) {
@@ -25,7 +25,7 @@ class Game {
         this.camera = camera;
     }
 
-    start(): void {
+    public start(): void {
         if (this.running) {
             throw new Error("Game already running.");
         }
@@ -70,11 +70,11 @@ class Game {
         }
     }
 
-    stop() {
+    public stop() {
         this.running = false;
     }
 
-    every(interval: number, func: Action) {
+    public every(interval: number, func: Action) {
         this.recurringTasks.push({
             interval,
             func,

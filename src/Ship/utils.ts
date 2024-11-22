@@ -1,4 +1,4 @@
-import Ship from ".";
+import type Ship from ".";
 import Engine from "../Engine";
 import { degToRad } from "../Utils";
 import { Config } from "../config";

@@ -1,5 +1,5 @@
-import { IColor } from "./Graphics/Color";
-import Vector from "./Physics/Vector";
+import type { IColor } from "./Graphics/Color";
+import type Vector from "./Physics/Vector";
 
 /* Units:
  *   - UI (including font size): Pixels

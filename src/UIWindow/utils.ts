@@ -1,5 +1,5 @@
 import { getColorString } from "../Graphics/Color";
-import Rectangle from "../Graphics/Rectangle";
+import type Rectangle from "../Graphics/Rectangle";
 import { Config } from "../config";
 
 const config = Config.ui.window;

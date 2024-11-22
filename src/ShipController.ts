@@ -1,5 +1,5 @@
 import Keys from "./Controls/Keys";
-import Ship from "./Ship";
+import type Ship from "./Ship";
 import GameController from "./Controls/GameController";
 
 const
@@ -7,13 +7,13 @@ const
     PAD_LEFT_RIGHT = 0;
 
 class ShipController {
-    ship: Ship;
+    public ship: Ship;
 
-    constructor(ship: Ship) {
+    public constructor(ship: Ship) {
         this.ship = ship;
     }
 
-    control() {
+    public control() {
         this.handleAnalog();
 
         this.handleLeft();

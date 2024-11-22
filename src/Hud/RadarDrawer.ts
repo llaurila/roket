@@ -1,5 +1,5 @@
 import { Config } from "../config";
-import Camera from "../Graphics/Camera";
+import type Camera from "../Graphics/Camera";
 import { getGrayHex } from "../Graphics/Color";
 import Vector from "../Physics/Vector";
 import { getCenter, formatDistance } from "../Utils";
@@ -13,7 +13,7 @@ export class RadarDrawer {
     private center: Vector;
     private size: number;
 
-    constructor(ctx: CanvasRenderingContext2D, camera: Camera, pos: Vector) {
+    public constructor(ctx: CanvasRenderingContext2D, camera: Camera, pos: Vector) {
         this.ctx = ctx;
         this.camera = camera;
         this.pos = pos;

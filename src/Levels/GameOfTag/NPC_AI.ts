@@ -1,11 +1,11 @@
-import Ship from "../../Ship";
+import type Ship from "../../Ship";
 import LevelConfig from "./config";
 
 class NPC_AI {
     private player: Ship;
     private me: Ship;
 
-    constructor(ship: Ship, enemy: Ship) {
+    public constructor(ship: Ship, enemy: Ship) {
         this.player = ship;
         this.me = enemy;
     }

@@ -1,4 +1,4 @@
-import Vector from "./Physics/Vector";
+import type Vector from "./Physics/Vector";
 
 export interface IRelativeProps {
     position: Vector;

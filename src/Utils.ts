@@ -1,5 +1,5 @@
 import Vector from "./Physics/Vector";
-import IDrawContext from "./Graphics/IDrawContext";
+import type IDrawContext from "./Graphics/IDrawContext";
 import { Config } from "./config";
 
 export const CCW = 1;

@@ -1,23 +1,23 @@
-import IDrawable from "../Graphics/IDrawable";
-import Camera from "../Graphics/Camera";
+import type IDrawable from "../Graphics/IDrawable";
+import type Camera from "../Graphics/Camera";
 import UniqueIdProvider from "../UniqueIdProvider";
 import { UIWindow, WindowPosition } from "../UIWindow";
 import Vector from "../Physics/Vector";
-import Body from "../Physics/Body";
+import type Body from "../Physics/Body";
 import { Config } from "../config";
 import UIDrawer from "./UIDrawer";
 import { radToDeg } from "../Utils";
-import Level from "../Level";
+import type Level from "../Level";
 
 const config = Config.ui.missionControl;
 
 export class UI implements IDrawable {
-    id: number = UniqueIdProvider.next();
-    alive = true;
+    public id: number = UniqueIdProvider.next();
+    public alive = true;
 
     private window: UIWindow;
 
-    constructor(private level: Level) {
+    public constructor(private level: Level) {
         this.window = new UIWindow(config.windowWidth, Number.MAX_SAFE_INTEGER);
 
         this.window.title = "MISSION CONTROL";
@@ -25,7 +25,7 @@ export class UI implements IDrawable {
         this.window.absolutePosition = new Vector(Config.ui.window.margin, Config.ui.window.margin);
     }
 
-    draw(ctx: CanvasRenderingContext2D, camera: Camera) {
+    public draw(ctx: CanvasRenderingContext2D, camera: Camera) {
         const { ship, physics, objectives } = this.level;
 
         this.window.draw(ctx, camera);

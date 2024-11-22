@@ -1,4 +1,4 @@
-import PhysicsEngine from "./PhysicsEngine";
+import type PhysicsEngine from "./PhysicsEngine";
 
 interface IUpdatable {
     id: number;
