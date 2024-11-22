@@ -71,6 +71,8 @@ export default tseslint.config(
             ],
             '@typescript-eslint/no-base-to-string': 'error',
             '@typescript-eslint/no-confusing-void-expression': 'error',
+            '@typescript-eslint/no-dynamic-delete': 'error',
+            '@typescript-eslint/no-extraneous-class': 'error'
         }
     }
 );
