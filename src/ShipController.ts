@@ -19,7 +19,7 @@ class ShipController {
         this.handleLeft();
         this.handleRight();
 
-        if (!this.burningBoth() && burning())
+        if (this.bothOff() && fullBurn())
         {
             this.ship.engineLeft.burning = true;
             this.ship.engineRight.burning = true;
@@ -29,7 +29,7 @@ class ShipController {
     private handleLeft = () => { if (cw()) this.ship.engineLeft.burning = true; };
     private handleRight = () => { if (ccw()) this.ship.engineRight.burning = true; };
 
-    private burningBoth = () => this.ship.engineLeft.burning && this.ship.engineRight.burning;
+    private bothOff = () => !this.ship.engineLeft.burning && !this.ship.engineRight.burning;
 
     private handleAnalog() {
         if (GameController.controllerAvailable()) {
@@ -47,7 +47,7 @@ class ShipController {
     }
 }
 
-const burning = () => Keys.isDown("ArrowUp");
+const fullBurn = () => Keys.isDown("ArrowUp");
 const ccw = () => Keys.isDown("ArrowLeft");
 const cw = () => Keys.isDown("ArrowRight");
 
