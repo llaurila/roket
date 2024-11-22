@@ -42,7 +42,7 @@ class TriangleCollider {
         );
     }
 
-     
+    // eslint-disable-next-line complexity 
     static check(a: Body, b: Body): boolean {
         if (a.triangleCollider && b.triangleCollider) {
             return a.triangleCollider.containsPoint(b.triangleCollider.pts.a) ||

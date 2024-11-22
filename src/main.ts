@@ -39,18 +39,8 @@ function loadLevel(number: number) {
     game.start();
 
     function update(time: number, delta: number) {
-        if (continueButton() && level.passed) {
-            if (++currentLevel < levelTypes.length) {
-                game.stop();
-                loadLevel(currentLevel);
-            }
-        }
-
-        if (restartButton()) {
-            game.stop();
-            loadLevel(currentLevel);
-        }
-
+        handleNextLevel();
+        handleRestart();
         handleDebug(game);
 
         if (level.shipController) {
@@ -60,6 +50,22 @@ function loadLevel(number: number) {
         level.update(time, delta);
 
         panTowardsShip(delta);
+    }
+
+    function handleNextLevel() {
+        if (continueButton() && level.passed) {
+            if (++currentLevel < levelTypes.length) {
+                game.stop();
+                loadLevel(currentLevel);
+            }
+        }
+    }
+
+    function handleRestart() {
+        if (restartButton()) {
+            game.stop();
+            loadLevel(currentLevel);
+        }
     }
 
     function draw(ctx: CanvasRenderingContext2D, camera: Camera): void {
@@ -95,18 +101,22 @@ function loadLevel(number: number) {
 
 function handleDebug(game: Game) {
     if (checkForDebugMode()) {
-        if (nextLevelButton()) {
-            if (++currentLevel < levelTypes.length) {
-                game.stop();
-                loadLevel(currentLevel);
-            }
-        }
+        handleDebugLevelChange(game);
+    }
+}
 
-        if (previousLevelButton()) {
-            if (currentLevel-- > 0) {
-                game.stop();
-                loadLevel(currentLevel);
-            }
+function handleDebugLevelChange(game: Game) {
+    if (nextLevelButton()) {
+        if (++currentLevel < levelTypes.length) {
+            game.stop();
+            loadLevel(currentLevel);
+        }
+    }
+
+    if (previousLevelButton()) {
+        if (currentLevel-- > 0) {
+            game.stop();
+            loadLevel(currentLevel);
         }
     }
 }

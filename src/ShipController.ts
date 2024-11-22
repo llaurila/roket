@@ -24,12 +24,14 @@ class ShipController {
             this.ship.engineRight.burning = true;
         }
 
-        if (!this.ship.engineLeft.burning && !this.ship.engineRight.burning && burning())
+        if (!this.burningBoth() && burning())
         {
             this.ship.engineLeft.burning = true;
             this.ship.engineRight.burning = true;
         }
     }
+
+    private burningBoth = () => this.ship.engineLeft.burning && this.ship.engineRight.burning;
 
     private handleAnalog() {
         if (GameController.controllerAvailable()) {

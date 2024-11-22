@@ -49,6 +49,10 @@ class Fuel extends Body implements IDrawable {
             return;
         }
 
+        this.updateGfx(time, delta);
+    }
+
+    updateGfx(time: number, delta: number) {
         switch (this.state) {
         case State.Pulse:
             this.opacity = config.opacityMin +

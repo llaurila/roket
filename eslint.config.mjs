@@ -11,7 +11,9 @@ export default tseslint.config(
         rules: {
             'no-console': 'error',
             'max-len': ['error', { code: 100 }],
-            'no-magic-numbers': ["error", { "ignore": [-1, -.5, 0, .5, 1, 2, 100, 1000] }]
+            'no-magic-numbers': ["error", { "ignore": [-1, -.5, 0, .5, 1, 2, 100, 1000] }],
+            //'no-undef': 'error',
+            'complexity': ['error', 5]
         }
     }
 );
