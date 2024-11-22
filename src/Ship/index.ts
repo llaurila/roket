@@ -23,6 +23,7 @@ class Ship extends Body implements IDrawable {
     public engineLeft: Engine;
     public engineRight: Engine;
     public fuelTank: FuelTank;
+    public hullIntegrity = 1;
     public graphics?: Graphics;
     public circleCollider = new CircleCollider(ship.length / 2 * ship.colliderRelativeSize);
     public color = ship.color;
@@ -43,16 +44,24 @@ class Ship extends Body implements IDrawable {
         super.update(time, delta);
 
         if (this.alive) {
-            if (Math.abs(this.angularVelocity) > ship.maxSafeAngularVelocity) {
-                this.die();
+            const excessSpin = Math.abs(this.angularVelocity) - ship.maxSafeAngularVelocity;
+            if (excessSpin > 0) {
+                const DAMAGE_SEVERITY = 0.1;
+                this.inflictHullDamage(excessSpin * DAMAGE_SEVERITY * delta);
             }
 
             updateEngines([this.engineLeft, this.engineRight], time, delta);
         }
     }
 
+    public inflictHullDamage(damage: number): void {
+        this.hullIntegrity = Math.max(0, this.hullIntegrity - damage);
+        if (this.hullIntegrity === 0) this.die();
+    }
+
     public die(): void {
         this._alive = false;
+        this.hullIntegrity = 0;
 
         if (this.physics && this.graphics) {
             const explosion = new ExplosionParticleEngine(this.pos, {

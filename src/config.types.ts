@@ -1,3 +1,5 @@
+/* eslint-disable max-lines */
+
 import type { IColor } from "./Graphics/Color";
 import type Vector from "./Physics/Vector";
 
@@ -79,6 +81,16 @@ export interface IConfig {
         labelOffset: number;
         fontSize: number;
         fuelColor: IColor;
+    }
+
+    barGauge: {
+        width: number;
+        height: number;
+        padding: number;
+        captionOffset: number;
+        maxColor: IColor;
+        halfColor: IColor;
+        minColor: IColor;
     }
 
     cosmos: {

@@ -77,6 +77,16 @@ export const Config: IConfig = {
         lineHeight: 18
     },
 
+    barGauge: {
+        width: 120,
+        height: 12,
+        padding: 12,
+        captionOffset: 10,
+        maxColor: DEFAULT_FONT_COLOR,
+        halfColor: { R: 0.90, G: 0.50, B: 0.17, A: 1 },
+        minColor: { R: 0.55, G: 0.12, B: 0.16, A: 1 }
+    },
+
     radar: {
         margin: 20,
         circleOpacity: 0.25,
@@ -107,7 +117,7 @@ export const Config: IConfig = {
             position: new Vector(+0.5, -4),
             angle: +12
         },
-        maxSafeAngularVelocity: 20,
+        maxSafeAngularVelocity: 10,
         color: getGray(0.65)
     },
 
