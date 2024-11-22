@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /* eslint-disable no-magic-numbers */ 
 
 import { IConfig } from "./config.types";

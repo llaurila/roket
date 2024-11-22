@@ -1,50 +1,12 @@
-import Body from "../Physics/Body";
-import IDrawable from "./IDrawable";
-import Camera from "./Camera";
-import Vector from "../Physics/Vector";
-import { getCenter } from "../Utils";
-import IDrawContext from "./IDrawContext";
-import Polygon from "./Polygon";
-import { getColorString, getInterpolatedColor } from "./Color";
-
-const FLAME = [
-    {
-        Color: {
-            R: 1,
-            G: 1,
-            B: 0,
-            A: 0.33
-        },
-        Pos: 0
-    },
-    {
-        Color: {
-            R: 1,
-            G: 0,
-            B: 0,
-            A: 0.33
-        },
-        Pos: 0.25
-    },
-    {
-        Color: {
-            R: 1,
-            G: 1,
-            B: 1,
-            A: 0.33
-        },
-        Pos: 0.5
-    },
-    {
-        Color: {
-            R: 1,
-            G: 1,
-            B: 1,
-            A: 0
-        },
-        Pos: 1
-    }
-];
+import Body from "../../Physics/Body";
+import IDrawable from "../IDrawable";
+import Camera from "../Camera";
+import Vector from "../../Physics/Vector";
+import { getCenter } from "../../Utils";
+import IDrawContext from "../IDrawContext";
+import Polygon from "../Polygon";
+import { getColorString, getInterpolatedColor } from "../Color";
+import { FLAME } from "./flame";
 
 class Particle extends Body implements IDrawable {
     static Shape: Polygon = new Polygon([
@@ -56,7 +18,6 @@ class Particle extends Body implements IDrawable {
 
     age = 0;
     ttl: number;
-
 
     constructor(
         position: Vector,
@@ -115,7 +76,6 @@ class Particle extends Body implements IDrawable {
     update(time: number, delta: number) {
         if (this.alive) {
             super.update(time, delta);
-            //this.rotation += delta * 4;
         }
         this.age += delta;
     }

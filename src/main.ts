@@ -6,6 +6,7 @@ import Introduction from "./Levels/Introduction";
 import VelocityControl from "./Levels/VelocityControl";
 import CollectFuel from "./Levels/CollectFuel";
 import GameOfTag from "./Levels/GameOfTag";
+import { panTowardsShip } from "./cinematics";
 
 const restartButton = () => Keys.wasPressed("Escape");
 const continueButton = () => Keys.wasPressed("Enter");
@@ -48,7 +49,7 @@ function loadLevel(number: number) {
 
         level.update(time, delta);
 
-        panTowardsShip(delta);
+        panTowardsShip(level, delta);
     }
 
     function handleNextLevel() {
@@ -81,23 +82,6 @@ function loadLevel(number: number) {
         ctx.restore();
     }
 
-    function panTowardsShip(delta: number): void {
-        const v = level.ship.v.length();
-         
-        // eslint-disable-next-line no-magic-numbers
-        level.camera.zoom = 5 - Math.min(99, v) / 33;
-
-        const target = level.ship.pos.add(
-            level.ship.v.mul(2)
-        );
-
-        const towards = target.sub(level.camera.pos);
-
-        if (towards.length() > 0)
-        {
-            level.camera.pos = level.camera.pos.add(towards.mul(delta));
-        }
-    }
 }
 
 function handleDebug(game: Game) {

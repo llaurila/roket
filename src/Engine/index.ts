@@ -1,14 +1,13 @@
-import IUpdatable from "./Physics/IUpdatable";
-import Vector from "./Physics/Vector";
-import Camera from "./Graphics/Camera";
-import ParticleEngine from "./Graphics/SprayParticleEngine";
-import FuelTank from "./FuelTank";
-import Body from "./Ship";
-import UniqueIdProvider from "./UniqueIdProvider";
-import IDrawable from "./Graphics/IDrawable";
-import { random } from "./Utils";
-import { IRelativeProps } from "./types";
-import { IEngineConfig } from "./config.types";
+import Body from "../Physics/Body";
+import IUpdatable from "../Physics/IUpdatable";
+import Vector from "../Physics/Vector";
+import Camera from "../Graphics/Camera";
+import FuelTank from "../FuelTank";
+import UniqueIdProvider from "../UniqueIdProvider";
+import IDrawable from "../Graphics/IDrawable";
+import { IRelativeProps } from "../types";
+import { IEngineConfig } from "../config.types";
+import ParticleEngineController from "./ParticleEngineController";
 
 class Engine implements IUpdatable, IDrawable {
     id: number;
@@ -21,7 +20,7 @@ class Engine implements IUpdatable, IDrawable {
 
     private throttle = 0;
     private output = 0;
-    private particleEngine: ParticleEngine;
+    private particleEngineController: ParticleEngineController;
 
     constructor(
         parent: Body,
@@ -33,20 +32,10 @@ class Engine implements IUpdatable, IDrawable {
         this.parent = parent;
         this.relativeProps = relativeProps;
         this.fuelTank = fuelTank;
-
-        this.particleEngine = new ParticleEngine(
-            parent.pos.add(relativeProps.position),
-            () => {
-                const scale = config.particleVelocityMax -
-                config.particleVelocityMin;
-
-                return random(
-                    config.particleVelocityMin,
-                    this.throttle * scale
-                );
-            });
-
         this.config = config;
+        
+        this.particleEngineController =
+            new ParticleEngineController(this, relativeProps.position, config);
     }
 
     get alive() {
@@ -69,12 +58,17 @@ class Engine implements IUpdatable, IDrawable {
     }
 
     set burning(value: boolean) {
-        this.setThrottle(value ? 1 : 0);
+        this.throttle = value ? 1 : 0;
     }
 
     setThrottle(value: number) {
+        if (value < 0 || value > 1) {
+            throw new Error("Throttle must be between 0 and 1");
+        }
         this.throttle = value;
     }
+
+    getThrottle = () => this.throttle;
 
     applyForcesOnParent(): void {
         this.parent.applyForce(
@@ -91,39 +85,19 @@ class Engine implements IUpdatable, IDrawable {
         return this.parent.rotation + this.relativeProps.rotation;
     }
 
-    getHeading(): Vector {
-        return this.parent.getHeading().rotate(this.relativeProps.rotation);
-    }
+    getHeading = () => this.parent.getHeading().rotate(this.relativeProps.rotation);
 
     update(time: number, delta: number) {
         this.updateOutput(delta);
 
-        this.particleEngine.pos = this.worldPosition;
-        this.particleEngine.originVelocity = this.parent.v;
-        this.particleEngine.rotation = this.worldRotation;
+        const engineOn = this.output > 0;
+        this.particleEngineController.on = engineOn;
 
-        if (this.output > 0) {
+        if (engineOn) {
             this.fuelTank.consume(this.config.consumption * this.output * delta);
-            this.startParticleEngine();
-        }
-        else {
-            this.stopParticleEngine();
         }
 
-        this.particleEngine.update(time, delta);
-    }
-
-    private startParticleEngine() {
-        if (!this.particleEngine.emitting) {
-            this.particleEngine.start(
-                () => this.relativeOutput * this.config.particleRateMax);
-        }
-    }
-
-    private stopParticleEngine() {
-        if (this.particleEngine.emitting) {
-            this.particleEngine.stop();
-        }
+        this.particleEngineController.update(time, delta);
     }
 
     private updateOutput(delta: number) {
@@ -144,9 +118,8 @@ class Engine implements IUpdatable, IDrawable {
         }
     }
 
-    draw(ctx: CanvasRenderingContext2D, camera: Camera) {
-        this.particleEngine.draw(ctx, camera);
-    }
+    draw = (ctx: CanvasRenderingContext2D, camera: Camera) =>
+        this.particleEngineController.draw(ctx, camera);
 }
 
 export default Engine;

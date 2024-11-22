@@ -7,6 +7,7 @@ import IUpdatable from "../Physics/IUpdatable";
 import Vector from "../Physics/Vector";
 import UniqueIdProvider from "../UniqueIdProvider";
 import { getCenter } from "../Utils";
+import { makeBgGradient } from "./utils";
 
 const config = Config.ui.window;
 
@@ -119,11 +120,4 @@ export class UIWindow implements IDrawable, IUpdatable {
             }
         }
     }
-}
-
-function makeBgGradient(ctx: CanvasRenderingContext2D, rect: Rectangle) {
-    const grd = ctx.createLinearGradient(0, rect.topLeft.y, 0, rect.topLeft.y + rect.size.y);
-    grd.addColorStop(0, getColorString(config.backgroundColorTop));
-    grd.addColorStop(1, getColorString(config.backgroundColorBottom));
-    return grd;
 }

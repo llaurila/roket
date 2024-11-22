@@ -1,27 +1,24 @@
-import Body from "./Physics/Body";
-import IDrawable from "./Graphics/IDrawable";
-import Polygon from "./Graphics/Polygon";
-import Vector from "./Physics/Vector";
-import Camera from "./Graphics/Camera";
-import Engine from "./Engine";
-import FuelTank from "./FuelTank";
-import ExplosionParticleEngine from "./Graphics/ExplosionParticleEngine";
-import Shapes from "./Graphics/Shapes";
-import Ammo from "./Ammo";
-import { Graphics } from "./Graphics/Graphics";
-import CircleCollider from "./Physics/CircleCollider";
-import { Config } from "./config";
-import { degToRad } from "./Utils";
-import { getColorString } from "./Graphics/Color";
-
-const SHAPE_LENGTH = 3;
-const AMMO_START_POS = 5;
-const AMMO_FORCE = 10000;
+import Body from "../Physics/Body";
+import IDrawable from "../Graphics/IDrawable";
+import Polygon from "../Graphics/Polygon";
+import Vector from "../Physics/Vector";
+import Camera from "../Graphics/Camera";
+import Engine from "../Engine";
+import FuelTank from "../FuelTank";
+import ExplosionParticleEngine from "../Graphics/ExplosionParticleEngine";
+import Shapes from "../Graphics/Shapes";
+import Ammo from "../Ammo";
+import { Graphics } from "../Graphics/Graphics";
+import CircleCollider from "../Physics/CircleCollider";
+import { Config } from "../config";
+import { getColorString } from "../Graphics/Color";
+import { initLeftEngine, initRightEngine, updateEngines } from "./utils";
+import ShipConfig from "./config";
 
 const { ship } = Config;
 
 class Ship extends Body implements IDrawable {
-    public static Shape: Polygon = Shapes.Ship.mul(ship.length / SHAPE_LENGTH);
+    public static Shape: Polygon = Shapes.Ship.mul(ship.length / ShipConfig.SHAPE_LENGTH);
 
     public engineLeft: Engine;
     public engineRight: Engine;
@@ -33,63 +30,30 @@ class Ship extends Body implements IDrawable {
     constructor(position: Vector) {
         super(position);
         this.fuelTank = new FuelTank(ship.fuelTankCapacity);
-
-        this.engineLeft = new Engine(
-            this,
-            {
-                position: ship.engineLeft.position,
-                rotation: degToRad(ship.engineLeft.angle)
-            },
-            this.fuelTank,
-            ship.engineLeft
-        );
-
-        this.engineRight = new Engine(
-            this,
-            {
-                position: ship.engineRight.position,
-                rotation: degToRad(ship.engineRight.angle)
-            },
-            this.fuelTank,
-            ship.engineLeft
-        );
+        this.engineLeft = initLeftEngine(this);
+        this.engineRight = initRightEngine(this);
     }
 
     fire(): void {
-        if (!this.alive) {
-            throw new Error("Ship not alive, can't fire.");
-        }
-        
+        if (!this.alive)  throw new Error("Ship not alive, can't fire.");
         this.fireInternal();
     }
 
     private fireInternal(): void {
         const ammo = new Ammo(
-            this.pos.add(this.getHeading().mul(AMMO_START_POS))
+            this.pos.add(this.getHeading().mul(ShipConfig.AMMO_START_POS))
         );
         
         ammo.rotation = this.rotation;
         ammo.v = this.v;
 
-        const F = this.getHeading().mul(AMMO_FORCE);
+        const F = this.getHeading().mul(ShipConfig.AMMO_FORCE);
 
         ammo.applyForce(F, ammo.centerOfMass);
         this.applyForce(F.neg(), this.centerOfMass);
 
-        this.addPhysicsAmmo(ammo);
-        this.addGraphicsAmmo(ammo);
-    }
-
-    private addPhysicsAmmo(ammo: Ammo) {
-        if (this.physics) {
-            this.physics.add(ammo);
-        }
-    }
-
-    private addGraphicsAmmo(ammo: Ammo) {
-        if (this.graphics) {
-            this.graphics.add(ammo);
-        }
+        this.physics?.add(ammo);
+        this.graphics?.add(ammo);
     }
 
     update(time: number, delta: number) {
@@ -145,13 +109,6 @@ class Ship extends Body implements IDrawable {
             this.engineLeft.draw(ctx, camera);
             this.engineRight.draw(ctx, camera);
         }
-    }
-}
-
-function updateEngines(engines: Engine[], time: number, delta: number) {
-    for (const engine of engines) {
-        engine.update(time, delta);
-        engine.applyForcesOnParent();
     }
 }
 
