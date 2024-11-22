@@ -36,11 +36,15 @@ export class PhysicsEngineUpdater {
         for (let j = startFrom; j < objects.length; j++) {
             const b = objects[j];
             if (b instanceof Body) {
-                if (CircleCollider.check(obj, b)) {
-                    obj.signalCollision(b);
-                    b.signalCollision(obj);
-                }
+                checkBodyForCollision(obj, b);
             }
         }
+    }
+}
+
+function checkBodyForCollision(obj: Body, b: Body) {
+    if (CircleCollider.check(obj, b)) {
+        obj.signalCollision(b);
+        b.signalCollision(obj);
     }
 }

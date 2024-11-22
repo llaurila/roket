@@ -14,6 +14,7 @@ import Fuel from "./Fuel";
 import { Config } from "./config";
 import { DefaultColor, HudItemDisabled } from "./Hud/HudItem";
 import { UI } from "./UI/UI";
+import { ConditionalAction } from "./types";
 
 const DEFAULT_ZOOM = 3;
 
@@ -103,20 +104,32 @@ abstract class Level {
         this.physics.update(time, delta);
 
         if (!this.ended) {
-            this.updateInternal();
+            this.checkForCompletion();
         }
     }
 
-    private updateInternal() {
-        if (!this.ship.alive) {
-            this.failure("YOUR SHIP HAS BEEN DESTROYED.");
-        }
-        else if (this.ship.fuelTank.isEmpty()) {
-            this.failure("YOU RAN OUT OF FUEL.");
-        }
-        else if (this.objectivesCleared()) {
-            this.success();
-        }
+    private checkForCompletion() {
+        const rules: ConditionalAction[] = [
+            {
+                condition: () => !this.ship.alive,
+                action: () => this.failure("YOUR SHIP HAS BEEN DESTROYED.")
+            },
+            {
+                condition: () => this.ship.fuelTank.isEmpty(),
+                action: () => this.failure("YOU RAN OUT OF FUEL.")
+            },
+            {
+                condition: () => this.objectivesCleared(),
+                action: () => this.success()
+            }
+        ];
+
+        rules.forEach(rule => {
+            if (rule.condition()) {
+                rule.action();
+                return;
+            }
+        });
     }
 
     objectivesCleared(): boolean {
@@ -133,17 +146,23 @@ abstract class Level {
 
     private getNumberOfClearedObjectives() {
         let numCleared = 0;
+
+        function checkForCleared(objective: Objective) {
+            if (objective.check()) {
+                objective.cleared = true;
+                numCleared++;
+            }
+        }
+        
         for (const objective of this.objectives) {
             if (objective.cleared) {
                 numCleared++;
             }
             else {
-                if (objective.check()) {
-                    objective.cleared = true;
-                    numCleared++;
-                }
+                checkForCleared(objective);
             }
         }
+        
         return numCleared;
     }
 

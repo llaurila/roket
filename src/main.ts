@@ -52,13 +52,15 @@ function loadLevel(number: number) {
     }
 
     function handleNextLevel() {
-        if (continueButton() && level.passed) {
+        if (shouldContinueToNextLevel()) {
             if (++currentLevel < levelTypes.length) {
                 game.stop();
                 loadLevel(currentLevel);
             }
         }
     }
+
+    const shouldContinueToNextLevel = () => continueButton() && level.passed;
 
     function handleRestart() {
         if (restartButton()) {

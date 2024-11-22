@@ -46,19 +46,24 @@ class Cosmos implements IDrawable {
 
         for (let x = bottomLeftSegment.x; x <= topRightSegment.x; x++) {
             for (let y = bottomLeftSegment.y; y <= topRightSegment.y; y++) {
-                const segment = this.getSegment(x, y);
-
-                for (const star of segment.stars) {
+                this.forSegment(x, y, star => {
                     const p = camera.toScreenCoordinates(ctx, star.pos).div(star.z);
                     ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity / star.z})`;
                     ctx.beginPath();
                     ctx.arc(p.x, p.y, star.size, 0, 2 * Math.PI);
                     ctx.fill();
-                }
+                });
             }
         }
 
         ctx.restore();
+    }
+
+    private forSegment(x: number, y: number, action: (star: IStar) => void) {
+        const segment = this.getSegment(x, y);
+        for (const star of segment.stars) {
+            action(star);
+        }
     }
 
     private getSegment(x: number, y: number): IStarSegment {

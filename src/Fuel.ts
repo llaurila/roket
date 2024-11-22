@@ -55,19 +55,27 @@ class Fuel extends Body implements IDrawable {
     updateGfx(time: number, delta: number) {
         switch (this.state) {
         case State.Pulse:
-            this.opacity = config.opacityMin +
-                Math.sin(time * Math.PI * 2 * config.pulseHz) *
-                    (config.opacityMax - config.opacityMin);
+            this.pulse(time);
             break;
 
         case State.FadeOut:
-            this.opacity -= delta * (Math.PI * 2 * config.pulseHz);
-            if (this.opacity <= 0) {
-                this.opacity = 0;
-                this.state = State.Dead;
-                this._alive = false;
-            }
+            this.fadeOut(delta);
             break;
+        }
+    }
+
+    private pulse(time: number) {
+        this.opacity = config.opacityMin +
+            Math.sin(time * Math.PI * 2 * config.pulseHz) *
+            (config.opacityMax - config.opacityMin);
+    }
+
+    private fadeOut(delta: number) {
+        this.opacity -= delta * (Math.PI * 2 * config.pulseHz);
+        if (this.opacity <= 0) {
+            this.opacity = 0;
+            this.state = State.Dead;
+            this._alive = false;
         }
     }
 

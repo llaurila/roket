@@ -75,17 +75,22 @@ class GameOfTag extends Level {
     }
 
     update(time: number, delta: number) {
-        const INITIAL_SPEED = 10;
-
         super.update(time, delta);
-
-        if (!this.started && this.ship.v.length() > 0) {
-            this.otherShip.v = this.otherShip.getHeading().mul(INITIAL_SPEED);
-            this.started = true;
-        }
 
         if (this.started) {
             this.makeNpcDecisions();
+        }
+        else {
+            this.startNpcWhenPlayerMoves();
+        }
+    }
+
+    private startNpcWhenPlayerMoves() {
+        const INITIAL_SPEED = 10;
+
+        if (this.ship.v.length() > 0) {
+            this.otherShip.v = this.otherShip.getHeading().mul(INITIAL_SPEED);
+            this.started = true;
         }
     }
 

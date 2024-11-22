@@ -7,6 +7,11 @@ export interface IRelativeProps {
 
 export type Action = () => void;
 
+export interface ConditionalAction {
+    condition: () => boolean;
+    action: Action;
+}
+
 export interface IRecurringTask {
     interval: number;
     func: Action;

@@ -20,12 +20,7 @@ export default {
             const controller = navigator.getGamepads()[gamepadIndex];
 
             if (controller) {
-                const prev = pressedButtons[buttonIndex];
-                const current = controller.buttons[buttonIndex].pressed;
-
-                pressedButtons[buttonIndex] = current;
-
-                return !prev && current;
+                return wasPressed(buttonIndex, controller);
             }
         }
 
@@ -43,3 +38,10 @@ export default {
         throw new Error("Unknown axis.");
     }
 };
+
+function wasPressed(buttonIndex: number, controller: Gamepad) {
+    const prev = pressedButtons[buttonIndex];
+    const current = controller.buttons[buttonIndex].pressed;
+    pressedButtons[buttonIndex] = current;
+    return !prev && current;
+}
