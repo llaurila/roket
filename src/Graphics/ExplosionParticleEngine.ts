@@ -21,6 +21,15 @@ class ExplosionParticleEngine extends ParticleEngine {
         this.explode(explosion);
     }
 
+    public get alive() {
+        return this.ttl > 0;
+    }
+
+    public update(time: number, delta: number) {
+        super.update(time, delta);
+        this.ttl -= delta;
+    }
+
     public explode(explosion: IExplosionSpec): void {
         for (let i = 0; i < explosion.particleCount; i++) {
             this.particles.push(
@@ -46,15 +55,6 @@ class ExplosionParticleEngine extends ParticleEngine {
             velocity,
             random(-MAX_ANGULAR_VELOCITY, MAX_ANGULAR_VELOCITY)
         );
-    }
-
-    public update(time: number, delta: number) {
-        super.update(time, delta);
-        this.ttl -= delta;
-    }
-
-    public get alive() {
-        return this.ttl > 0;
     }
 }
 

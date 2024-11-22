@@ -39,23 +39,6 @@ class Ship extends Body implements IDrawable {
         this.fireInternal();
     }
 
-    private fireInternal(): void {
-        const ammo = new Ammo(
-            this.pos.add(this.getHeading().mul(ShipConfig.AMMO_START_POS))
-        );
-        
-        ammo.rotation = this.rotation;
-        ammo.v = this.v;
-
-        const F = this.getHeading().mul(ShipConfig.AMMO_FORCE);
-
-        ammo.applyForce(F, ammo.centerOfMass);
-        this.applyForce(F.neg(), this.centerOfMass);
-
-        this.physics?.add(ammo);
-        this.graphics?.add(ammo);
-    }
-
     public update(time: number, delta: number) {
         super.update(time, delta);
 
@@ -109,6 +92,23 @@ class Ship extends Body implements IDrawable {
             this.engineLeft.draw(ctx, camera);
             this.engineRight.draw(ctx, camera);
         }
+    }
+
+    private fireInternal(): void {
+        const ammo = new Ammo(
+            this.pos.add(this.getHeading().mul(ShipConfig.AMMO_START_POS))
+        );
+        
+        ammo.rotation = this.rotation;
+        ammo.v = this.v;
+
+        const F = this.getHeading().mul(ShipConfig.AMMO_FORCE);
+
+        ammo.applyForce(F, ammo.centerOfMass);
+        this.applyForce(F.neg(), this.centerOfMass);
+
+        this.physics?.add(ammo);
+        this.graphics?.add(ammo);
     }
 }
 

@@ -19,6 +19,20 @@ export class FuelGauge implements IDrawable {
         return this._alive;
     }
 
+    private static drawCaption(ctx: CanvasRenderingContext2D) {
+        ctx.font = `${Config.hud.fontSize}px ${Config.typography.fontFamily}`;
+        ctx.textBaseline = "top";
+        ctx.textAlign = "right";
+
+        ctx.fillStyle = getColorString(Config.typography.defaultColor);
+
+        ctx.fillText(
+            "FUEL",
+            ctx.canvas.width - PADDING * 2 - WIDTH,
+            ctx.canvas.height - PADDING - HEIGHT
+        );
+    }
+
     public draw(ctx: CanvasRenderingContext2D): void {
         const { currentAmount, capacity } = this.ship.fuelTank;
         const relative = currentAmount / capacity;
@@ -46,19 +60,5 @@ export class FuelGauge implements IDrawable {
         FuelGauge.drawCaption(ctx);
 
         ctx.restore();
-    }
-
-    private static drawCaption(ctx: CanvasRenderingContext2D) {
-        ctx.font = `${Config.hud.fontSize}px ${Config.typography.fontFamily}`;
-        ctx.textBaseline = "top";
-        ctx.textAlign = "right";
-
-        ctx.fillStyle = getColorString(Config.typography.defaultColor);
-
-        ctx.fillText(
-            "FUEL",
-            ctx.canvas.width - PADDING * 2 - WIDTH,
-            ctx.canvas.height - PADDING - HEIGHT
-        );
     }
 }

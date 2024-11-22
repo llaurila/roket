@@ -50,6 +50,14 @@ class Engine implements IUpdatable, IDrawable {
         return this.output / this.config.maxThrust;
     }
 
+    public get worldPosition(): Vector {
+        return this.parent.pos.add(this.relativeProps.position.rotate(this.worldRotation));
+    }
+
+    public get worldRotation(): number {
+        return this.parent.rotation + this.relativeProps.rotation;
+    }
+
     public get burning() {
         if (this.fuelTank.isEmpty()) {
             return false;
@@ -77,14 +85,6 @@ class Engine implements IUpdatable, IDrawable {
         );
     }
 
-    public get worldPosition(): Vector {
-        return this.parent.pos.add(this.relativeProps.position.rotate(this.worldRotation));
-    }
-
-    public get worldRotation(): number {
-        return this.parent.rotation + this.relativeProps.rotation;
-    }
-
     public getHeading = () => this.parent.getHeading().rotate(this.relativeProps.rotation);
 
     public update(time: number, delta: number) {
@@ -99,6 +99,9 @@ class Engine implements IUpdatable, IDrawable {
 
         this.particleEngineController.update(time, delta);
     }
+
+    public draw = (ctx: CanvasRenderingContext2D, camera: Camera) =>
+        this.particleEngineController.draw(ctx, camera);
 
     private updateOutput(delta: number) {
         if (this.fuelTank.isEmpty()) {
@@ -117,9 +120,6 @@ class Engine implements IUpdatable, IDrawable {
             this.output += change;
         }
     }
-
-    public draw = (ctx: CanvasRenderingContext2D, camera: Camera) =>
-        this.particleEngineController.draw(ctx, camera);
 }
 
 export default Engine;

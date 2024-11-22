@@ -38,6 +38,15 @@ export class UIWindow implements IDrawable, IUpdatable {
         this.height = height;
     }
 
+    public update(_time: number, delta: number) {
+        if (this.fadeOut) {
+            this.opacity = Math.max(0, this.opacity - delta / config.fadeOutDuration);
+            if (this.opacity == 0) {
+                this.alive = false;
+            }
+        }
+    }
+
     public draw(ctx: CanvasRenderingContext2D, _camera: Camera) {
         ctx.save();
         ctx.resetTransform();
@@ -48,6 +57,16 @@ export class UIWindow implements IDrawable, IUpdatable {
         this.drawContent(ctx);
 
         ctx.restore();
+    }
+
+    protected getContentRect(ctx: CanvasRenderingContext2D): Rectangle {
+        const titleRect = this.getTitleRect(ctx);
+        const titleSpace = titleRect.size.y + config.margin;
+
+        return new Rectangle(
+            titleRect.topLeft.add(Vector.UnitY.mul(titleSpace)),
+            new Vector(this.width, this.getHeight(ctx) - titleSpace)
+        );
     }
 
     private getHeight(ctx: CanvasRenderingContext2D): number {
@@ -99,24 +118,5 @@ export class UIWindow implements IDrawable, IUpdatable {
         }
 
         return new Rectangle(topLeft, size);
-    }
-
-    protected getContentRect(ctx: CanvasRenderingContext2D): Rectangle {
-        const titleRect = this.getTitleRect(ctx);
-        const titleSpace = titleRect.size.y + config.margin;
-
-        return new Rectangle(
-            titleRect.topLeft.add(Vector.UnitY.mul(titleSpace)),
-            new Vector(this.width, this.getHeight(ctx) - titleSpace)
-        );
-    }
-
-    public update(_time: number, delta: number) {
-        if (this.fadeOut) {
-            this.opacity = Math.max(0, this.opacity - delta / config.fadeOutDuration);
-            if (this.opacity == 0) {
-                this.alive = false;
-            }
-        }
     }
 }

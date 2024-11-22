@@ -42,7 +42,8 @@ export default tseslint.config(
             '@typescript-eslint/consistent-type-definitions': 'error',
             '@typescript-eslint/consistent-type-imports': 'error',
             '@typescript-eslint/explicit-member-accessibility': 'error',
-
+            '@typescript-eslint/member-ordering': 'error',
+            '@typescript-eslint/method-signature-style': 'error',
         }
     }
 );

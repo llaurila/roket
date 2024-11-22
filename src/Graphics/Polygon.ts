@@ -13,6 +13,19 @@ class Polygon {
         return this.pts[0];
     }
 
+    public static make(pts: number[]): Polygon {
+        const v: Vector[] = [];
+
+        for (let i = 0; i < pts.length; i += 2) {
+            v.push(new Vector(
+                pts[i],
+                pts[i + 1]
+            ));
+        }
+
+        return new Polygon(v);
+    }
+
     public translate(v: Vector): Polygon {
         return new Polygon(
             this.pts.map(v_ => v_.add(v))
@@ -74,19 +87,6 @@ class Polygon {
         }
 
         ctx.closePath();
-    }
-
-    public static make(pts: number[]): Polygon {
-        const v: Vector[] = [];
-
-        for (let i = 0; i < pts.length; i += 2) {
-            v.push(new Vector(
-                pts[i],
-                pts[i + 1]
-            ));
-        }
-
-        return new Polygon(v);
     }
 }
 

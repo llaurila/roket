@@ -25,6 +25,10 @@ class SprayParticleEngine extends ParticleEngine {
         this.velocity = velocity;
     }
 
+    public get shouldEmit(): boolean {
+        return this.timeSinceLastEmitted > (1 / this.getRate());
+    }
+
     public start(getRate: () => number): void {
         this.getRate = getRate;
         this.timeSinceLastEmitted = 0;
@@ -33,10 +37,6 @@ class SprayParticleEngine extends ParticleEngine {
 
     public stop(): void {
         this.emitting = false;
-    }
-
-    public get shouldEmit(): boolean {
-        return this.timeSinceLastEmitted > (1 / this.getRate());
     }
 
     public emitOne(): void {

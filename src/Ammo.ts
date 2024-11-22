@@ -21,17 +21,17 @@ class Ammo extends Body implements IDrawable {
         this.mass = 1;
     }
 
-    public update(time: number, delta: number) {
-        super.update(time, delta);
-        this.age += delta;
-    }
-
     public get alive() {
         return this.age < this.ttl;
     }
 
     public get relativeAge(): number {
         return this.age / this.ttl;
+    }
+
+    public update(time: number, delta: number) {
+        super.update(time, delta);
+        this.age += delta;
     }
 
     public draw(ctx: CanvasRenderingContext2D, camera: Camera) {

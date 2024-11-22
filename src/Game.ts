@@ -53,6 +53,18 @@ class Game {
         window.requestAnimationFrame(gameLoop);
     }
 
+    public stop() {
+        this.running = false;
+    }
+
+    public every(interval: number, func: Action) {
+        this.recurringTasks.push({
+            interval,
+            func,
+            prevRun: 0
+        });
+    }
+
     private updatePhysics(delta: number, time: number) {
         const frames = Math.ceil(Config.physics.updateFreqHz * delta);
         const frameDelta = delta / frames;
@@ -68,18 +80,6 @@ class Game {
                 task.func();
             }
         }
-    }
-
-    public stop() {
-        this.running = false;
-    }
-
-    public every(interval: number, func: Action) {
-        this.recurringTasks.push({
-            interval,
-            func,
-            prevRun: 0
-        });
     }
 }
 

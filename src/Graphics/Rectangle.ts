@@ -9,18 +9,18 @@ export default class Rectangle {
         this.size = size;
     }
 
+    public static get Zero() {
+        return new Rectangle(
+            Vector.Zero,
+            Vector.Zero
+        );
+    }
+
     public fill(ctx: CanvasRenderingContext2D) {
         ctx.fillRect(this.topLeft.x, this.topLeft.y, this.size.x, this.size.y);
     }
 
     public stroke(ctx: CanvasRenderingContext2D) {
         ctx.strokeRect(this.topLeft.x, this.topLeft.y, this.size.x, this.size.y);
-    }
-
-    public static get Zero() {
-        return new Rectangle(
-            Vector.Zero,
-            Vector.Zero
-        );
     }
 }

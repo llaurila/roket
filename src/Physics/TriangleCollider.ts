@@ -28,6 +28,19 @@ class TriangleCollider {
         this.pts = new Triangle(a, b, c);
     }
 
+    // eslint-disable-next-line complexity 
+    public static check(a: Body, b: Body): boolean {
+        if (a.triangleCollider && b.triangleCollider) {
+            return a.triangleCollider.containsPoint(b.triangleCollider.pts.a) ||
+                a.triangleCollider.containsPoint(b.triangleCollider.pts.b) ||
+                a.triangleCollider.containsPoint(b.triangleCollider.pts.c) ||
+                b.triangleCollider.containsPoint(a.triangleCollider.pts.a) ||
+                b.triangleCollider.containsPoint(a.triangleCollider.pts.b) ||
+                b.triangleCollider.containsPoint(a.triangleCollider.pts.c);
+        }
+        return false;
+    }
+
     public containsPoint(v: Vector): boolean {
         const TOLERANCE = 0.01;
 
@@ -40,19 +53,6 @@ class TriangleCollider {
             t1.getArea() + t2.getArea() + t3.getArea(),
             TOLERANCE
         );
-    }
-
-    // eslint-disable-next-line complexity 
-    public static check(a: Body, b: Body): boolean {
-        if (a.triangleCollider && b.triangleCollider) {
-            return a.triangleCollider.containsPoint(b.triangleCollider.pts.a) ||
-                a.triangleCollider.containsPoint(b.triangleCollider.pts.b) ||
-                a.triangleCollider.containsPoint(b.triangleCollider.pts.c) ||
-                b.triangleCollider.containsPoint(a.triangleCollider.pts.a) ||
-                b.triangleCollider.containsPoint(a.triangleCollider.pts.b) ||
-                b.triangleCollider.containsPoint(a.triangleCollider.pts.c);
-        }
-        return false;
     }
 }
 

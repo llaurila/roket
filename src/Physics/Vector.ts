@@ -10,6 +10,26 @@ class Vector {
         this.y = y;
     }
 
+    public static get Zero() {
+        return new Vector(0, 0);
+    }
+
+    public static get One() {
+        return new Vector(1, 1);
+    }
+
+    public static get Up() {
+        return new Vector(0, 1);
+    }
+
+    public static get UnitX() {
+        return new Vector(1, 0);
+    }
+
+    public static get UnitY() {
+        return new Vector(0, 1);
+    }
+
     public add(v2: Vector): Vector {
         return new Vector(
             this.x + v2.x,
@@ -95,26 +115,6 @@ class Vector {
 
     public toString(decimals = 1): string {
         return `[${this.x.toFixed(decimals)}, ${this.y.toFixed(decimals)}]`;
-    }
-
-    public static get Zero() {
-        return new Vector(0, 0);
-    }
-
-    public static get One() {
-        return new Vector(1, 1);
-    }
-
-    public static get Up() {
-        return new Vector(0, 1);
-    }
-
-    public static get UnitX() {
-        return new Vector(1, 0);
-    }
-
-    public static get UnitY() {
-        return new Vector(0, 1);
     }
 }
 

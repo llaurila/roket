@@ -31,6 +31,10 @@ abstract class Level {
 
     private endController = new LevelEndController(this);
 
+    public get ended(): boolean {
+        return this.passed || this.failureMessage != undefined;
+    }
+
     public abstract get name(): string;
 
     public abstract get description(): string;
@@ -61,10 +65,6 @@ abstract class Level {
 
     public getPhysics = () => this.physics;
 
-    public abstract createObjects(): void;
-
-    public abstract createObjectives(): void;
-
     public addFuelCapsule(fuelCapsule: Fuel): void {
         this.physics.add(fuelCapsule);
         this.graphics.add(fuelCapsule);
@@ -87,10 +87,6 @@ abstract class Level {
         return numCleared == this.objectives.length;
     }
 
-    public get ended(): boolean {
-        return this.passed || this.failureMessage != undefined;
-    }
-
     public success(): void {
         if (this.passed) throw new Error("Already passed.");
         this.passed = true;
@@ -102,6 +98,10 @@ abstract class Level {
         this.failureMessage = message;
         this.endController.showOutro();
     }
+
+    public abstract createObjects(): void;
+
+    public abstract createObjectives(): void;
 }
 
 export default Level;

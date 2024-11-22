@@ -28,6 +28,10 @@ class Body implements IUpdatable {
         this.pos = position;
     }
 
+    public get alive() {
+        return this._alive;
+    }
+
     public onCollision(callback: (e: ICollisionEvent) => void) {
         this.colliderCallbacks.push(callback);
     }
@@ -38,10 +42,6 @@ class Body implements IUpdatable {
                 target
             });
         }
-    }
-
-    public get alive() {
-        return this._alive;
     }
 
     public getHeading() {
