@@ -88,21 +88,29 @@ export default class UIDrawer {
         align: TextAlign = TextAlign.Left,
         offsetX = 0
     ): void {
-        let x = LINE_START_X;
-
-        switch (align) {
-        case TextAlign.Right:
-            x = LINE_END_X - this.ctx.measureText(text).width;
-            break;
-
-        case TextAlign.Center:
-            x = LINE_START_X + (LINE_LENGTH - this.ctx.measureText(text).width) / 2;
-            break;
-        }
-
-        this.ctx.fillText(text, x + offsetX, getLineY(lineNumber));
+        this.ctx.fillText(
+            text,
+            this.getLineX(text, align) + offsetX,
+            getLineY(lineNumber)
+        );
     }
+
+    private getLineX(text: string, align: TextAlign): number {
+        const lineXFuncs: Record<TextAlign, LineXFunc> = {
+            [TextAlign.Left]:
+            () => LINE_START_X,
+
+            [TextAlign.Right]:
+            text => LINE_END_X - this.ctx.measureText(text).width,
+
+            [TextAlign.Center]:
+            text => LINE_START_X + (LINE_LENGTH - this.ctx.measureText(text).width) / 2
+        };
+        return lineXFuncs[align](text);
+    }    
 }
+
+type LineXFunc = (text: string) => number;
 
 function getLineY(lineNumber: number): number {
     const cfg = config.window;

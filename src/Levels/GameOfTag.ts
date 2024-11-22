@@ -89,37 +89,61 @@ class GameOfTag extends Level {
         }
     }
 
-    private makeNpcDecisions() {
-        const target = this.ship.pos.add(this.ship.v.neg());
-        const toTarget = target.sub(this.otherShip.pos).normalize();
-        const turn = this.otherShip.getHeading().cross(toTarget);
-
-        this.otherShip.engineLeft.setThrottle(0);
-        this.otherShip.engineRight.setThrottle(0);
-
-        if (Math.abs(this.otherShip.angularVelocity) > 0.5) {
-            if (this.otherShip.angularVelocity >= 0) {
-                this.otherShip.engineLeft.setThrottle(
-                    Math.min(this.otherShip.angularVelocity, 1)
-                );
-            } else {
-                this.otherShip.engineRight.setThrottle(
-                    Math.min(-this.otherShip.angularVelocity, 1)
-                );
-            }
+    private makeNpcDecisions(): void {
+        if (this.isSpinning()) {
+            this.handleSpin();
         }
         else {
-            if (Math.abs(turn) < CORRECT_HEADING_TOLERANCE) {
-                this.otherShip.engineLeft.setThrottle(1);
-                this.otherShip.engineRight.setThrottle(1);
-            }
-            else if (turn >= 0) {
-                this.otherShip.engineRight.setThrottle(turn);
-            } else {
-                this.otherShip.engineLeft.setThrottle(-turn);
-            }
+            const turnAngle = this.getTurnTowardsTarget();
+            this.accelerateTowardsTarget(turnAngle);
         }
     }
+
+    private resetThrottle() {
+        this.otherShip.engineLeft.setThrottle(0);
+        this.otherShip.engineRight.setThrottle(0);
+    }
+
+    private accelerateTowardsTarget(turn: number) {
+        this.resetThrottle();
+
+        if (Math.abs(turn) < CORRECT_HEADING_TOLERANCE) {
+            this.otherShip.engineLeft.setThrottle(1);
+            this.otherShip.engineRight.setThrottle(1);
+        }
+        else if (turn >= 0) {
+            this.otherShip.engineRight.setThrottle(turn);
+        } else {
+            this.otherShip.engineLeft.setThrottle(-turn);
+        }
+    }
+
+    private handleSpin() {
+        this.resetThrottle();
+
+        if (this.otherShip.angularVelocity >= 0) {
+            this.otherShip.engineLeft.setThrottle(
+                Math.min(this.otherShip.angularVelocity, 1)
+            );
+        } else {
+            this.otherShip.engineRight.setThrottle(
+                Math.min(-this.otherShip.angularVelocity, 1)
+            );
+        }
+    }
+
+    private isSpinning(): boolean {
+        const SPIN_THRESHOLD = 0.5;
+        return Math.abs(this.otherShip.angularVelocity) > SPIN_THRESHOLD;
+    }
+
+    private getTurnTowardsTarget(): number {
+        const target = this.getVectorToTarget();
+        const headingToTarget = target.sub(this.otherShip.pos).normalize();
+        return this.otherShip.getHeading().cross(headingToTarget);
+    }
+
+    private getVectorToTarget = () => this.ship.pos.add(this.ship.v.neg());
 }
 
 export default GameOfTag;

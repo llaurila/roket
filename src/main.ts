@@ -25,7 +25,6 @@ loadLevel(currentLevel);
 
 function loadLevel(number: number) {
     const level: Level = new levelTypes[number];
-    //level.constructor.apply(level);
 
     const game = new Game(update, draw, level.camera);
 
@@ -106,13 +105,20 @@ function handleDebug(game: Game) {
 }
 
 function handleDebugLevelChange(game: Game) {
+    handleDebugLevelChangeNext(game);
+    handleDebugLevelChangePrevious(game);
+}
+
+function handleDebugLevelChangeNext(game: Game) {
     if (nextLevelButton()) {
         if (++currentLevel < levelTypes.length) {
             game.stop();
             loadLevel(currentLevel);
         }
     }
+}
 
+function handleDebugLevelChangePrevious(game: Game) {
     if (previousLevelButton()) {
         if (currentLevel-- > 0) {
             game.stop();

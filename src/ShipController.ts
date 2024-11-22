@@ -16,13 +16,8 @@ class ShipController {
     control() {
         this.handleAnalog();
 
-        if (cw()) {
-            this.ship.engineLeft.burning = true;
-        }
-
-        if (ccw()) {
-            this.ship.engineRight.burning = true;
-        }
+        this.handleLeft();
+        this.handleRight();
 
         if (!this.burningBoth() && burning())
         {
@@ -30,6 +25,9 @@ class ShipController {
             this.ship.engineRight.burning = true;
         }
     }
+
+    private handleLeft = () => { if (cw()) this.ship.engineLeft.burning = true; }
+    private handleRight = () => { if (ccw()) this.ship.engineRight.burning = true; }
 
     private burningBoth = () => this.ship.engineLeft.burning && this.ship.engineRight.burning;
 

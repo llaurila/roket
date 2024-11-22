@@ -96,21 +96,7 @@ class Engine implements IUpdatable, IDrawable {
     }
 
     update(time: number, delta: number) {
-        if (this.fuelTank.isEmpty()) {
-            this.output = 0;
-        }
-        else {
-            const { maxOutputChangeRate } = this.config;
-
-            const targetChange = this.targetOutput - this.output;
-
-            const change = Math.max(
-                Math.min(targetChange, maxOutputChangeRate * delta),
-                -maxOutputChangeRate  * delta
-            );
-
-            this.output += change;
-        }
+        this.updateOutput(delta);
 
         this.particleEngine.pos = this.worldPosition;
         this.particleEngine.originVelocity = this.parent.v;
@@ -131,6 +117,24 @@ class Engine implements IUpdatable, IDrawable {
         }
 
         this.particleEngine.update(time, delta);
+    }
+
+    private updateOutput(delta: number) {
+        if (this.fuelTank.isEmpty()) {
+            this.output = 0;
+        }
+        else {
+            const { maxOutputChangeRate } = this.config;
+
+            const targetChange = this.targetOutput - this.output;
+
+            const change = Math.max(
+                Math.min(targetChange, maxOutputChangeRate * delta),
+                -maxOutputChangeRate  * delta
+            );
+
+            this.output += change;
+        }
     }
 
     draw(ctx: CanvasRenderingContext2D, camera: Camera) {

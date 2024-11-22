@@ -103,15 +103,19 @@ abstract class Level {
         this.physics.update(time, delta);
 
         if (!this.ended) {
-            if (!this.ship.alive) {
-                this.failure("YOUR SHIP HAS BEEN DESTROYED.");
-            }
-            else if (this.ship.fuelTank.isEmpty()) {
-                this.failure("YOU RAN OUT OF FUEL.");
-            }
-            else if (this.objectivesCleared()) {
-                this.success();
-            }
+            this.updateInternal();
+        }
+    }
+
+    private updateInternal() {
+        if (!this.ship.alive) {
+            this.failure("YOUR SHIP HAS BEEN DESTROYED.");
+        }
+        else if (this.ship.fuelTank.isEmpty()) {
+            this.failure("YOU RAN OUT OF FUEL.");
+        }
+        else if (this.objectivesCleared()) {
+            this.success();
         }
     }
 
