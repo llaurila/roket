@@ -78,15 +78,21 @@ function getCompletionRules(level: Level): ConditionalAction[] {
     return [
         {
             condition: () => !level.ship.alive,
-            action: () => level.failure("YOUR SHIP HAS BEEN DESTROYED.")
+            action: () => {
+                level.failure("YOUR SHIP HAS BEEN DESTROYED.");
+            }
         },
         {
             condition: () => level.ship.fuelTank.isEmpty(),
-            action: () => level.failure("YOU RAN OUT OF FUEL.")
+            action: () => {
+                level.failure("YOU RAN OUT OF FUEL.");
+            }
         },
         {
             condition: () => level.objectivesCleared(),
-            action: () => level.success()
+            action: () => {
+                level.success();
+            }
         }
     ];
 }

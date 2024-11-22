@@ -100,8 +100,9 @@ class Engine implements IUpdatable, IDrawable {
         this.particleEngineController.update(time, delta);
     }
 
-    public draw = (ctx: CanvasRenderingContext2D, camera: Camera) =>
+    public draw = (ctx: CanvasRenderingContext2D, camera: Camera) => {
         this.particleEngineController.draw(ctx, camera);
+    };
 
     private updateOutput(delta: number) {
         if (this.fuelTank.isEmpty()) {

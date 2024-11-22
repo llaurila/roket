@@ -26,8 +26,8 @@ class ShipController {
         }
     }
 
-    private handleLeft = () => { if (cw()) this.ship.engineLeft.burning = true; }
-    private handleRight = () => { if (ccw()) this.ship.engineRight.burning = true; }
+    private handleLeft = () => { if (cw()) this.ship.engineLeft.burning = true; };
+    private handleRight = () => { if (ccw()) this.ship.engineRight.burning = true; };
 
     private burningBoth = () => this.ship.engineLeft.burning && this.ship.engineRight.burning;
 

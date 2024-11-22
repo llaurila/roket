@@ -1,7 +1,7 @@
 import type Ship from "../../Ship";
 import LevelConfig from "./config";
 
-class NPC_AI {
+class NPCAI {
     private player: Ship;
     private me: Ship;
 
@@ -67,4 +67,4 @@ class NPC_AI {
     private getVectorToTarget = () => this.player.pos.add(this.player.v.neg());
 }
 
-export default NPC_AI;
+export default NPCAI;

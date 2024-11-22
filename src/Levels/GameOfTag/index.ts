@@ -8,7 +8,7 @@ import RNG from "../../RNG";
 import { Config } from "../../config";
 import LevelConfig from "./config";
 import { generateFuelCapsule } from "./fuel";
-import NPC_AI from "./NPC_AI";
+import NPCAI from "./NPCAI";
 
 class GameOfTag extends Level {
     public name = "LEVEL 4: GAME OF TAG";
@@ -16,7 +16,7 @@ class GameOfTag extends Level {
 
     public rng: RNG = new RNG(LevelConfig.RAND_SEED);
     public enemy: Ship = new Ship(LevelConfig.OTHER_SHIP_OFFSET);
-    public ai?: NPC_AI;
+    public ai?: NPCAI;
     
     public started = false;
     public caught = false;
@@ -40,7 +40,7 @@ class GameOfTag extends Level {
             }
         });
 
-        this.ai = new NPC_AI(this.ship, this.enemy);
+        this.ai = new NPCAI(this.ship, this.enemy);
 
         this.generateNewFuelCapsule();
     }

@@ -24,6 +24,7 @@ export default tseslint.config(
             'no-magic-numbers': ["error", { "ignore": [-1, -.5, 0, .5, 1, 2, 100, 1000] }],
             'complexity': ['error', 3],
             'quotes': ['error', 'double'],
+            'semi': ['error', 'always'],
             
             // TypeScript
             '@typescript-eslint/no-unused-vars': ['error', { 'argsIgnorePattern': '^_' }],
@@ -44,6 +45,32 @@ export default tseslint.config(
             '@typescript-eslint/explicit-member-accessibility': 'error',
             '@typescript-eslint/member-ordering': 'error',
             '@typescript-eslint/method-signature-style': 'error',
+            "@typescript-eslint/naming-convention": [
+              "error",
+              {
+                "selector": "variable",
+                "format": [
+                  "camelCase",
+                  "PascalCase",
+                  "UPPER_CASE"
+                ]
+              },
+              {
+                "selector": "function",
+                "format": [
+                  "camelCase",
+                  "PascalCase"
+                ]
+              },
+              {
+                "selector": "typeLike",
+                "format": [
+                  "PascalCase"
+                ]
+              }
+            ],
+            '@typescript-eslint/no-base-to-string': 'error',
+            '@typescript-eslint/no-confusing-void-expression': 'error',
         }
     }
 );
