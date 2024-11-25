@@ -3,11 +3,10 @@ import type Camera from "../Graphics/Camera";
 import UniqueIdProvider from "../UniqueIdProvider";
 import { UIWindow, WindowPosition } from "../UIWindow";
 import Vector from "../Physics/Vector";
-import type Body from "../Physics/Body";
 import { Config } from "../config";
 import UIDrawer from "./UIDrawer";
-import { radToDeg } from "../Utils";
 import type Level from "../Level";
+import { getBearing } from "./utils";
 
 const config = Config.ui.missionControl;
 
@@ -36,7 +35,23 @@ export class UI implements IDrawable {
         const drawer = new UIDrawer(ctx);
 
         drawer.drawNumericField("DELTA", getDeltaTimeFormatted(physics.time));
-        drawer.drawNumericField("CURRENT VELOCITY", ship.v.length().toFixed(1) + " M/S");
+
+        drawer.drawTitle("SPEED");
+
+        drawer.drawNumericField(
+            "CURRENT VELOCITY",
+            ship.v.length().toFixed() + " M/S"
+        );
+
+        drawer.drawNumericField(
+            "ACCELERATION",
+            ship.getAcceleration().length().toFixed(1) + " M/S"
+        );
+
+        drawer.drawNumericField(
+            "ANGULAR VELOCITY",
+            ship.angularVelocity.toFixed(1) + " RAD/S"
+        );
 
         drawer.drawTitle("POSITION RELATIVE TO BEACON");
 
@@ -60,27 +75,4 @@ function getDeltaTimeFormatted(t: number): string {
     const m = Math.floor(s / SECS_PER_MIN);
 
     return `T+${m}:${String(s % SECS_PER_MIN).padStart(2, "0")}`;
-}
-
-function getBearing(body: Body, target: Vector): string {
-    const FULL_CIRCLE = 360;
-
-    const v1 = target.sub(body.pos).normalize();
-    const v2 = body.v.normalize();
-
-    const dot = v1.dot(v2);
-    const det  = v1.cross(v2);
-
-    let angle = radToDeg(Math.atan2(det, dot));
-
-    if (Number.isNaN(angle)) {
-        angle = 0;
-    }
-    else if (angle < 0) {
-        angle += FULL_CIRCLE;
-    }
-
-    const DIGITS = 3;
-
-    return Math.floor(angle).toFixed().padStart(DIGITS, "0");
 }

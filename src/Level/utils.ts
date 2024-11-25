@@ -1,7 +1,4 @@
-import type { ConditionalAction } from "../types";
-import Level from ".";
-import type Objective from "../Objective";
-import { LevelOutro } from "../LevelOutro";
+import type Level from ".";
 import { DefaultColor, HudItemDisabled } from "../Hud/HudItem";
 import Pointer from "../Controls/Pointer";
 import { UI } from "../UI/UI";
@@ -26,74 +23,4 @@ export function initHud(level: Level) {
     }, debugColor);
 
     level.graphics.add(level.hud);
-}
-
-export function getNumberOfClearedObjectives(objectives: Objective[]) {
-    let numCleared = 0;
-
-    function checkForCleared(objective: Objective) {
-        if (objective.check()) {
-            objective.cleared = true;
-            numCleared++;
-        }
-    }
-    
-    for (const objective of objectives) {
-        if (objective.cleared) {
-            numCleared++;
-        }
-        else {
-            checkForCleared(objective);
-        }
-    }
-    
-    return numCleared;
-}
-
-export class LevelEndController {
-    private level: Level;
-    private rules: ConditionalAction[];
-
-    public constructor(level: Level) {
-        this.level = level;
-        this.rules = getCompletionRules(level);
-    }
-
-    public checkForCompletion() {
-        this.rules.forEach(rule => {
-            if (rule.condition()) {
-                rule.action();
-                return;
-            }
-        });
-    }
-
-    public showOutro(): void {
-        const outro = new LevelOutro(this.level);
-        this.level.physics.add(outro);
-        this.level.graphics.add(outro);
-    }
-}
-
-function getCompletionRules(level: Level): ConditionalAction[] {
-    return [
-        {
-            condition: () => !level.ship.alive,
-            action: () => {
-                level.failure("YOUR SHIP HAS BEEN DESTROYED.");
-            }
-        },
-        {
-            condition: () => level.ship.fuelTank.isEmpty(),
-            action: () => {
-                level.failure("YOU RAN OUT OF FUEL.");
-            }
-        },
-        {
-            condition: () => level.objectivesCleared(),
-            action: () => {
-                level.success();
-            }
-        }
-    ];
 }

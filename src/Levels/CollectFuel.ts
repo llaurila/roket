@@ -5,6 +5,7 @@ import Fuel from "../Fuel";
 import ShipController from "../ShipController";
 import Objective from "../Objective";
 import RNG from "../RNG";
+import { Config } from "../config";
 
 const RAND_SEED = 3287;
 const FUEL_CAPSULE_COUNT = 6;
@@ -13,13 +14,16 @@ const FUEL_CAPSULE_DISTANCE_MAX = 500;
 
 class CollectFuel extends Level {
     public name = "LEVEL 3: COLLECT FUEL";
-    public description = "COLLECT ALL THE FUEL CAPSULES REVEALED BY THE RADAR.";
+    public description = "COLLECT ALL THE FUEL CAPSULES REVEALED BY THE RADAR " +
+        `(${FUEL_CAPSULE_COUNT} IN TOTAL). THE RADAR WILL SHOW YOU THE ` +
+        `${Config.radar.numberOfNearestFueldToDisplay} CLOSEST CAPSULES AT ALL TIMES.`;
 
     public fuelCapsules: Fuel[] = [];
 
     public createObjects(): void {
         this.graphics.add(new Cosmos());
         this.generateFuelCapsules(FUEL_CAPSULE_COUNT);
+        this.ship.fuelTank.currentAmount = 150;
         this.shipController = new ShipController(this.ship);
     }
 

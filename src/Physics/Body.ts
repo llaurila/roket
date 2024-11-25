@@ -21,6 +21,9 @@ class Body implements IUpdatable {
     public colliderCallbacks: ((e: ICollisionEvent) => void)[] = [];
 
     protected _alive = true;
+
+    protected _lastAcceleration: Vector = Vector.Zero;
+
     private forces: Forces = Forces.Zero;
 
     public constructor(position: Vector) {
@@ -52,6 +55,10 @@ class Body implements IUpdatable {
         return this.mass;
     }
 
+    public getAcceleration(): Vector {
+        return this._lastAcceleration;
+    }
+
     public applyForce(F: Vector, point: Vector): void {
         const Torque = (point.sub(this.centerOfMass)).cross(F);
         this.forces = this.forces.add(
@@ -67,8 +74,10 @@ class Body implements IUpdatable {
         if (this.mass > 0) {
             const forces = this.getForces();
 
+            this._lastAcceleration = forces.F.div(this.getMass());
+
             this.v = this.v.add(
-                forces.F.mul(delta).div(this.getMass())
+                this._lastAcceleration.mul(delta)
             );
 
             this.angularVelocity += forces.Torque / this.getMass() * delta;

@@ -2,6 +2,9 @@ import { interpolate } from "../Utils";
 
 export const COLOR_CHANNEL_MAX = 255;
 
+export const COLOR_WHITE = { R: 1, G: 1, B: 1, A: 1 };
+export const COLOR_BLACK = { R: 0, G: 0, B: 0, A: 1 };
+
 export interface IColor {
     R: number,
     G: number,

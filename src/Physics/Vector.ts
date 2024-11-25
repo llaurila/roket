@@ -1,6 +1,3 @@
-import { getCenter } from "../Utils";
-import type IDrawContext from "../Graphics/IDrawContext";
-
 class Vector {
     public x: number;
     public y: number;
@@ -20,6 +17,10 @@ class Vector {
 
     public static get Up() {
         return new Vector(0, 1);
+    }
+
+    public static get Down() {
+        return new Vector(0, -1);
     }
 
     public static get UnitX() {
@@ -101,16 +102,6 @@ class Vector {
             -this.x,
             -this.y
         );
-    }
-
-    public toScreenCoordinates(drawContext: IDrawContext): Vector {
-        const origin = getCenter(drawContext.ctx);
-        const zoom = drawContext.camera.zoom;
-
-        return this
-            .mul(zoom)
-            .add(origin)
-            .add(drawContext.camera.pos.mul(-1 * zoom));
     }
 
     public toString(decimals = 1): string {

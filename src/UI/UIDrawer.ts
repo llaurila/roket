@@ -1,6 +1,8 @@
 import { Config } from "../config";
+import type { IColor } from "../Graphics/Color";
 import { getColorString, getGray } from "../Graphics/Color";
 import type Objective from "../Objective";
+import { ObjectiveState } from "../Objective";
 
 const config = Config.ui;
 
@@ -69,11 +71,7 @@ export default class UIDrawer {
         this.ctx.fillStyle = getColorString(config.control.backgroundColor);
         this.ctx.fillRect(LINE_START_X, y, LINE_LENGTH, config.missionControl.lineHeight + 2);
 
-        this.ctx.fillStyle = getColorString(
-            objective.cleared ?
-                Config.ui.objectives.successColor
-                : Config.typography.defaultColor
-        );
+        this.ctx.fillStyle = getColorString(getObjectiveColor(objective));
 
         const PADDING_LEFT = 4;
         const text = typeof objective.text == "function" ? objective.text() : objective.text;
@@ -107,7 +105,7 @@ export default class UIDrawer {
             text => LINE_START_X + (LINE_LENGTH - this.ctx.measureText(text).width) / 2
         };
         return lineXFuncs[align](text);
-    }    
+    }
 }
 
 type LineXFunc = (text: string) => number;
@@ -116,4 +114,14 @@ function getLineY(lineNumber: number): number {
     const cfg = config.window;
     const MARGINS = 4;
     return cfg.titleHeight + cfg.margin * MARGINS + config.missionControl.lineHeight * lineNumber;
+}
+
+function getObjectiveColor(objective: Objective): IColor {
+    switch (objective.getState()) {
+        case ObjectiveState.Success:
+            return Config.ui.objectives.successColor;
+        case ObjectiveState.Failure:
+            return Config.ui.objectives.failureColor;
+    }
+    return Config.typography.defaultColor;
 }

@@ -4,9 +4,11 @@ import type { Action, IRecurringTask } from "./types";
 import { Config } from "./config";
 import { FPSTracker } from "./FPSTracker";
 
+const FPS_TRACKER_HZ = 5;
+
 class Game {
     public static debugMode = false;
-    
+
     public ctx: CanvasRenderingContext2D;
     public updateFunc: (time: number, delta: number) => void;
     public drawFunc: (ctx: CanvasRenderingContext2D, camera: Camera) => void;
@@ -16,7 +18,7 @@ class Game {
     public startTime = 0;
     public recurringTasks: IRecurringTask[] = [];
 
-    public fpsTracker = new FPSTracker(.5);
+    public fpsTracker = new FPSTracker(1 / FPS_TRACKER_HZ);
 
     public constructor(
         update: (time: number, delta: number) => void,

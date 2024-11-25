@@ -13,19 +13,21 @@ class VelocityControl extends Level {
 
     public createObjects(): void {
         this.graphics.add(new Cosmos());
+        this.ship.fuelTank.currentAmount = 100;
         this.shipController = new ShipController(this.ship);
     }
 
     public createObjectives() {
-        const greatSpeed = new Objective(
-            "ACCELERATE TO 100 M/S",
-            () => this.ship.v.length() >= HIGH_SPEED_THRESHOLD);
-        this.objectives.push(greatSpeed);
-
-        this.objectives.push(new Objective(
-            "DECELERATE BACK TO LESS THAN 10 M/S",
-            () => greatSpeed.cleared && this.ship.v.length() < LOW_SPEED_THRESHOLD
-        ));
+        this.addOrderedObjectives([
+            new Objective(
+                "ACCELERATE TO 100 M/S",
+                () => this.ship.v.length() >= HIGH_SPEED_THRESHOLD
+            ),
+            new Objective(
+                "DECELERATE BACK TO LESS THAN 10 M/S",
+                () => this.ship.v.length() < LOW_SPEED_THRESHOLD
+            )
+        ]);
     }
 }
 

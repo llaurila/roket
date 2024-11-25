@@ -66,6 +66,7 @@ export interface IConfig {
 
         objectives: {
             successColor: IColor;
+            failureColor: IColor;
         }
     }
 
@@ -81,6 +82,12 @@ export interface IConfig {
         labelOffset: number;
         fontSize: number;
         fuelColor: IColor;
+        numberOfNearestFueldToDisplay: number;
+        headingMarkerRadius: number;
+        headingMarkerColor: IColor;
+        vectorMarkerRadius: number;
+        vectorMarkerColor: IColor;
+        minVectorMarkerVelocity: number;
     }
 
     barGauge: {
@@ -109,6 +116,7 @@ export interface IConfig {
 
         // If the ship spins faster than this it will explode.
         maxSafeAngularVelocity: number;
+        engineChokeModeMultiplier: number;
 
         color: IColor;
     }

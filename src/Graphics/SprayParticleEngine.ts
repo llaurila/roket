@@ -56,7 +56,7 @@ class SprayParticleEngine extends ParticleEngine {
                 random(-MAX_ANGULAR_VELOCITY, MAX_ANGULAR_VELOCITY)
             )
         );
-        
+
         this.timeSinceLastEmitted -= 1 / this.getRate();
     }
 

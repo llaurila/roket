@@ -10,7 +10,8 @@ import type Objective from "../Objective";
 import { Hud } from "../Hud";
 import type Fuel from "../Fuel";
 import { Config } from "../config";
-import { getNumberOfClearedObjectives, initHud, initUI, LevelEndController } from "./utils";
+import { initHud, initUI } from "./utils";
+import { getMissionStatus, LevelEndController } from "./mission";
 
 const DEFAULT_ZOOM = 3;
 
@@ -81,8 +82,12 @@ abstract class Level {
 
     public objectivesCleared(): boolean {
         if (this.objectives.length == 0) return false;
-        const numCleared = getNumberOfClearedObjectives(this.objectives);
-        return numCleared == this.objectives.length;
+        const status = getMissionStatus(this.objectives);
+        if (status.failure) {
+            this.failure(status.message || "MISSION FAILED.");
+            return false;
+        }
+        return status.clearedObjectives == this.objectives.length;
     }
 
     public success(): void {
@@ -95,6 +100,23 @@ abstract class Level {
         if (this.failureMessage) throw new Error("Already failed.");
         this.failureMessage = message;
         this.endController.showOutro();
+    }
+
+    protected addOrderedObjectives(objectives: Objective[]) {
+        const updateText = (i: number) => {
+            if (typeof objectives[i].text == "string") {
+                objectives[i].text = (i + 1) + ". " + objectives[i].text;
+            }
+        };
+
+        for (let i = 0; i < objectives.length - 1; i++) {
+            updateText(i);
+            objectives[i + 1].addDependency(objectives[i]);
+        }
+
+        updateText(objectives.length - 1);
+
+        this.objectives.push(...objectives);
     }
 
     public abstract createObjects(): void;

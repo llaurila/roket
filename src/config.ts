@@ -1,8 +1,8 @@
 /* eslint-disable max-lines */
-/* eslint-disable no-magic-numbers */ 
+/* eslint-disable no-magic-numbers */
 
 import type { IConfig } from "./config.types";
-import { getGray } from "./Graphics/Color";
+import { COLOR_WHITE, getGray } from "./Graphics/Color";
 import Vector from "./Physics/Vector";
 
 const WINDOW_ALPHA = 0.9;
@@ -68,7 +68,8 @@ export const Config: IConfig = {
         },
 
         objectives: {
-            successColor: { R: 1.00, G: 0.92, B: 0, A: 1 }
+            successColor: { R: 1.00, G: 0.92, B: 0, A: 1 },
+            failureColor: { R: 1.00, G: 0.12, B: 0.16, A: 1 }
         }
     },
 
@@ -93,7 +94,13 @@ export const Config: IConfig = {
         dotRadius: 4,
         labelOffset: 28,
         fontSize: 10,
-        fuelColor: { R: 0, G: 1, B: 0, A: 0.5 }
+        fuelColor: { R: 0, G: 1, B: 0, A: 0.5 },
+        numberOfNearestFueldToDisplay: 3,
+        headingMarkerRadius: 12,
+        headingMarkerColor: COLOR_WHITE,
+        vectorMarkerRadius: 8,
+        vectorMarkerColor: COLOR_WHITE,
+        minVectorMarkerVelocity: 10
     },
 
     cosmos: {
@@ -106,7 +113,7 @@ export const Config: IConfig = {
         mass: 800,
         length: 6,
         colliderRelativeSize: 1.6,
-        fuelTankCapacity: 170,
+        fuelTankCapacity: 500,
         engineLeft: {
             ...ENGINE_DEFAULTS,
             position: new Vector(-0.5, -4),
@@ -118,6 +125,7 @@ export const Config: IConfig = {
             angle: +12
         },
         maxSafeAngularVelocity: 10,
+        engineChokeModeMultiplier: 0.25,
         color: getGray(0.65)
     },
 

@@ -8,32 +8,28 @@ import type IDrawable from "../Graphics/IDrawable";
 import type { IRelativeProps } from "../types";
 import type { IEngineConfig } from "../config.types";
 import ParticleEngineController from "./ParticleEngineController";
+import { calculateEngineOutputChange } from "./utils";
 
 class Engine implements IUpdatable, IDrawable {
     public id: number;
-    public parent: Body;
-    public relativeProps: IRelativeProps;
-    public fuelTank: FuelTank;
+
+    public choke = 1.0;
+    public output = 0;
 
     private readonly _alive = true;
-    private readonly config: IEngineConfig;
 
     private throttle = 0;
-    private output = 0;
     private particleEngineController: ParticleEngineController;
 
     public constructor(
-        parent: Body,
-        relativeProps: IRelativeProps,
-        fuelTank: FuelTank,
-        config: IEngineConfig
+        public parent: Body,
+        public relativeProps: IRelativeProps,
+        public fuelTank: FuelTank,
+        public readonly config: IEngineConfig,
+        private maxThrust: number = config.maxThrust
     ) {
         this.id = UniqueIdProvider.next();
-        this.parent = parent;
-        this.relativeProps = relativeProps;
-        this.fuelTank = fuelTank;
-        this.config = config;
-        
+
         this.particleEngineController =
             new ParticleEngineController(this, relativeProps.position, config);
     }
@@ -43,11 +39,11 @@ class Engine implements IUpdatable, IDrawable {
     }
 
     public get targetOutput(): number {
-        return this.config.maxThrust * this.throttle;
+        return this.maxThrust * this.choke * this.throttle;
     }
 
     public get relativeOutput(): number {
-        return this.output / this.config.maxThrust;
+        return this.output / this.maxThrust;
     }
 
     public get worldPosition(): Vector {
@@ -77,6 +73,13 @@ class Engine implements IUpdatable, IDrawable {
     }
 
     public getThrottle = () => this.throttle;
+
+    public setChoke(value: number) {
+        if (value < 0 || value > 1) {
+            throw new Error("Choke must be between 0 and 1");
+        }
+        this.choke = value;
+    }
 
     public applyForcesOnParent(): void {
         this.parent.applyForce(
@@ -109,16 +112,7 @@ class Engine implements IUpdatable, IDrawable {
             this.output = 0;
         }
         else {
-            const { maxOutputChangeRate } = this.config;
-
-            const targetChange = this.targetOutput - this.output;
-
-            const change = Math.max(
-                Math.min(targetChange, maxOutputChangeRate * delta),
-                -maxOutputChangeRate  * delta
-            );
-
-            this.output += change;
+            this.output += calculateEngineOutputChange(this, delta);
         }
     }
 }

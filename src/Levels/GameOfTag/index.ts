@@ -1,4 +1,4 @@
- 
+
 import Level from "../../Level";
 import Cosmos from "../../Cosmos";
 import ShipController from "../../ShipController";
@@ -11,13 +11,13 @@ import { generateFuelCapsule } from "./fuel";
 import NPCAI from "./NPCAI";
 
 class GameOfTag extends Level {
-    public name = "LEVEL 4: GAME OF TAG";
+    public name = "LEVEL 5: GAME OF TAG";
     public description = "CATCH THE OTHER SHIP.";
 
     public rng: RNG = new RNG(LevelConfig.RAND_SEED);
     public enemy: Ship = new Ship(LevelConfig.OTHER_SHIP_OFFSET);
     public ai?: NPCAI;
-    
+
     public started = false;
     public caught = false;
 

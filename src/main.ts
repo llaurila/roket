@@ -1,13 +1,14 @@
 import Game from "./Game";
 import type Camera from "./Graphics/Camera";
 import Keys from "./Controls/Keys";
-import Level from "./Level";
+import type Level from "./Level";
 import Introduction from "./Levels/Introduction";
 import VelocityControl from "./Levels/VelocityControl";
 import CollectFuel from "./Levels/CollectFuel";
 import GameOfTag from "./Levels/GameOfTag";
 import { panTowardsShip } from "./cinematics";
-import { Config } from "./config";
+import DeepSpaceMission from "./Levels/DeepSpaceMission";
+import { drawFps } from "./debug";
 
 const restartButton = () => Keys.wasPressed("Escape");
 const continueButton = () => Keys.wasPressed("Enter");
@@ -19,6 +20,7 @@ const levelTypes = [
     Introduction,
     VelocityControl,
     CollectFuel,
+    DeepSpaceMission,
     GameOfTag
 ];
 
@@ -82,12 +84,7 @@ function loadLevel(number: number) {
 
         ctx.restore();
 
-        if (Game.debugMode) {
-            ctx.fillStyle = "white";
-            ctx.font = `${Config.hud.fontSize * 2}px ${Config.typography.fontFamily}`;
-            ctx.textBaseline = "bottom";
-            ctx.fillText(`${Math.round(game.fpsTracker.currentFps)} FPS`, 20, ctx.canvas.height - 20);
-        }
+        drawFps(ctx, game.fpsTracker.currentFps);
     }
 }
 

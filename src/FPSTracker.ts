@@ -3,7 +3,7 @@ export class FPSTracker {
     private lastUpdate = 0;
     private _fps = 0;
 
-    constructor(private updateInterval: number) {
+    public constructor(private updateInterval: number) {
         this.lastUpdate = (new Date()).getTime() / 1000;
     }
 
@@ -16,7 +16,7 @@ export class FPSTracker {
 
         const time = (new Date()).getTime() / 1000;
         const delta = time - this.lastUpdate;
-        
+
         if (delta >= this.updateInterval) {
             this._fps = this.frames / delta;
             this.frames = 0;

@@ -38,12 +38,13 @@ export class RadarDrawer {
     public drawDot(to: Vector, color: string) {
         const { ctx, center, size } = this;
 
-        const distanceToTarget =
+        const screenDistanceToTarget =
             this.camera.toScreenCoordinates(this.ctx, to)
                 .sub(this.center).length();
 
-        if (distanceToTarget > this.size) {
-            const direction = to.sub(this.pos).normalize();
+        if (screenDistanceToTarget > this.size) {
+            const toTarget = to.sub(this.pos);
+            const direction = toTarget.normalize();
 
             const getPosFromCenter = (distance: number) =>
                 center.add(flipY(direction.mul(distance)));
@@ -61,8 +62,34 @@ export class RadarDrawer {
             ctx.textBaseline = "middle";
             ctx.textAlign = "center";
 
-            ctx.fillText(formatDistance(distanceToTarget), labelPos.x, labelPos.y);
+            ctx.fillText(formatDistance(toTarget.length()), labelPos.x, labelPos.y);
         }
+    }
+
+    public drawCircleMarker(to: Vector, radius: number, color: string) {
+        this.drawMarker(to, markerPos => {
+            const { ctx } = this;
+            ctx.strokeStyle = color;
+            ctx.beginPath();
+            ctx.arc(markerPos.x, markerPos.y, radius, 0, 2 * Math.PI);
+            ctx.stroke();
+        });
+    }
+
+    public drawBoxMarker(to: Vector, radius: number, color: string) {
+        const SIZE = radius * 2;
+
+        this.drawMarker(to, markerPos => {
+            const { ctx } = this;
+            ctx.strokeStyle = color;
+            ctx.strokeRect(markerPos.x - radius, markerPos.y - radius, SIZE, SIZE);
+        });
+    }
+
+    private drawMarker(to: Vector, drawFunc: (markerPos: Vector) => void) {
+        const { center, size } = this;
+        const markerPos = center.add(flipY(to.mul(size)));
+        drawFunc(markerPos);
     }
 }
 

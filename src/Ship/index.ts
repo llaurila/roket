@@ -36,7 +36,7 @@ class Ship extends Body implements IDrawable {
     }
 
     public fire(): void {
-        if (!this.alive)  throw new Error("Ship not alive, can't fire.");
+        if (!this.alive) throw new Error("Ship not alive, can't fire.");
         this.fireInternal();
     }
 
@@ -107,7 +107,7 @@ class Ship extends Body implements IDrawable {
         const ammo = new Ammo(
             this.pos.add(this.getHeading().mul(ShipConfig.AMMO_START_POS))
         );
-        
+
         ammo.rotation = this.rotation;
         ammo.v = this.v;
 

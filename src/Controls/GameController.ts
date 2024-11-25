@@ -1,7 +1,7 @@
 let gamepadIndex = -1;
 const pressedButtons: boolean[] = [];
 
-window.addEventListener("gamepadconnected", e => {     
+window.addEventListener("gamepadconnected", e => {
     // eslint-disable-next-line no-console
     console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
         e.gamepad.index, e.gamepad.id,

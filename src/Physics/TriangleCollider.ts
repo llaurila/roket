@@ -28,7 +28,7 @@ class TriangleCollider {
         this.pts = new Triangle(a, b, c);
     }
 
-    // eslint-disable-next-line complexity 
+    // eslint-disable-next-line complexity
     public static check(a: Body, b: Body): boolean {
         if (a.triangleCollider && b.triangleCollider) {
             return a.triangleCollider.containsPoint(b.triangleCollider.pts.a) ||

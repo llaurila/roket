@@ -22,9 +22,10 @@ export default tseslint.config(
             'max-len': ['error', { code: 100 }],
             'max-lines': ['error', { max: 100, skipBlankLines: true, skipComments: true }],
             'no-magic-numbers': ["error", { "ignore": [-1, -.5, 0, .5, 1, 2, 100, 1000] }],
-            'complexity': ['error', 3],
+            'complexity': ['error', 4],
             'quotes': ['error', 'double'],
             'semi': ['error', 'always'],
+            'no-trailing-spaces': 'error',
             
             // TypeScript
             '@typescript-eslint/no-unused-vars': ['error', { 'argsIgnorePattern': '^_' }],

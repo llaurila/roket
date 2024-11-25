@@ -22,8 +22,8 @@ export class Hud implements IDrawable {
         const shieldsMax = Math.random() * .5 + .5;
         const weaponsMax = .5 + (1 - shieldsMax) * Math.random();
         const enginesMax = .5 + (1 - weaponsMax) * Math.random();
-        
-        this.gauges.push(new BarGauge(  
+
+        this.gauges.push(new BarGauge(
             "SHIELDS",
             () => shieldsMax,
             () => 1,
@@ -48,13 +48,13 @@ export class Hud implements IDrawable {
         ));
 
         this.gauges.push(new BarGauge(
-            "FUEL",
+            () => `FUEL (${Math.round(ship.fuelTank.getMass())} KG)`,
             () => ship.fuelTank.currentAmount,
             () => ship.fuelTank.capacity,
             BarGaugeAnchor.Bottom,
             1
         ));
-        
+
         this.gauges.push(new BarGauge(
             "HULL INTEGRITY",
             () => ship.hullIntegrity,
@@ -71,7 +71,7 @@ export class Hud implements IDrawable {
         this.radar.draw(ctx, camera);
 
         this.gauges.forEach(gauge => { gauge.draw(ctx); });
-        
+
         this.texts.draw(ctx);
 
         ctx.restore();

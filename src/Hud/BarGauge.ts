@@ -10,6 +10,8 @@ const CAPTION_OFFSET = Config.barGauge.captionOffset;
 
 const LINE_HEIGHT = HEIGHT + PADDING * 1;
 
+type Getter<T> = () => T;
+
 export enum BarGaugeAnchor {
     Top,
     Bottom
@@ -21,9 +23,9 @@ export class BarGauge implements IDrawable {
     private _alive = true;
 
     public constructor(
-        private caption: string,        
+        private caption: string|Getter<string>,
         private getCurrent: () => number,
-        private getMax: () => number,
+        private getMax: Getter<number>,
         private anchor: BarGaugeAnchor,
         private index: number
     ) {}
@@ -80,8 +82,16 @@ export class BarGauge implements IDrawable {
 
         ctx.fillStyle = getColorString(Config.typography.defaultColor);
 
+        let caption: string;
+        if (typeof this.caption === "function") {
+            caption = this.caption();
+        }
+        else {
+            caption = this.caption;
+        }
+
         ctx.fillText(
-            this.caption,
+            caption,
             ctx.canvas.width - PADDING - WIDTH - CAPTION_OFFSET,
             this.getOriginY(ctx) + (PADDING + HEIGHT + this.getOffSetY()) * this.getMulY()
         );

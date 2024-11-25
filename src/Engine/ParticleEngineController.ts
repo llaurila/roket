@@ -23,7 +23,7 @@ class ParticleEngineController {
             engine.parent.pos.add(pos),
             () => {
                 const scale = config.particleVelocityMax - config.particleVelocityMin;
-        
+
                 return random(
                     config.particleVelocityMin,
                     engine.getThrottle() * scale

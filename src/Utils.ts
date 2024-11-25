@@ -1,6 +1,7 @@
 import Vector from "./Physics/Vector";
 import type IDrawContext from "./Graphics/IDrawContext";
 import { Config } from "./config";
+import { toScreenCoordinates } from "./Graphics/projection";
 
 export const CCW = 1;
 export const CW = -1;
@@ -38,8 +39,8 @@ export function drawLine(
 ): void
 {
     const
-        screenFrom = from.toScreenCoordinates(drawContext),
-        screenTo = to.toScreenCoordinates(drawContext);
+        screenFrom = toScreenCoordinates(from, drawContext),
+        screenTo = toScreenCoordinates(to, drawContext);
 
     ctx.save();
     ctx.lineWidth = 1;

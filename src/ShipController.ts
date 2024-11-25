@@ -1,10 +1,13 @@
 import Keys from "./Controls/Keys";
 import type Ship from "./Ship";
 import GameController from "./Controls/GameController";
+import { Config } from "./config";
 
 const
     PAD_UP_DOWN = 1,
     PAD_LEFT_RIGHT = 0;
+
+type ThrustPowerFunc = () => number;
 
 class ShipController {
     public ship: Ship;
@@ -19,11 +22,15 @@ class ShipController {
         this.handleLeft();
         this.handleRight();
 
-        if (this.bothOff() && fullBurn())
+        if (this.bothOff() && both())
         {
             this.ship.engineLeft.burning = true;
             this.ship.engineRight.burning = true;
         }
+
+        const chokeValue = choke() ? Config.ship.engineChokeModeMultiplier : 1;
+        this.ship.engineLeft.setChoke(chokeValue);
+        this.ship.engineRight.setChoke(chokeValue);
     }
 
     private handleLeft = () => { if (cw()) this.ship.engineLeft.burning = true; };
@@ -47,8 +54,9 @@ class ShipController {
     }
 }
 
-const fullBurn = () => Keys.isDown("ArrowUp");
-const ccw = () => Keys.isDown("ArrowLeft");
-const cw = () => Keys.isDown("ArrowRight");
+const choke = () => Keys.isDown("Shift");
+const both = () => Keys.isDown("ArrowUp");
+const ccw: ThrustPowerFunc = () => Keys.isDown("ArrowLeft") ? 1 : 0;
+const cw: ThrustPowerFunc = () => Keys.isDown("ArrowRight") ? 1 : 0;
 
 export default ShipController;
