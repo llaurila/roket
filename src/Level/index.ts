@@ -15,8 +15,6 @@ import { getNumberOfClearedObjectives, initHud, initUI, LevelEndController } fro
 const DEFAULT_ZOOM = 3;
 
 abstract class Level {
-    public static debugMode = false;
-
     public ctx: CanvasRenderingContext2D = initializeGraphics("game");
     public graphics: Graphics = new Graphics();
     public physics: PhysicsEngine = new PhysicsEngine(VacuumOfSpace);

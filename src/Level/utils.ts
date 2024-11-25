@@ -5,6 +5,7 @@ import { LevelOutro } from "../LevelOutro";
 import { DefaultColor, HudItemDisabled } from "../Hud/HudItem";
 import Pointer from "../Controls/Pointer";
 import { UI } from "../UI/UI";
+import Game from "../Game";
 
 export function initUI(level: Level) {
     const ui = new UI(level);
@@ -14,7 +15,7 @@ export function initUI(level: Level) {
 export function initHud(level: Level) {
     const { texts } = level.hud;
 
-    const debugColor = Level.debugMode ? DefaultColor : HudItemDisabled;
+    const debugColor = Game.debugMode ? DefaultColor : HudItemDisabled;
     texts.add(() => `PHYSICS  ${level.physics.count}`, debugColor);
     texts.add(() => `GRAPHICS ${level.graphics.count}`, debugColor);
 

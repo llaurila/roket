@@ -2,8 +2,11 @@ import { initializeGraphics } from "./Graphics/Graphics";
 import type Camera from "./Graphics/Camera";
 import type { Action, IRecurringTask } from "./types";
 import { Config } from "./config";
+import { FPSTracker } from "./FPSTracker";
 
 class Game {
+    public static debugMode = false;
+    
     public ctx: CanvasRenderingContext2D;
     public updateFunc: (time: number, delta: number) => void;
     public drawFunc: (ctx: CanvasRenderingContext2D, camera: Camera) => void;
@@ -12,6 +15,8 @@ class Game {
     public camera: Camera;
     public startTime = 0;
     public recurringTasks: IRecurringTask[] = [];
+
+    public fpsTracker = new FPSTracker(.5);
 
     public constructor(
         update: (time: number, delta: number) => void,
@@ -48,6 +53,8 @@ class Game {
             this.runRecurringTasks(time);
 
             this.prev = time;
+
+            this.fpsTracker.registerFrame();
         };
 
         window.requestAnimationFrame(gameLoop);

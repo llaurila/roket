@@ -7,6 +7,7 @@ import VelocityControl from "./Levels/VelocityControl";
 import CollectFuel from "./Levels/CollectFuel";
 import GameOfTag from "./Levels/GameOfTag";
 import { panTowardsShip } from "./cinematics";
+import { Config } from "./config";
 
 const restartButton = () => Keys.wasPressed("Escape");
 const continueButton = () => Keys.wasPressed("Enter");
@@ -80,8 +81,14 @@ function loadLevel(number: number) {
         level.graphics.draw(ctx, camera);
 
         ctx.restore();
-    }
 
+        if (Game.debugMode) {
+            ctx.fillStyle = "white";
+            ctx.font = `${Config.hud.fontSize * 2}px ${Config.typography.fontFamily}`;
+            ctx.textBaseline = "bottom";
+            ctx.fillText(`${Math.round(game.fpsTracker.currentFps)} FPS`, 20, ctx.canvas.height - 20);
+        }
+    }
 }
 
 function handleDebug(game: Game) {
@@ -115,7 +122,7 @@ function handleDebugLevelChangePrevious(game: Game) {
 
 function checkForDebugMode(): boolean {
     if (debugButton()) {
-        Level.debugMode = !Level.debugMode;
+        Game.debugMode = !Game.debugMode;
     }
-    return Level.debugMode;
+    return Game.debugMode;
 }
