@@ -7,6 +7,7 @@ import { Config } from "../config";
 import UIDrawer from "./UIDrawer";
 import type Level from "../Level";
 import { getBearing } from "./utils";
+import { getDeltaTimeFormatted } from "../text";
 
 const config = Config.ui.missionControl;
 
@@ -66,13 +67,4 @@ export class UI implements IDrawable {
 
         ctx.restore();
     }
-}
-
-function getDeltaTimeFormatted(t: number): string {
-    const SECS_PER_MIN = 60;
-
-    const s = Math.floor(t);
-    const m = Math.floor(s / SECS_PER_MIN);
-
-    return `T+${m}:${String(s % SECS_PER_MIN).padStart(2, "0")}`;
 }

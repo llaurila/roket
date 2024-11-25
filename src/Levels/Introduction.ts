@@ -9,7 +9,9 @@ class Introduction extends Level {
     public name = "LEVEL 1: INTRODUCTION";
     public description =
         "FAMILIARISE YOURSELF WITH THE CONTROLS AND ACQUIRE ONE FUEL CAPSULE. " +
-        "ACCELERATE (PRESS <UP> KEY) TO START. <LEFT> AND <RIGHT> KEYS FIRE THE " +
+        "ACCELERATE (PRESS <UP> KEY) TO START.\n" +
+        "\n" +
+        "<LEFT> AND <RIGHT> KEYS FIRE THE " +
         "THRUSTERS SEPARATELY AND <SHIFT> KEY REDUCES THRUST POWER FOR FINER " +
         "CONTROL";
 

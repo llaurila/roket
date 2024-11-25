@@ -1,5 +1,3 @@
-/* eslint-disable max-lines */
-
 import type { IColor } from "./Graphics/Color";
 import type Vector from "./Physics/Vector";
 

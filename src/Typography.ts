@@ -4,6 +4,21 @@ export function getTextLines(
     maxWidth: number
 ): string[]
 {
+    const paragraphs = text.split("\n");
+    const lines: string[] = [];
+
+    for (const paragraph of paragraphs) {
+        lines.push(...wrapLine(ctx, paragraph, maxWidth));
+    }
+
+    return lines;
+}
+
+export function wrapLine(
+    ctx: CanvasRenderingContext2D,
+    text: string,
+    maxWidth: number
+): string[] {
     const words = text.split(" ");
     const lines: string[] = [];
     let currentLine = words[0];

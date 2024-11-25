@@ -9,12 +9,15 @@ import type { IRelativeProps } from "../types";
 import type { IEngineConfig } from "../config.types";
 import ParticleEngineController from "./ParticleEngineController";
 import { calculateEngineOutputChange } from "./utils";
+import { Stats } from "../Level/Stats";
 
 class Engine implements IUpdatable, IDrawable {
     public id: number;
 
     public choke = 1.0;
     public output = 0;
+
+    public stats = new Stats();
 
     private readonly _alive = true;
 
@@ -97,7 +100,9 @@ class Engine implements IUpdatable, IDrawable {
         this.particleEngineController.on = engineOn;
 
         if (engineOn) {
-            this.fuelTank.consume(this.config.consumption * this.output * delta);
+            const consumption = this.config.consumption * this.output * delta;
+            this.fuelTank.consume(consumption);
+            this.stats.fuelConsumption += consumption;
         }
 
         this.particleEngineController.update(time, delta);

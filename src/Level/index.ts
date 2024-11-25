@@ -12,6 +12,7 @@ import type Fuel from "../Fuel";
 import { Config } from "../config";
 import { initHud, initUI } from "./utils";
 import { getMissionStatus, LevelEndController } from "./mission";
+import { Stats } from "./Stats";
 
 const DEFAULT_ZOOM = 3;
 
@@ -27,6 +28,7 @@ abstract class Level {
     public passed = false;
     public hud: Hud = new Hud(this);
     public number?: number;
+    public stats = new Stats();
 
     private endController = new LevelEndController(this);
 
@@ -77,7 +79,11 @@ abstract class Level {
 
     public update(time: number, delta: number) {
         this.physics.update(time, delta);
-        if (!this.ended) this.endController?.checkForCompletion();
+
+        if (!this.ended) {
+            this.stats.integrate(this.ship.stats);
+            this.endController?.checkForCompletion();
+        }
     }
 
     public objectivesCleared(): boolean {

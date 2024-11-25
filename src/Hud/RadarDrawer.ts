@@ -2,7 +2,8 @@ import { Config } from "../config";
 import type Camera from "../Graphics/Camera";
 import { getGrayHex } from "../Graphics/Color";
 import Vector from "../Physics/Vector";
-import { getCenter, formatDistance } from "../Utils";
+import { formatDistance } from "../text";
+import { getCenter } from "../Utils";
 
 const config = Config.radar;
 

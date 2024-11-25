@@ -6,6 +6,11 @@ import { toScreenCoordinates } from "./Graphics/projection";
 export const CCW = 1;
 export const CW = -1;
 
+export interface DistanceFormat {
+    value: string;
+    unit: string;
+}
+
 const HALF_CIRCLE = 180;
 
 export function getCenter(ctx: CanvasRenderingContext2D): Vector {
@@ -52,24 +57,26 @@ export function drawLine(
     ctx.restore();
 }
 
-export function formatDistance(n: number): string {
+export function getDistanceFormat(n: number): DistanceFormat {
     const LONG = 10000;
     const MID = 1000;
 
-    let v;
-    let u = "M";
+    const fmt: DistanceFormat = {
+        value: "",
+        unit: "M"
+    };
 
     if (n >= LONG) {
-        v = (n / 1000).toFixed();
-        u = "KM";
+        fmt.value = (n / 1000).toFixed();
+        fmt.unit = "KM";
     }
     else if (n >= MID) {
-        v = (n / 1000).toFixed(1);
-        u = "KM";
+        fmt.value = (n / 1000).toFixed(1);
+        fmt.unit = "KM";
     }
     else {
-        v = n.toFixed();
+        fmt.value = n.toFixed();
     }
 
-    return v + " " + u;
+    return fmt;
 }

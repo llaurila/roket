@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 /* eslint-disable no-magic-numbers */
 
 import type { IConfig } from "./config.types";
@@ -135,7 +134,7 @@ export const Config: IConfig = {
 
     fuelCapsule: {
         length: 8,
-        colliderRelativeSize: 1.25,
+        colliderRelativeSize: 1.5,
         volume: 25,
         opacityMin: 0.75,
         opacityMax: 1.00,

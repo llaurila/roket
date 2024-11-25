@@ -4,36 +4,55 @@ import type Level from "./Level";
 import Alert from "./UIWindow/Alert";
 import type IUpdatable from "./Physics/IUpdatable";
 import type Camera from "./Graphics/Camera";
+import { getDeltaTimeFormatted, getTableRow } from "./text";
 
 class LevelOutro implements IDrawable, IUpdatable {
     public id: number = UniqueIdProvider.next();
-    public level: Level;
     public alive = true;
     public alert: Alert;
 
-    public constructor(level: Level) {
-        this.level = level;
+    public constructor(public level: Level) {
         this.alert = new Alert();
-    }
 
-    public draw(ctx: CanvasRenderingContext2D, camera: Camera) {
-        let title = "MISSION SUCCESS";
-        let message = "PRESS <ENTER> TO CONTINUE.";
+        let title, message;
 
         if (this.level.failureMessage) {
             title = "MISSION FAILED";
-            message = this.level.failureMessage + " PRESS <ESC> TO RESTART.";
+            message = this.getFailureMessage();
+            this.alert.error = true;
+        }
+        else {
+            title = "MISSION SUCCESS";
+            message = this.getSuccessMessage();
         }
 
         this.alert.title = title;
         this.alert.content = message;
-        this.alert.error = Boolean(this.level.failureMessage);
-
-        this.alert.draw(ctx, camera);
     }
 
     public update(time: number, delta: number) {
         this.alert.update(time, delta);
+    }
+
+    public draw(ctx: CanvasRenderingContext2D, camera: Camera) {
+        this.alert.draw(ctx, camera);
+    }
+
+    private getSuccessMessage(): string {
+        return this.getStatString() + "\n" +
+            "\n" +
+            "PRESS <ENTER> TO CONTINUE.";
+    }
+
+    private getFailureMessage(): string {
+        return this.getStatString() + "\n" +
+            "\n" +
+            "PRESS <ESC> TO RESTART.";
+    }
+
+    private getStatString(): string {
+        return this.level.stats.toString() + "\n" +
+            getTableRow("TIME (DELTA)", getDeltaTimeFormatted(this.level.physics.time));
     }
 }
 

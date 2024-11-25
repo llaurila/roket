@@ -14,6 +14,7 @@ import { Config } from "../config";
 import { getColorString } from "../Graphics/Color";
 import { initLeftEngine, initRightEngine, updateEngines } from "./utils";
 import ShipConfig from "./config";
+import { Stats } from "../Level/Stats";
 
 const { ship } = Config;
 
@@ -27,6 +28,8 @@ class Ship extends Body implements IDrawable {
     public graphics?: Graphics;
     public circleCollider = new CircleCollider(ship.length / 2 * ship.colliderRelativeSize);
     public color = ship.color;
+
+    public stats: Stats = new Stats();
 
     public constructor(position: Vector) {
         super(position);
@@ -51,6 +54,8 @@ class Ship extends Body implements IDrawable {
             }
 
             updateEngines([this.engineLeft, this.engineRight], time, delta);
+
+            this.updateStats(delta);
         }
     }
 
@@ -101,6 +106,25 @@ class Ship extends Body implements IDrawable {
             this.engineLeft.draw(ctx, camera);
             this.engineRight.draw(ctx, camera);
         }
+    }
+
+    private updateStats(delta: number) {
+        this.stats = new Stats();
+
+        const { stats, engineLeft, engineRight, angularVelocity } = this;
+        const v = this.v.length();
+
+        stats.angularVelocity = Math.abs(angularVelocity);
+        stats.distance = v * delta;
+        stats.distanceFromBeacon = this.pos.length();
+
+        stats.integrate(engineLeft.stats);
+        engineLeft.stats = new Stats();
+
+        stats.integrate(engineRight.stats);
+        engineRight.stats = new Stats();
+
+        stats.velocity = v;
     }
 
     private fireInternal(): void {

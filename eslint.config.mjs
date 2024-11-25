@@ -20,7 +20,7 @@ export default tseslint.config(
         rules: {
             'no-console': 'error',
             'max-len': ['error', { code: 100 }],
-            'max-lines': ['error', { max: 100, skipBlankLines: true, skipComments: true }],
+            'max-lines': ['error', { max: 200, skipBlankLines: true, skipComments: true }],
             'no-magic-numbers': ["error", { "ignore": [-1, -.5, 0, .5, 1, 2, 100, 1000] }],
             'complexity': ['error', 4],
             'quotes': ['error', 'double'],
