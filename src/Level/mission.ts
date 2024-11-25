@@ -3,6 +3,7 @@ import type Level from ".";
 import type Objective from "../Objective";
 import { LevelOutro } from "../LevelOutro";
 import { ObjectiveState } from "../Objective";
+import { playMissionSuccessSound, playObjectiveClearedSound } from "../Sounds";
 
 export interface MissionStatus {
     totalObjectives: number;
@@ -19,11 +20,17 @@ export function getMissionStatus(objectives: Objective[]): MissionStatus {
         message: null
     };
 
+    if (objectives.length == 0) return status;
+
+    let oneCleared = false;
+
     function checkForCleared(objective: Objective) {
         switch (objective.test()) {
             case ObjectiveState.Success:
                 status.clearedObjectives++;
+                oneCleared = true;
                 break;
+
             case ObjectiveState.Failure:
                 status.failure = true;
                 status.message = objective.getMessage();
@@ -39,6 +46,8 @@ export function getMissionStatus(objectives: Objective[]): MissionStatus {
             checkForCleared(objective);
         }
     }
+
+    playSounds(status, objectives, oneCleared);
 
     return status;
 }
@@ -65,6 +74,14 @@ export class LevelEndController {
         const outro = new LevelOutro(this.level);
         this.level.physics.add(outro);
         this.level.graphics.add(outro);
+    }
+}
+
+function playSounds(status: MissionStatus, objectives: Objective[], oneCleared: boolean) {
+    if (status.clearedObjectives == objectives.length) {
+        playMissionSuccessSound();
+    } else if (oneCleared) {
+        playObjectiveClearedSound();
     }
 }
 

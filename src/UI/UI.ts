@@ -59,7 +59,7 @@ export class UI implements IDrawable {
         drawer.drawNumericField("BEARING", getBearing(ship, Vector.Zero));
         drawer.drawNumericField("PROXIMITY", ship.pos.length().toFixed());
 
-        drawer.drawTitle("OBJECTIVES");
+        drawer.drawTitle(this.level.name);
 
         for (const objective of objectives) {
             drawer.drawObjective(objective);

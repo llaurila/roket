@@ -16,7 +16,7 @@ import { Stats } from "./Stats";
 
 const DEFAULT_ZOOM = 3;
 
-abstract class Level {
+abstract class Level extends EventTarget{
     public ctx: CanvasRenderingContext2D = initializeGraphics("game");
     public graphics: Graphics = new Graphics();
     public physics: PhysicsEngine = new PhysicsEngine(VacuumOfSpace);

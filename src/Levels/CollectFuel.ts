@@ -6,6 +6,7 @@ import ShipController from "../ShipController";
 import Objective from "../Objective";
 import RNG from "../RNG";
 import { Config } from "../config";
+import { playNotificationSound } from "../Sounds";
 
 const RAND_SEED = 3287;
 const FUEL_CAPSULE_COUNT = 6;
@@ -36,6 +37,11 @@ class CollectFuel extends Level {
                     .mul(rng.next(
                         FUEL_CAPSULE_DISTANCE_MIN, FUEL_CAPSULE_DISTANCE_MAX))
             );
+
+            capsule.addEventListener("collect", () => {
+                playNotificationSound();
+            });
+
             capsule.angularVelocity = rng.next(-1, +1);
             this.fuelCapsules.push(capsule);
             this.addFuelCapsule(capsule);

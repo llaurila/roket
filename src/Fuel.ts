@@ -29,6 +29,8 @@ class Fuel extends Body implements IDrawable {
     private state: State = State.Pulse;
     private opacity = 0;
 
+    private collectEvent: Event = new Event("collect");
+
     public collect(ship: Ship) {
         if (this.collected) {
             return;
@@ -41,6 +43,8 @@ class Fuel extends Body implements IDrawable {
                 ship.fuelTank.currentAmount + this.amount);
 
         this.state = State.FadeOut;
+
+        this.dispatchEvent(this.collectEvent);
     }
 
     public update(time: number, delta: number) {

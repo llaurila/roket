@@ -7,7 +7,7 @@ import type CircleCollider from "./CircleCollider";
 import type ICollisionEvent from "./ICollisionEvent";
 import type TriangleCollider from "./TriangleCollider";
 
-class Body implements IUpdatable {
+class Body extends EventTarget implements IUpdatable {
     public physics?: PhysicsEngine;
     public id: number;
     public pos: Vector;
@@ -27,6 +27,7 @@ class Body implements IUpdatable {
     private forces: Forces = Forces.Zero;
 
     public constructor(position: Vector) {
+        super();
         this.id = UniqueIdProvider.next();
         this.pos = position;
     }
