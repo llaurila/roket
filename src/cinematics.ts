@@ -1,7 +1,7 @@
 import type Level from "./Level";
 import type Vector from "./Physics/Vector";
 
-const MAX_V = 200;
+const MAX_V = 150;
 
 export function panTowardsShip(level: Level, delta: number): void {
     const v = level.ship.v.length();

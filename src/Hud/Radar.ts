@@ -12,8 +12,8 @@ import { Config } from "../config";
 const config = Config.radar;
 
 export class Radar implements IDrawable {
-    public id: number = UniqueIdProvider.next();
-    private readonly _alive = true;
+    public readonly id: number = UniqueIdProvider.next();
+    public readonly alive = true;
 
     private ship: Ship;
     private physics: PhysicsEngine;
@@ -21,10 +21,6 @@ export class Radar implements IDrawable {
     public constructor(ship: Ship, physics: PhysicsEngine) {
         this.ship = ship;
         this.physics = physics;
-    }
-
-    public get alive() {
-        return this._alive;
     }
 
     public draw(ctx: CanvasRenderingContext2D, camera: Camera): void {
@@ -45,7 +41,7 @@ export class Radar implements IDrawable {
 
     private drawHeading(drawer: RadarDrawer) {
         const heading = this.ship.getHeading();
-        drawer.drawBoxMarker(
+        drawer.drawTriangleMarker(
             heading,
             config.headingMarkerRadius,
             getColorString(config.headingMarkerColor)

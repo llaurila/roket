@@ -99,7 +99,7 @@ export const Config: IConfig = {
         headingMarkerColor: COLOR_WHITE,
         vectorMarkerRadius: 8,
         vectorMarkerColor: COLOR_WHITE,
-        minVectorMarkerVelocity: 10
+        minVectorMarkerVelocity: 1
     },
 
     cosmos: {

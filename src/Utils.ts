@@ -3,6 +3,9 @@ import type IDrawContext from "./Graphics/IDrawContext";
 import { Config } from "./config";
 import { toScreenCoordinates } from "./Graphics/projection";
 
+const DEG_HALF_CIRCLE = 180;
+const DEG_QUARTER_CIRCLE = 90;
+
 export const CCW = 1;
 export const CW = -1;
 
@@ -11,7 +14,7 @@ export interface DistanceFormat {
     unit: string;
 }
 
-const HALF_CIRCLE = 180;
+export const DEG90 = degToRad(DEG_QUARTER_CIRCLE);
 
 export function getCenter(ctx: CanvasRenderingContext2D): Vector {
     return new Vector(
@@ -21,11 +24,11 @@ export function getCenter(ctx: CanvasRenderingContext2D): Vector {
 }
 
 export function degToRad(deg: number) {
-    return deg * Math.PI / HALF_CIRCLE;
+    return deg * Math.PI / DEG_HALF_CIRCLE;
 }
 
 export function radToDeg(rad: number) {
-    return rad * HALF_CIRCLE / Math.PI;
+    return rad * DEG_HALF_CIRCLE / Math.PI;
 }
 
 export function interpolate(a: number, b: number, p: number) {

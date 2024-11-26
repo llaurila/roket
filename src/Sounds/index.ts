@@ -8,7 +8,7 @@ const halfVolume = audioCtx.createGain();
 halfVolume.gain.value = LOW_VOLUME;
 halfVolume.connect(audioCtx.destination);
 
-export const playSound = (frequency: number, duration: number, quiet = false) => {
+export const playOscillatorSound = (frequency: number, duration: number, quiet = false) => {
     const oscillator = audioCtx.createOscillator();
 
     if (quiet) {
@@ -25,15 +25,15 @@ export const playSound = (frequency: number, duration: number, quiet = false) =>
 
 export const playNotificationSound = () => {
     const HZ = 400;
-    playSound(HZ, SHORT_DURATION, true);
+    playOscillatorSound(HZ, SHORT_DURATION, true);
 };
 
 export const playObjectiveClearedSound = () => {
     const HZ = 820;
-    playSound(HZ, SHORT_DURATION);
+    playOscillatorSound(HZ, SHORT_DURATION);
 };
 
 export const playMissionSuccessSound = () => {
     const HZ = 820;
-    playSound(HZ, LONG_DURATION);
+    playOscillatorSound(HZ, LONG_DURATION);
 };

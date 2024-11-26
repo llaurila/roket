@@ -1,5 +1,9 @@
+/* eslint-disable no-magic-numbers */
+
 import Polygon from "./Polygon";
 import Vector from "../Physics/Vector";
+
+const SQRT3 = Math.sqrt(3);
 
 class PolygonMaker {
     public pts: Vector[] = [];
@@ -34,6 +38,18 @@ export default {
         -1, -1
     ]),
 
+    /*Triangle: Polygon.make([
+        0, -2,
+        SQRT3, 1,
+        -SQRT3, 1
+    ]),*/
+
+    Triangle: Polygon.make([
+        -1, SQRT3,
+        2, 0,
+        -1, -SQRT3
+    ]),
+
     Capsule: makeCapsule(1, 0.5)
 };
 
@@ -42,7 +58,7 @@ function makeCapsule(width: number, height: number) {
      * make any sense. The width and the height of the generated capsule are
      * somehow wrong. */
 
-    // eslint-disable-next-line no-magic-numbers
+
     const hw = width / 2, seg = height / 4;
 
     const pm = new PolygonMaker();

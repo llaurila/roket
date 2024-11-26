@@ -16,6 +16,10 @@ export default class Rectangle {
         );
     }
 
+    public get bottomRight() {
+        return this.topLeft.add(this.size);
+    }
+
     public fill(ctx: CanvasRenderingContext2D) {
         ctx.fillRect(this.topLeft.x, this.topLeft.y, this.size.x, this.size.y);
     }

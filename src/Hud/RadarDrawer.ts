@@ -1,11 +1,14 @@
 import { Config } from "../config";
 import type Camera from "../Graphics/Camera";
 import { getGrayHex } from "../Graphics/Color";
+import Shapes from "../Graphics/Shapes";
 import Vector from "../Physics/Vector";
 import { formatDistance } from "../text";
 import { getCenter } from "../Utils";
 
 const config = Config.radar;
+
+const TRIANGLE_SHAPE = Shapes.Triangle.rotate(Math.PI);
 
 export class RadarDrawer {
     private ctx: CanvasRenderingContext2D;
@@ -77,20 +80,31 @@ export class RadarDrawer {
         });
     }
 
-    public drawBoxMarker(to: Vector, radius: number, color: string) {
-        const SIZE = radius * 2;
+    public drawTriangleMarker(to: Vector, radius: number, color: string) {
+        const SCALE = 0.3;
+        const OFFSET = 4.5;
+        const OFFSET_V = new Vector(OFFSET, 0);
 
-        this.drawMarker(to, markerPos => {
+        this.drawMarker(to, (markerPos, theta) => {
             const { ctx } = this;
             ctx.strokeStyle = color;
-            ctx.strokeRect(markerPos.x - radius, markerPos.y - radius, SIZE, SIZE);
+
+            TRIANGLE_SHAPE
+                .translate(OFFSET_V)
+                .mul(radius * SCALE)
+                .rotate(theta)
+                .translate(markerPos)
+                .makeClosedPath(ctx);
+
+            ctx.stroke();
         });
     }
 
-    private drawMarker(to: Vector, drawFunc: (markerPos: Vector) => void) {
+    private drawMarker(to: Vector, drawFunc: (markerPos: Vector, theta: number) => void) {
         const { center, size } = this;
         const markerPos = center.add(flipY(to.mul(size)));
-        drawFunc(markerPos);
+        const theta = Math.atan2(markerPos.y - center.y, markerPos.x - center.x);
+        drawFunc(markerPos, theta);
     }
 }
 
