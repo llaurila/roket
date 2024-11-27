@@ -1,9 +1,9 @@
-import Level from "../Level";
-import Cosmos from "../Cosmos";
-import Vector from "../Physics/Vector";
-import Fuel from "../Fuel";
-import ShipController from "../ShipController";
-import Objective from "../Objective";
+import Level from "../../Level";
+import Cosmos from "../../components/Cosmos";
+import Vector from "../../Physics/Vector";
+import Fuel from "../../Fuel";
+import ShipController from "../../ShipController";
+import Objective from "../../Level/Objective";
 
 class Introduction extends Level {
     public name = "LEVEL 1: INTRODUCTION";
@@ -16,12 +16,12 @@ class Introduction extends Level {
         "CONTROL";
 
     // eslint-disable-next-line no-magic-numbers
-    public fuelCapsule: Fuel = new Fuel(Vector.Up.rotate(-0.3).mul(45));
+    public fuelCapsule: Fuel = new Fuel(new Vector(20, 45));
 
     public createObjects(): void {
         this.graphics.add(new Cosmos());
 
-        this.fuelCapsule.angularVelocity = 1;
+        this.fuelCapsule.angularVelocity = .21;
         this.addFuelCapsule(this.fuelCapsule);
 
         this.ship.fuelTank.currentAmount = 150;

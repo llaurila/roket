@@ -1,8 +1,8 @@
 import type { ConditionalAction } from "../types";
 import type Level from ".";
-import type Objective from "../Objective";
+import type Objective from "./Objective";
 import { LevelOutro } from "../LevelOutro";
-import { ObjectiveState } from "../Objective";
+import { ObjectiveState } from "./Objective";
 import { playMissionSuccessSound, playObjectiveClearedSound } from "../Sounds";
 
 export interface MissionStatus {

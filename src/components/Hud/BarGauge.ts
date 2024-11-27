@@ -1,7 +1,7 @@
-import type IDrawable from "../Graphics/IDrawable";
-import UniqueIdProvider from "../UniqueIdProvider";
-import { getColorString, getInterpolatedColor } from "../Graphics/Color";
-import { Config } from "../config";
+import type IDrawable from "@/Graphics/IDrawable";
+import UniqueIdProvider from "@/UniqueIdProvider";
+import { getColorString, getInterpolatedColor } from "@/Graphics/Color";
+import { Config } from "@/config";
 
 const WIDTH = Config.barGauge.width;
 const HEIGHT = Config.barGauge.height;

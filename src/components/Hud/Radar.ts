@@ -1,13 +1,13 @@
-import type IDrawable from "../Graphics/IDrawable";
-import type Camera from "../Graphics/Camera";
-import Ship from "../Ship";
-import UniqueIdProvider from "../UniqueIdProvider";
-import type PhysicsEngine from "../Physics/PhysicsEngine";
-import Fuel from "../Fuel";
-import type Body from "../Physics/Body";
-import { getColorString, getColorStringFromRGBA } from "../Graphics/Color";
+import type IDrawable from "@/Graphics/IDrawable";
+import type Camera from "@/Graphics/Camera";
+import Ship from "@/Ship";
+import UniqueIdProvider from "@/UniqueIdProvider";
+import type PhysicsEngine from "@/Physics/PhysicsEngine";
+import Fuel from "@/Fuel";
+import type Body from "@/Physics/Body";
+import { getColorString, getColorStringFromRGBA } from "@/Graphics/Color";
 import { RadarDrawer } from "./RadarDrawer";
-import { Config } from "../config";
+import { Config } from "@/config";
 
 const config = Config.radar;
 

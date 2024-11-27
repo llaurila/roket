@@ -1,9 +1,9 @@
 import { UIWindow } from ".";
-import { Config } from "../config";
-import type Camera from "../Graphics/Camera";
-import { getColorString } from "../Graphics/Color";
-import Rectangle from "../Graphics/Rectangle";
-import { getTextLines } from "../Typography";
+import { Config } from "@/config";
+import type Camera from "@/Graphics/Camera";
+import { getColorString } from "@/Graphics/Color";
+import Rectangle from "@/Graphics/Rectangle";
+import { getTextLines } from "@/Typography";
 
 const config = Config.ui.alert;
 

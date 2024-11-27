@@ -1,9 +1,9 @@
 import Level from "../Level";
-import Cosmos from "../Cosmos";
+import Cosmos from "../components/Cosmos";
 import Vector from "../Physics/Vector";
 import Fuel from "../Fuel";
 import ShipController from "../ShipController";
-import Objective from "../Objective";
+import Objective from "../Level/Objective";
 import RNG from "../RNG";
 import { Config } from "../config";
 import { playNotificationSound } from "../Sounds";

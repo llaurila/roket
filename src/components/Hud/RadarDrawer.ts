@@ -1,10 +1,10 @@
-import { Config } from "../config";
-import type Camera from "../Graphics/Camera";
-import { getGrayHex } from "../Graphics/Color";
-import Shapes from "../Graphics/Shapes";
-import Vector from "../Physics/Vector";
-import { formatDistance } from "../text";
-import { getCenter } from "../Utils";
+import { Config } from "@/config";
+import type Camera from "@/Graphics/Camera";
+import { getGrayHex } from "@/Graphics/Color";
+import Shapes from "@/Graphics/Shapes";
+import Vector from "@/Physics/Vector";
+import { formatDistance } from "@/text";
+import { getCenter } from "@/Utils";
 
 const config = Config.radar;
 

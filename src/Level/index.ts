@@ -6,13 +6,13 @@ import Vector from "../Physics/Vector";
 import type ShipController from "../ShipController";
 import Ship from "../Ship";
 import { LevelIntro } from "../LevelIntro";
-import type Objective from "../Objective";
-import { Hud } from "../Hud";
+import type Objective from "./Objective";
 import type Fuel from "../Fuel";
 import { Config } from "../config";
 import { initHud, initUI } from "./utils";
 import { getMissionStatus, LevelEndController } from "./mission";
 import { Stats } from "./Stats";
+import { Hud } from "../components/Hud";
 
 const DEFAULT_ZOOM = 3;
 

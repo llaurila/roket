@@ -1,6 +1,6 @@
-import type Vector from "../Physics/Vector";
-import type Body from "../Physics/Body";
-import { radToDeg } from "../Utils";
+import type Vector from "@/Physics/Vector";
+import type Body from "@/Physics/Body";
+import { radToDeg } from "@/Utils";
 
 export function getBearing(body: Body, target: Vector): string {
     const FULL_CIRCLE = 360;

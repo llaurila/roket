@@ -1,9 +1,9 @@
-import type IDrawable from "../Graphics/IDrawable";
-import UniqueIdProvider from "../UniqueIdProvider";
+import type IDrawable from "@/Graphics/IDrawable";
+import UniqueIdProvider from "@/UniqueIdProvider";
 import type { GetColor} from "./HudItem";
 import { DefaultColor, HudItem } from "./HudItem";
-import { Config } from "../config";
-import { getColorString } from "../Graphics/Color";
+import { Config } from "@/config";
+import { getColorString } from "@/Graphics/Color";
 
 const OFFSET_X = 320;
 const OFFSET_Y = 10;

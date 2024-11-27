@@ -1,12 +1,12 @@
-import type IDrawable from "../Graphics/IDrawable";
-import type Camera from "../Graphics/Camera";
-import UniqueIdProvider from "../UniqueIdProvider";
 import { HudTexts } from "./HudTexts";
 import { Radar } from "./Radar";
-import type Level from "../Level";
 import { BarGauge, BarGaugeAnchor } from "./BarGauge";
-import Game from "../Game";
 import { ThrustControl } from "./ThrustControl";
+import type IDrawable from "../../Graphics/IDrawable";
+import UniqueIdProvider from "../../UniqueIdProvider";
+import type Level from "../../Level";
+import type Camera from "../../Graphics/Camera";
+import Game from "../../Game";
 
 export class Hud implements IDrawable {
     public id: number = UniqueIdProvider.next();

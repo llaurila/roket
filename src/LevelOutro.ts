@@ -1,10 +1,10 @@
 import type IDrawable from "./Graphics/IDrawable";
 import UniqueIdProvider from "./UniqueIdProvider";
 import type Level from "./Level";
-import Alert from "./UIWindow/Alert";
 import type IUpdatable from "./Physics/IUpdatable";
 import type Camera from "./Graphics/Camera";
 import { getDeltaTimeFormatted, getTableRow } from "./text";
+import Alert from "./components/UIWindow/Alert";
 
 class LevelOutro implements IDrawable, IUpdatable {
     public id: number = UniqueIdProvider.next();

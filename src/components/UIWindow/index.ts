@@ -1,12 +1,12 @@
-import { Config } from "../config";
-import type Camera from "../Graphics/Camera";
-import { getColorString } from "../Graphics/Color";
-import type IDrawable from "../Graphics/IDrawable";
-import Rectangle from "../Graphics/Rectangle";
-import type IUpdatable from "../Physics/IUpdatable";
-import Vector from "../Physics/Vector";
-import UniqueIdProvider from "../UniqueIdProvider";
-import { getCenter } from "../Utils";
+import { Config } from "@/config";
+import type Camera from "@/Graphics/Camera";
+import { getColorString } from "@/Graphics/Color";
+import type IDrawable from "@/Graphics/IDrawable";
+import Rectangle from "@/Graphics/Rectangle";
+import type IUpdatable from "@/Physics/IUpdatable";
+import Vector from "@/Physics/Vector";
+import UniqueIdProvider from "@/UniqueIdProvider";
+import { getCenter } from "@/Utils";
 import { makeBgGradient } from "./utils";
 
 const config = Config.ui.window;

@@ -1,9 +1,9 @@
-import type IDrawable from "./Graphics/IDrawable";
-import type Camera from "./Graphics/Camera";
-import UniqueIdProvider from "./UniqueIdProvider";
-import type Level from "./Level";
-import type IUpdatable from "./Physics/IUpdatable";
-import Alert from "./UIWindow/Alert";
+import type IDrawable from "@/Graphics/IDrawable";
+import type Camera from "@/Graphics/Camera";
+import UniqueIdProvider from "@/UniqueIdProvider";
+import type Level from "@/Level";
+import type IUpdatable from "@/Physics/IUpdatable";
+import Alert from "@/components/UIWindow/Alert";
 
 class LevelIntro implements IDrawable, IUpdatable {
     public id: number = UniqueIdProvider.next();

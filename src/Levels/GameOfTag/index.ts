@@ -1,8 +1,8 @@
 
 import Level from "../../Level";
-import Cosmos from "../../Cosmos";
+import Cosmos from "../../components/Cosmos";
 import ShipController from "../../ShipController";
-import Objective from "../../Objective";
+import Objective from "../../Level/Objective";
 import Ship from "../../Ship";
 import RNG from "../../RNG";
 import { Config } from "../../config";

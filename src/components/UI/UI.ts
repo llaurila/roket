@@ -1,13 +1,13 @@
-import type IDrawable from "../Graphics/IDrawable";
-import type Camera from "../Graphics/Camera";
-import UniqueIdProvider from "../UniqueIdProvider";
-import { UIWindow, WindowPosition } from "../UIWindow";
-import Vector from "../Physics/Vector";
-import { Config } from "../config";
+import type IDrawable from "@/Graphics/IDrawable";
+import type Camera from "@/Graphics/Camera";
+import UniqueIdProvider from "@/UniqueIdProvider";
+import { UIWindow, WindowPosition } from "@/components/UIWindow";
+import Vector from "@/Physics/Vector";
+import { Config } from "@/config";
 import UIDrawer from "./UIDrawer";
-import type Level from "../Level";
+import type Level from "@/Level";
 import { getBearing } from "./utils";
-import { getDeltaTimeFormatted } from "../text";
+import { getDeltaTimeFormatted } from "@/text";
 
 const config = Config.ui.missionControl;
 

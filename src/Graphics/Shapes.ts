@@ -32,18 +32,6 @@ export default {
         -1, -1
     ]),
 
-    Ammo: Polygon.make([
-        0,  2,
-        +1, -1,
-        -1, -1
-    ]),
-
-    /*Triangle: Polygon.make([
-        0, -2,
-        SQRT3, 1,
-        -SQRT3, 1
-    ]),*/
-
     Triangle: Polygon.make([
         -1, SQRT3,
         2, 0,

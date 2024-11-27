@@ -1,9 +1,9 @@
-import type IDrawable from "./Graphics/IDrawable";
-import type Camera from "./Graphics/Camera";
-import Vector from "./Physics/Vector";
-import UniqueIdProvider from "./UniqueIdProvider";
-import { random } from "./Utils";
-import { Config } from "./config";
+import type IDrawable from "../Graphics/IDrawable";
+import type Camera from "../Graphics/Camera";
+import Vector from "../Physics/Vector";
+import UniqueIdProvider from "../UniqueIdProvider";
+import { random } from "../Utils";
+import { Config } from "../config";
 
 const SEGMENT_SIZE = 200;
 const MAX_Z = 2;

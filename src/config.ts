@@ -19,7 +19,7 @@ const DEFAULT_FONT_COLOR = { R: 0.10, G: 0.95, B: 0.95, A: 1 };
 
 export const Config: IConfig = {
     physics: {
-        updateFreqHz: 60
+        updateFreqHz: 100
     },
 
     typography: {

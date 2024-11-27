@@ -1,7 +1,7 @@
 import Level from "../Level";
-import Cosmos from "../Cosmos";
+import Cosmos from "../components/Cosmos";
 import ShipController from "../ShipController";
-import Objective from "../Objective";
+import Objective from "../Level/Objective";
 
 const LOW_SPEED_THRESHOLD = 10;
 const HIGH_SPEED_THRESHOLD = 100;

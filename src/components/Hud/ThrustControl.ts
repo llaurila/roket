@@ -1,13 +1,13 @@
-import { Config } from "../config";
-import type Camera from "../Graphics/Camera";
-import { getColorString } from "../Graphics/Color";
-import type IDrawable from "../Graphics/IDrawable";
-import Rectangle from "../Graphics/Rectangle";
-import Shapes from "../Graphics/Shapes";
-import Vector from "../Physics/Vector";
-import type Ship from "../Ship";
+import { Config } from "../../config";
+import type Camera from "../../Graphics/Camera";
+import { getColorString } from "../../Graphics/Color";
+import type IDrawable from "../../Graphics/IDrawable";
+import Rectangle from "../../Graphics/Rectangle";
+import Shapes from "../../Graphics/Shapes";
+import Vector from "../../Physics/Vector";
+import type Ship from "../../Ship";
+import UniqueIdProvider from "../../UniqueIdProvider";
 import { makeBgGradient } from "../UIWindow/utils";
-import UniqueIdProvider from "../UniqueIdProvider";
 
 const MARKER_SCALE = 4;
 

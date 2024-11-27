@@ -1,4 +1,4 @@
-import Vector from "../Physics/Vector";
+import Vector from "@/Physics/Vector";
 
 export default class Rectangle {
     public topLeft: Vector;

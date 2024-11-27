@@ -1,8 +1,8 @@
-import { Config } from "../config";
-import type { IColor } from "../Graphics/Color";
-import { getColorString, getGray } from "../Graphics/Color";
-import type Objective from "../Objective";
-import { ObjectiveState } from "../Objective";
+import { Config } from "@/config";
+import type { IColor } from "@/Graphics/Color";
+import { getColorString, getGray } from "@/Graphics/Color";
+import type Objective from "@/Level/Objective";
+import { ObjectiveState } from "@/Level/Objective";
 
 const config = Config.ui;
 

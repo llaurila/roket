@@ -1,5 +1,5 @@
-import { Config } from "../config";
-import type { IColor } from "../Graphics/Color";
+import { Config } from "@/config";
+import type { IColor } from "@/Graphics/Color";
 
 export type GetColor = () => IColor|null;
 

@@ -7,7 +7,6 @@ import type Engine from "../Engine";
 import FuelTank from "../FuelTank";
 import ExplosionParticleEngine from "../Graphics/ExplosionParticleEngine";
 import Shapes from "../Graphics/Shapes";
-import Ammo from "../Ammo";
 import type { Graphics } from "../Graphics/Graphics";
 import CircleCollider from "../Physics/CircleCollider";
 import { Config } from "../config";
@@ -36,11 +35,6 @@ class Ship extends Body implements IDrawable {
         this.fuelTank = new FuelTank(ship.fuelTankCapacity);
         this.engineLeft = initLeftEngine(this);
         this.engineRight = initRightEngine(this);
-    }
-
-    public fire(): void {
-        if (!this.alive) throw new Error("Ship not alive, can't fire.");
-        this.fireInternal();
     }
 
     public update(time: number, delta: number) {
@@ -125,23 +119,6 @@ class Ship extends Body implements IDrawable {
         engineRight.stats = new Stats();
 
         stats.velocity = v;
-    }
-
-    private fireInternal(): void {
-        const ammo = new Ammo(
-            this.pos.add(this.getHeading().mul(ShipConfig.AMMO_START_POS))
-        );
-
-        ammo.rotation = this.rotation;
-        ammo.v = this.v;
-
-        const F = this.getHeading().mul(ShipConfig.AMMO_FORCE);
-
-        ammo.applyForce(F, ammo.centerOfMass);
-        this.applyForce(F.neg(), this.centerOfMass);
-
-        this.physics?.add(ammo);
-        this.graphics?.add(ammo);
     }
 }
 
