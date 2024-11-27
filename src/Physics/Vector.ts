@@ -31,6 +31,10 @@ class Vector {
         return new Vector(0, 1);
     }
 
+    public static fromCoords(coords: { x: number, y: number }): Vector {
+        return new Vector(coords.x, coords.y);
+    }
+
     public add(v2: Vector): Vector {
         return new Vector(
             this.x + v2.x,

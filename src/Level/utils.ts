@@ -2,7 +2,7 @@ import type Level from ".";
 import { DefaultColor, HudItemDisabled } from "../components/Hud/HudItem";
 import { UI } from "../components/UI/UI";
 import Pointer from "../Controls/Pointer";
-import Game from "../Game";
+import Game from "@/Game";
 
 export function initUI(level: Level) {
     const ui = new UI(level);

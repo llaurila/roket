@@ -1,39 +1,15 @@
-import Level from "../../Level";
-import Cosmos from "../../components/Cosmos";
-import Vector from "../../Physics/Vector";
-import Fuel from "../../Fuel";
-import ShipController from "../../ShipController";
-import Objective from "../../Level/Objective";
+import type Fuel from "../../Fuel";
+import data from "./level.yaml";
+import DataLevel from "@/Level/DataLevel";
+import type { LevelData } from "@/Level/types";
 
-class Introduction extends Level {
-    public name = "LEVEL 1: INTRODUCTION";
-    public description =
-        "FAMILIARISE YOURSELF WITH THE CONTROLS AND ACQUIRE ONE FUEL CAPSULE. " +
-        "ACCELERATE (PRESS <UP> KEY) TO START.\n" +
-        "\n" +
-        "<LEFT> AND <RIGHT> KEYS FIRE THE " +
-        "THRUSTERS SEPARATELY AND <SHIFT> KEY REDUCES THRUST POWER FOR FINER " +
-        "CONTROL";
-
-    // eslint-disable-next-line no-magic-numbers
-    public fuelCapsule: Fuel = new Fuel(new Vector(20, 45));
-
-    public createObjects(): void {
-        this.graphics.add(new Cosmos());
-
-        this.fuelCapsule.angularVelocity = .21;
-        this.addFuelCapsule(this.fuelCapsule);
-
-        this.ship.fuelTank.currentAmount = 150;
-
-        this.shipController = new ShipController(this.ship);
+class Introduction extends DataLevel {
+    public constructor() {
+        super(data as LevelData);
     }
 
-    public createObjectives() {
-        this.objectives.push(new Objective(
-            "COLLECT A FUEL CAPSULE",
-            () => !this.fuelCapsule.alive
-        ));
+    protected registerObjectiveChecks(): void {
+        this.registerSuccessCheck("fuelCollected", () => !this.getObject<Fuel>("fuel").alive);
     }
 }
 

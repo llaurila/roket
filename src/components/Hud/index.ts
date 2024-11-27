@@ -6,7 +6,7 @@ import type IDrawable from "../../Graphics/IDrawable";
 import UniqueIdProvider from "../../UniqueIdProvider";
 import type Level from "../../Level";
 import type Camera from "../../Graphics/Camera";
-import Game from "../../Game";
+import Game from "@/Game";
 
 export class Hud implements IDrawable {
     public id: number = UniqueIdProvider.next();

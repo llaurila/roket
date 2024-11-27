@@ -1,7 +1,7 @@
-import { initializeGraphics } from "./Graphics/Graphics";
-import type Camera from "./Graphics/Camera";
-import type { Action, IRecurringTask } from "./types";
-import { Config } from "./config";
+import { initializeGraphics } from "@/Graphics/Graphics";
+import type Camera from "@/Graphics/Camera";
+import type { Action, IRecurringTask } from "@/types";
+import { Config } from "@/config";
 import { FPSTracker } from "./FPSTracker";
 
 const FPS_TRACKER_HZ = 5;

@@ -1,8 +1,8 @@
 name: "LEVEL 1: INTRODUCTION"
 description: >
   FAMILIARISE YOURSELF WITH THE CONTROLS AND ACQUIRE ONE FUEL CAPSULE.
-  ACCELERATE (PRESS <UP> KEY) TO START.
-
+  ACCELERATE (PRESS <UP> KEY) TO START. 
+   
   <LEFT> AND <RIGHT> KEYS FIRE THE THRUSTERS SEPARATELY AND <SHIFT> KEY
   REDUCES THRUST POWER FOR FINER CONTROL.
 
@@ -19,4 +19,4 @@ objects:
 objectives:
   - id: collect-fuel
     title: COLLECT A FUEL CAPSULE
-    successCondition: "!this.getObject('fuel').alive"
+    successCheck: fuelCollected

@@ -1,4 +1,0 @@
-# The defaults for any level in the game. Can be overridden by individual levels.
-
-cosmos:
-  stars: yes

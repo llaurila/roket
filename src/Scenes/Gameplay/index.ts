@@ -1,4 +1,4 @@
-import Game from "../../Game";
+import Game from "@/Game";
 import type Camera from "../../Graphics/Camera";
 import Keys from "../../Controls/Keys";
 import type Level from "../../Level";

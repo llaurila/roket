@@ -1,5 +1,5 @@
 import { Config } from "./config";
-import Game from "./Game";
+import Game from "@/Game";
 
 export function drawFps(ctx: CanvasRenderingContext2D, fps: number) {
     const MARGIN = 20;
