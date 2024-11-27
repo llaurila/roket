@@ -1,0 +1,20 @@
+name: "LEVEL 2: VELOCITY CONTROL"
+description: >
+  ACCELERATE TO GREAT SPEEDS, TURN AROUND AND DECELERATE BACK TO FULL STOP.
+
+variables:
+  LOW_SPEED_THRESHOLD: 10
+  HIGH_SPEED_THRESHOLD: 100
+
+ship:
+  fuelTank:
+    currentAmount: 100
+
+objectives:
+  - id: accerelate
+    title: ACCELERATE TO 100 M/S
+    externalSuccessCheck: fast
+  - id: decelerate
+    title: DECELERATE BACK TO <10 M/S
+    externalSuccessCheck: slow
+    dependsOn: accerelate

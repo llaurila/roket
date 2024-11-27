@@ -1,6 +1,6 @@
 import Level from ".";
 import Cosmos from "@/components/Cosmos";
-import type { GameObject, LevelData } from "./types";
+import type { GameObject, LevelData, LevelObjective } from "./types";
 import Objective from "./Objective";
 import type Body from "@/Physics/Body";
 import Fuel from "@/Fuel";
@@ -37,12 +37,13 @@ abstract class DataLevel extends Level {
     public createObjectives(): void {
         this.registerObjectiveChecks();
 
+        const objectives: Record<string, Objective> = {};
+
         for (const o of this.data.objectives) {
-            this.objectives.push(new Objective(
-                o.title,
-                this.successChecks[o.successCheck]
-            ));
+            this.createObjective(o, objectives);
         }
+
+        this.buildObjectiveDependencies(objectives);
     }
 
     protected registerSuccessCheck(id: string, check: SuccessCheck): void {
@@ -58,7 +59,82 @@ abstract class DataLevel extends Level {
         return this.objects[id] as T;
     }
 
+    protected getEnv<T>(key: string): T {
+        const value = this.data.variables[key];
+        if (value == undefined) {
+            throw new Error(`Environment variable ${key} not found`);
+        }
+        return value as T;
+    }
+
+    private createObjective(o: LevelObjective, objectives: Record<string, Objective>) {
+        let externalSuccessCheck: SuccessCheck | undefined;
+        if (o.externalSuccessCheck) {
+            externalSuccessCheck = this.successChecks[o.externalSuccessCheck];
+        }
+
+        const checkFunctions: SuccessCheck[] = this.getCheckFunctions(o);
+
+        const combinedChecks = () => {
+            if (!checkFunctions.every(f => f())) return false;
+            if (externalSuccessCheck != undefined && !externalSuccessCheck()) return false;
+            return true;
+        };
+
+        const objective = new Objective(
+            o.title,
+            combinedChecks
+        );
+
+        objectives[o.id] = objective;
+
+        this.objectives.push(objective);
+    }
+
+    private getCheckFunctions(o: LevelObjective) {
+        const checkFunctions: SuccessCheck[] = [];
+
+        for (const successCheck of o.successChecks || []) {
+            switch (successCheck.type) {
+                case "kill":
+                    checkFunctions.push(() => {
+                        const target = this.objects[successCheck.target];
+                        return target == undefined || !target.alive;
+                    });
+                    break;
+
+                default:
+                    throw new Error(`Unknown success check type: ${successCheck.type}`);
+            }
+        }
+
+        return checkFunctions;
+    }
+
+    private buildObjectiveDependencies(objectives: Record<string, Objective>): void {
+        for (const objectiveSpec of this.data.objectives) {
+            checkForDependencies(objectiveSpec);
+        }
+
+        function checkForDependencies(objectiveSpec: LevelObjective) {
+            if (objectiveSpec.dependsOn) {
+                const objective = objectives[objectiveSpec.id];
+                addDependencies(objectiveSpec.dependsOn, objective);
+            }
+        }
+
+        function addDependencies(dependsOn: string|string[], objective: Objective) {
+            const deps = Array.isArray(dependsOn) ?
+                dependsOn : [dependsOn];
+
+            for (const depName of deps) {
+                objective.addDependency(objectives[depName]);
+            }
+        }
+    }
+
     private createDynamicObjects(): void {
+        if (!this.data.objects) return;
         for (const o of this.data.objects) {
             switch (o.type) {
                 case "fuel":

@@ -1,14 +1,13 @@
 import Game from "@/Game";
 import type Camera from "../../Graphics/Camera";
 import Keys from "../../Controls/Keys";
-import type Level from "../../Level";
-import Introduction from "../../Levels/Introduction";
-import VelocityControl from "../../Levels/VelocityControl";
-import CollectFuel from "../../Levels/CollectFuel";
-//import GameOfTag from "../../Levels/GameOfTag";
 import { panTowardsShip } from "../../cinematics";
-import DeepSpaceMission from "../../Levels/DeepSpaceMission";
 import { drawFps } from "../../debug";
+import Introduction from "@/Levels/Introduction";
+import VelocityControl from "@/Levels/VelocityControl";
+import CollectFuel from "@/Levels/CollectFuel";
+import DeepSpaceMission from "@/Levels/DeepSpaceMission";
+import type Level from "@/Level";
 
 const restartButton = () => Keys.wasPressed("Escape");
 const continueButton = () => Keys.wasPressed("Enter");
@@ -21,7 +20,6 @@ const levelTypes = [
     VelocityControl,
     CollectFuel,
     DeepSpaceMission,
-    //GameOfTag,
 ];
 
 let currentLevel = 0;

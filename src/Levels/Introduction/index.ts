@@ -1,4 +1,3 @@
-import type Fuel from "../../Fuel";
 import data from "./level.yaml";
 import DataLevel from "@/Level/DataLevel";
 import type { LevelData } from "@/Level/types";
@@ -8,9 +7,8 @@ class Introduction extends DataLevel {
         super(data as LevelData);
     }
 
-    protected registerObjectiveChecks(): void {
-        this.registerSuccessCheck("fuelCollected", () => !this.getObject<Fuel>("fuel").alive);
-    }
+    /* eslint-disable-next-line @typescript-eslint/no-empty-function */
+    protected registerObjectiveChecks(): void {}
 }
 
 export default Introduction;

@@ -1,12 +1,12 @@
-import Level from "../Level";
-import Cosmos from "../components/Cosmos";
-import Vector from "../Physics/Vector";
-import Fuel from "../Fuel";
-import ShipController from "../ShipController";
-import Objective from "../Level/Objective";
-import RNG from "../RNG";
-import { Config } from "../config";
-import { playNotificationSound } from "../Sounds";
+import Level from "../../Level";
+import Cosmos from "../../components/Cosmos";
+import Vector from "../../Physics/Vector";
+import Fuel from "../../Fuel";
+import ShipController from "../../ShipController";
+import Objective from "../../Level/Objective";
+import RNG from "../../RNG";
+import { Config } from "../../config";
+import { playNotificationSound } from "../../Sounds";
 
 const RAND_SEED = 3287;
 const FUEL_CAPSULE_COUNT = 6;

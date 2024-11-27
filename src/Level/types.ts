@@ -10,9 +10,24 @@ export interface GameObject {
     angularVelocity?: number;
 }
 
+export interface LevelSuccessCheck {
+    type: string;
+    target: string;
+}
+
+export interface LevelObjective {
+    id: string;
+    title: string;
+    successChecks?: LevelSuccessCheck[];
+    externalSuccessCheck?: string;
+    dependsOn?: string|string[];
+}
+
 export interface LevelData {
     name: string;
     description: string;
+
+    variables: Record<string, unknown>
 
     cosmos?: boolean;
 
@@ -24,9 +39,5 @@ export interface LevelData {
 
     objects: GameObject[];
 
-    objectives: {
-        id: string;
-        title: string;
-        successCheck: string;
-    }[];
+    objectives: LevelObjective[];
 }
