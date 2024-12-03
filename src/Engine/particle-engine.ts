@@ -1,7 +1,7 @@
-import SprayParticleEngine from "../Graphics/SprayParticleEngine";
-import type Vector from "../Physics/Vector";
-import type { IEngineConfig } from "../config.types";
-import { random } from "../Utils";
+import SprayParticleEngine from "@/Graphics/SprayParticleEngine";
+import type Vector from "@/Physics/Vector";
+import type { IEngineConfig } from "@/config/types";
+import { random } from "@/Utils";
 import type Engine from ".";
 
 export const initParticleEngine = (

@@ -27,6 +27,8 @@ export interface LevelData {
     name: string;
     description: string;
 
+    randomSeed?: number;
+
     variables: Record<string, unknown>
 
     cosmos?: boolean;

@@ -6,7 +6,7 @@ import type FuelTank from "../FuelTank";
 import UniqueIdProvider from "../UniqueIdProvider";
 import type IDrawable from "../Graphics/IDrawable";
 import type { IRelativeProps } from "../types";
-import type { IEngineConfig } from "../config.types";
+import type { IEngineConfig } from "@/config/types";
 import ParticleEngineController from "./ParticleEngineController";
 import { calculateEngineOutputChange } from "./utils";
 import { Stats } from "../Level/Stats";

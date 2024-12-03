@@ -31,7 +31,7 @@ export class Radar implements IDrawable {
         ctx.save();
 
         drawer.drawCircle();
-        this.drawNearestFuel(drawer, config.numberOfNearestFueldToDisplay);
+        this.drawNearestFuel(drawer, config.numberOfNearestFuelToDisplay);
         this.drawNearestShip(drawer);
         this.drawHeading(drawer);
         this.drawVector(drawer);

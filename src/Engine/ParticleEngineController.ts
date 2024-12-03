@@ -1,9 +1,9 @@
 import type Engine from ".";
-import type { IEngineConfig } from "../config.types";
-import type Camera from "../Graphics/Camera";
-import SprayParticleEngine from "../Graphics/SprayParticleEngine";
-import type Vector from "../Physics/Vector";
-import { random } from "../Utils";
+import type { IEngineConfig } from "@/config/types";
+import type Camera from "@/Graphics/Camera";
+import SprayParticleEngine from "@/Graphics/SprayParticleEngine";
+import type Vector from "@/Physics/Vector";
+import { random } from "@/Utils";
 
 class ParticleEngineController {
     public on = false;

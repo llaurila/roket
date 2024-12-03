@@ -6,17 +6,21 @@ import type Body from "@/Physics/Body";
 import Fuel from "@/Fuel";
 import Vector from "@/Physics/Vector";
 import ShipController from "@/ShipController";
+import RNG from "@/RNG";
 
 type SuccessCheck = () => boolean;
 
 const FUEL_DEFAULT_ANGULAR_VELOCITY = .21;
 
 abstract class DataLevel extends Level {
+    protected rng: RNG;
+
     private objects: Record<string, Body> = {};
     private successChecks: Record<string, SuccessCheck> = {};
 
     public constructor(private data: LevelData) {
         super();
+        this.rng = this.getRNG();
     }
 
     public get name(): string {
@@ -44,6 +48,10 @@ abstract class DataLevel extends Level {
         }
 
         this.buildObjectiveDependencies(objectives);
+    }
+
+    private getRNG(): RNG {
+        return new RNG(this.data.randomSeed || 951337);
     }
 
     protected registerSuccessCheck(id: string, check: SuccessCheck): void {

@@ -1,35 +1,27 @@
-import Level from "../../Level";
-import Cosmos from "../../components/Cosmos";
+import data from "./level.yaml";
 import Vector from "../../Physics/Vector";
 import Fuel from "../../Fuel";
-import ShipController from "../../ShipController";
-import Objective from "../../Level/Objective";
-import RNG from "../../RNG";
-import { Config } from "../../config";
 import { playNotificationSound } from "../../Sounds";
+import DataLevel from "@/Level/DataLevel";
+import { LevelData } from "@/Level/types";
 
-const RAND_SEED = 3287;
-const FUEL_CAPSULE_COUNT = 6;
-const FUEL_CAPSULE_DISTANCE_MIN = 45;
-const FUEL_CAPSULE_DISTANCE_MAX = 500;
-
-class CollectFuel extends Level {
-    public name = "LEVEL 3: COLLECT FUEL";
-    public description = "COLLECT ALL THE FUEL CAPSULES REVEALED BY THE RADAR " +
-        `(${FUEL_CAPSULE_COUNT} IN TOTAL). THE RADAR WILL SHOW YOU THE ` +
-        `${Config.radar.numberOfNearestFueldToDisplay} CLOSEST CAPSULES AT ALL TIMES.`;
-
+class CollectFuel extends DataLevel {
     public fuelCapsules: Fuel[] = [];
 
+    public constructor() {
+        super(data as LevelData);
+    }
+
     public createObjects(): void {
-        this.graphics.add(new Cosmos());
-        this.generateFuelCapsules(FUEL_CAPSULE_COUNT);
-        this.ship.fuelTank.currentAmount = 150;
-        this.shipController = new ShipController(this.ship);
+        super.createObjects();
+        this.generateFuelCapsules(this.getEnv("FUEL_CAPSULE_COUNT"));
     }
 
     public generateFuelCapsules(count: number): void {
-        const rng = new RNG(RAND_SEED);
+        const FUEL_CAPSULE_DISTANCE_MIN = this.getEnv<number>("FUEL_CAPSULE_DISTANCE_MIN");
+        const FUEL_CAPSULE_DISTANCE_MAX = this.getEnv<number>("FUEL_CAPSULE_DISTANCE_MAX");
+
+        const { rng } = this;
 
         for (let i = 0; i < count; i++) {
             const capsule = new Fuel(
@@ -48,16 +40,10 @@ class CollectFuel extends Level {
         }
     }
 
-    public collected = () =>
-        this.fuelCapsules.length - this.fuelCapsules.filter(f => f.alive).length;
-
-    public createObjectives() {
-        const total = this.fuelCapsules.length;
-
-        this.objectives.push(new Objective(
-            () => `COLLECT FUEL CAPSULES (${this.collected()} OF ${total})`,
-            () => !this.fuelCapsules.some(f => f.alive)
-        ));
+    protected registerObjectiveChecks(): void {
+        this.registerSuccessCheck("allCollected", () =>
+            this.fuelCapsules.every(f => !f.alive)
+        );
     }
 }
 

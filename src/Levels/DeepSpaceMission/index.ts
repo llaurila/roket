@@ -1,9 +1,9 @@
-import Level from "../Level";
-import Cosmos from "../components/Cosmos";
-import Vector from "../Physics/Vector";
-import Fuel from "../Fuel";
-import ShipController from "../ShipController";
-import Objective from "../Level/Objective";
+import Level from "@/Level";
+import Cosmos from "@/components/Cosmos";
+import Vector from "@/Physics/Vector";
+import Fuel from "@/Fuel";
+import ShipController from "@/ShipController";
+import Objective from "@/Level/Objective";
 
 class DeepSpaceMission extends Level {
     public name = "LEVEL 4: DEEP SPACE MISSION";

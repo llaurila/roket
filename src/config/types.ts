@@ -1,5 +1,5 @@
-import type { IColor } from "./Graphics/Color";
-import type Vector from "./Physics/Vector";
+import type { IColor } from "@/Graphics/Color";
+import type Vector from "@/Physics/Vector";
 
 /* Units:
  *   - UI (including font size): Pixels
@@ -80,7 +80,7 @@ export interface IConfig {
         labelOffset: number;
         fontSize: number;
         fuelColor: IColor;
-        numberOfNearestFueldToDisplay: number;
+        numberOfNearestFuelToDisplay: number;
         headingMarkerRadius: number;
         headingMarkerColor: IColor;
         vectorMarkerRadius: number;
@@ -112,7 +112,6 @@ export interface IConfig {
         engineLeft: IEngineConfig;
         engineRight: IEngineConfig;
 
-        // If the ship spins faster than this it will explode.
         maxSafeAngularVelocity: number;
         engineChokeModeMultiplier: number;
 

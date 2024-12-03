@@ -1,1 +1,20 @@
 name: "LEVEL 3: COLLECT FUEL"
+description: >
+  COLLECT ALL THE FUEL CAPSULES REVEALED BY THE RADAR (6 IN TOTAL). THE RADAR
+  WILL SHOW YOU THE THREE CLOSEST CAPSULES AT ALL TIMES.
+
+randomSeed: 3287
+
+variables:
+   FUEL_CAPSULE_COUNT: 6
+   FUEL_CAPSULE_DISTANCE_MIN: 45
+   FUEL_CAPSULE_DISTANCE_MAX: 500
+
+ship:
+  fuelTank:
+    currentAmount: 150
+
+objectives:
+  - id: collect-fuel
+    title: COLLECT ALL FUEL CAPSULES
+    externalSuccessCheck: allCollected

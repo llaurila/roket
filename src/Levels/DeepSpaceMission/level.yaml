@@ -1,0 +1,18 @@
+name: "LEVEL 4: DEEP SPACE MISSION"
+description: >
+  ACCELERATE TO HIGH VELOCITY TO COLLECT THE FAR AWAY FUEL CAPSULE AS FAST
+  AS POSSIBLE AND RETURN BACK TO COLLECT THE OTHER OTHER CAPSULE.
+
+ship:
+  fuelTank:
+    currentAmount: 500
+
+objects:
+  - id: near-fuel
+    type: fuel
+    position: { x: 0, y: -44 }
+    angularVelocity: -1
+  - id: far-fuel
+    type: fuel
+    position: { x: 0, y: 44 }
+    angularVelocity: 1

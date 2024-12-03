@@ -1,8 +1,8 @@
 /* eslint-disable no-magic-numbers */
 
-import type { IConfig } from "./config.types";
-import { COLOR_WHITE, getGray } from "./Graphics/Color";
-import Vector from "./Physics/Vector";
+import type { IConfig } from "./types";
+import { COLOR_WHITE, getGray } from "@/Graphics/Color";
+import Vector from "@/Physics/Vector";
 
 const WINDOW_ALPHA = 0.9;
 
@@ -94,7 +94,7 @@ export const Config: IConfig = {
         labelOffset: 28,
         fontSize: 10,
         fuelColor: { R: 0, G: 1, B: 0, A: 0.5 },
-        numberOfNearestFueldToDisplay: 3,
+        numberOfNearestFuelToDisplay: 3,
         headingMarkerRadius: 12,
         headingMarkerColor: COLOR_WHITE,
         vectorMarkerRadius: 8,
