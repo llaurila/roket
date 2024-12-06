@@ -41,13 +41,17 @@ class LevelOutro implements IDrawable, IUpdatable {
     private getSuccessMessage(): string {
         return this.getStatString() + "\n" +
             "\n" +
-            "PRESS <ENTER> TO CONTINUE.";
+            "PRESS <ESC> TO RESTART.";
     }
 
     private getFailureMessage(): string {
-        return this.getStatString() + "\n" +
+        const failureMessage = this.level.failureMessage || "FAILED TO MEET OBJECTIVE";
+
+        return failureMessage + "\n" +
             "\n" +
-            "PRESS <ESC> TO RESTART.";
+            this.getStatString() + "\n" +
+            "\n" +
+            "PRESS <ENTER> TO CONTINUE.";
     }
 
     private getStatString(): string {

@@ -35,6 +35,10 @@ class Vector {
         return new Vector(coords.x, coords.y);
     }
 
+    public static fromComponents(components: number[]): Vector {
+        return new Vector(components[0], components[1]);
+    }
+
     public add(v2: Vector): Vector {
         return new Vector(
             this.x + v2.x,

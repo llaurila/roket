@@ -16,5 +16,5 @@ ship:
 
 objectives:
   - id: collect-fuel
-    title: COLLECT ALL FUEL CAPSULES
+    title: COLLECT ALL FUEL CAPSULES (${collected}/${total})
     externalSuccessCheck: allCollected

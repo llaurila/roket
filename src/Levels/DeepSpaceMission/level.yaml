@@ -10,9 +10,23 @@ ship:
 objects:
   - id: near-fuel
     type: fuel
-    position: { x: 0, y: -44 }
+    position: [0, -44]
     angularVelocity: -1
   - id: far-fuel
     type: fuel
-    position: { x: 0, y: 44 }
+    position: [-48818, 87274]
     angularVelocity: 1
+    props:
+      amount: 250
+
+objectives:
+  - id: far-fuel
+    title: COLLECT THE FAR FUEL CAPSULE 
+    externalSuccessCheck: farFuelCollected
+    externalFailureCheck:
+      test: nearFuelCollected
+      message: FAILED TO COLLECT THE FAR FUEL CAPSULE FIRST.
+  - id: near-fuel
+    title: COLLECT THE NEAR FUEL CAPSULE
+    externalSuccessCheck: nearFuelCollected
+    dependsOn: far-fuel

@@ -8,13 +8,16 @@ import { LevelData } from "@/Level/types";
 class CollectFuel extends DataLevel {
     public fuelCapsules: Fuel[] = [];
 
+    private readonly fuelCapsuleCount: number;
+
     public constructor() {
         super(data as LevelData);
+        this.fuelCapsuleCount = this.getEnv<number>("FUEL_CAPSULE_COUNT");
     }
 
     public createObjects(): void {
         super.createObjects();
-        this.generateFuelCapsules(this.getEnv("FUEL_CAPSULE_COUNT"));
+        this.generateFuelCapsules(this.fuelCapsuleCount);
     }
 
     public generateFuelCapsules(count: number): void {
@@ -40,10 +43,21 @@ class CollectFuel extends DataLevel {
         }
     }
 
+    protected getRuntimeVars(): Record<string, string> {
+        return {
+            collected: this.getCollectedFuelCapsuleCount().toString(),
+            total: this.fuelCapsuleCount.toString()
+        };
+    }
+
     protected registerObjectiveChecks(): void {
-        this.registerSuccessCheck("allCollected", () =>
+        this.registerObjectiveTest("allCollected", () =>
             this.fuelCapsules.every(f => !f.alive)
         );
+    }
+
+    private getCollectedFuelCapsuleCount(): number {
+        return this.fuelCapsules.filter(f => !f.alive).length;
     }
 }
 

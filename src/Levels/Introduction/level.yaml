@@ -13,7 +13,7 @@ ship:
 objects:
   - id: fuel
     type: fuel
-    position: { x: 20, y: 45 }
+    position: [20, 45]
     angularVelocity: .21
 
 objectives:

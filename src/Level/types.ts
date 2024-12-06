@@ -1,13 +1,11 @@
-export interface Pos {
-    x: number;
-    y: number;
-}
+export type Pos = number[];
 
 export interface GameObject {
     id: string;
     type: string;
     position: Pos;
     angularVelocity?: number;
+    props?: Record<string, unknown>;
 }
 
 export interface LevelSuccessCheck {
@@ -20,6 +18,10 @@ export interface LevelObjective {
     title: string;
     successChecks?: LevelSuccessCheck[];
     externalSuccessCheck?: string;
+    externalFailureCheck?: {
+        test: string;
+        message: string;
+    };
     dependsOn?: string|string[];
 }
 

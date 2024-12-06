@@ -7,8 +7,11 @@ import Fuel from "@/Fuel";
 import Vector from "@/Physics/Vector";
 import ShipController from "@/ShipController";
 import RNG from "@/RNG";
+import { formatString } from "@/Utils";
 
-type SuccessCheck = () => boolean;
+type ObjectiveTest = () => boolean;
+
+type FailureCheck = () => string|null;
 
 const FUEL_DEFAULT_ANGULAR_VELOCITY = .21;
 
@@ -16,7 +19,7 @@ abstract class DataLevel extends Level {
     protected rng: RNG;
 
     private objects: Record<string, Body> = {};
-    private successChecks: Record<string, SuccessCheck> = {};
+    private objectiveTests: Record<string, ObjectiveTest> = {};
 
     public constructor(private data: LevelData) {
         super();
@@ -54,8 +57,8 @@ abstract class DataLevel extends Level {
         return new RNG(this.data.randomSeed || 951337);
     }
 
-    protected registerSuccessCheck(id: string, check: SuccessCheck): void {
-        this.successChecks[id] = check;
+    protected registerObjectiveTest(id: string, check: ObjectiveTest): void {
+        this.objectiveTests[id] = check;
     }
 
     protected hasCosmos(): boolean {
@@ -75,13 +78,17 @@ abstract class DataLevel extends Level {
         return value as T;
     }
 
+    protected getRuntimeVars(): Record<string, string> {
+        return {};
+    }
+
     private createObjective(o: LevelObjective, objectives: Record<string, Objective>) {
-        let externalSuccessCheck: SuccessCheck | undefined;
+        let externalSuccessCheck: ObjectiveTest | undefined;
         if (o.externalSuccessCheck) {
-            externalSuccessCheck = this.successChecks[o.externalSuccessCheck];
+            externalSuccessCheck = this.objectiveTests[o.externalSuccessCheck];
         }
 
-        const checkFunctions: SuccessCheck[] = this.getCheckFunctions(o);
+        const checkFunctions: ObjectiveTest[] = this.getCheckFunctions(o);
 
         const combinedChecks = () => {
             if (!checkFunctions.every(f => f())) return false;
@@ -89,9 +96,22 @@ abstract class DataLevel extends Level {
             return true;
         };
 
+        let externalFailureCheck: FailureCheck | undefined;
+        let test = o.externalFailureCheck?.test;
+
+        if (test) {
+            externalFailureCheck = () => {
+                if (this.objectiveTests[test]()) {
+                    return o.externalFailureCheck?.message || "OBJECTIVE FAILED";
+                }
+                return null;
+            };
+        }
+
         const objective = new Objective(
-            o.title,
-            combinedChecks
+            () => formatString(o.title, this.getRuntimeVars()),
+            combinedChecks,
+            externalFailureCheck
         );
 
         objectives[o.id] = objective;
@@ -100,7 +120,7 @@ abstract class DataLevel extends Level {
     }
 
     private getCheckFunctions(o: LevelObjective) {
-        const checkFunctions: SuccessCheck[] = [];
+        const checkFunctions: ObjectiveTest[] = [];
 
         for (const successCheck of o.successChecks || []) {
             switch (successCheck.type) {
@@ -153,7 +173,12 @@ abstract class DataLevel extends Level {
     }
 
     private createFuel(o: GameObject) {
-        const fuel = new Fuel(Vector.fromCoords(o.position));
+        const fuel = new Fuel(Vector.fromComponents(o.position));
+        
+        if (o.props?.amount) {
+            fuel.amount = o.props.amount as number;
+        }
+
         fuel.angularVelocity = o.angularVelocity || FUEL_DEFAULT_ANGULAR_VELOCITY;
         this.objects[o.id] = fuel;
         this.addFuelCapsule(fuel);

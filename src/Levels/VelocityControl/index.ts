@@ -14,11 +14,11 @@ class VelocityControl extends DataLevel {
     }
 
     protected registerObjectiveChecks(): void {
-        this.registerSuccessCheck(
+        this.registerObjectiveTest(
             "fast", () => this.ship.v.length() >= this.highSpeedThreshold
         );
 
-        this.registerSuccessCheck(
+        this.registerObjectiveTest(
             "slow", () => this.ship.v.length() < this.lowSpeedThreshold
         );
     }
