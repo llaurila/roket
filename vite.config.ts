@@ -23,5 +23,13 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+  },
+  server: {
+    hmr: {
+      port: 5174,
+    },
+    watch: {
+      usePolling: true
+    }
   }
 });
