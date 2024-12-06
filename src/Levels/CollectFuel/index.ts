@@ -3,7 +3,7 @@ import Vector from "../../Physics/Vector";
 import Fuel from "../../Fuel";
 import { playNotificationSound } from "../../Sounds";
 import DataLevel from "@/Level/DataLevel";
-import { LevelData } from "@/Level/types";
+import type { LevelData } from "@/Level/types";
 
 class CollectFuel extends DataLevel {
     public fuelCapsules: Fuel[] = [];

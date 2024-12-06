@@ -1,6 +1,6 @@
 import DataLevel from "@/Level/DataLevel";
-import { LevelData } from "@/Level/types";
-import Fuel from "@/Fuel";
+import type { LevelData } from "@/Level/types";
+import type Fuel from "@/Fuel";
 import data from "./level.yaml";
 
 class DeepSpaceMission extends DataLevel {

@@ -87,4 +87,3 @@ export function getDistanceFormat(n: number): DistanceFormat {
 export function formatString(template: string, values: Record<string, string>) {
     return template.replace(/\${(.*?)}/g, (_, key: string) => values[key]);
 }
-  

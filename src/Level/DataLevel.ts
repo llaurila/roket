@@ -9,6 +9,8 @@ import ShipController from "@/ShipController";
 import RNG from "@/RNG";
 import { formatString } from "@/Utils";
 
+const DEFAULT_RAND_SEED = 951337;
+
 type ObjectiveTest = () => boolean;
 
 type FailureCheck = () => string|null;
@@ -53,10 +55,6 @@ abstract class DataLevel extends Level {
         this.buildObjectiveDependencies(objectives);
     }
 
-    private getRNG(): RNG {
-        return new RNG(this.data.randomSeed || 951337);
-    }
-
     protected registerObjectiveTest(id: string, check: ObjectiveTest): void {
         this.objectiveTests[id] = check;
     }
@@ -82,6 +80,10 @@ abstract class DataLevel extends Level {
         return {};
     }
 
+    private getRNG(): RNG {
+        return new RNG(this.data.randomSeed || DEFAULT_RAND_SEED);
+    }
+
     private createObjective(o: LevelObjective, objectives: Record<string, Objective>) {
         let externalSuccessCheck: ObjectiveTest | undefined;
         if (o.externalSuccessCheck) {
@@ -97,7 +99,7 @@ abstract class DataLevel extends Level {
         };
 
         let externalFailureCheck: FailureCheck | undefined;
-        let test = o.externalFailureCheck?.test;
+        const test = o.externalFailureCheck?.test;
 
         if (test) {
             externalFailureCheck = () => {
@@ -174,7 +176,7 @@ abstract class DataLevel extends Level {
 
     private createFuel(o: GameObject) {
         const fuel = new Fuel(Vector.fromComponents(o.position));
-        
+
         if (o.props?.amount) {
             fuel.amount = o.props.amount as number;
         }
