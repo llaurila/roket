@@ -1,9 +1,9 @@
 import type IDrawable from "../Graphics/IDrawable";
-import type Camera from "../Graphics/Camera";
 import Vector from "../Physics/Vector";
 import UniqueIdProvider from "../UniqueIdProvider";
 import { random } from "../Utils";
 import { Config } from "../config";
+import type { Viewport } from "@/Graphics/Viewport";
 
 const SEGMENT_SIZE = 200;
 const MAX_Z = 2;
@@ -31,23 +31,23 @@ class Cosmos implements IDrawable {
         return this._alive;
     }
 
-    public draw(ctx: CanvasRenderingContext2D, camera: Camera) {
+    public draw(viewport: Viewport) {
         const
-            bottomLeft = camera.toWorldCoordinates(
-                ctx, new Vector(0, ctx.canvas.height)),
-            topRight = camera.toWorldCoordinates(
-                ctx, new Vector(ctx.canvas.width, 0));
+            bottomLeft = viewport.toWorldCoordinates(new Vector(0, viewport.height)),
+            topRight = viewport.toWorldCoordinates(new Vector(viewport.width, 0));
 
         const
             bottomLeftSegment = bottomLeft.div(SEGMENT_SIZE).floor().sub(Vector.One),
             topRightSegment = topRight.div(SEGMENT_SIZE).ceil().add(Vector.One);
+
+        const { ctx } = viewport;
 
         ctx.save();
 
         for (let x = bottomLeftSegment.x; x <= topRightSegment.x; x++) {
             for (let y = bottomLeftSegment.y; y <= topRightSegment.y; y++) {
                 this.forSegment(x, y, star => {
-                    const p = camera.toScreenCoordinates(ctx, star.pos).div(star.z);
+                    const p = viewport.toScreenCoordinates(star.pos).div(star.z);
                     ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity / star.z})`;
                     ctx.beginPath();
                     ctx.arc(p.x, p.y, star.size, 0, 2 * Math.PI);

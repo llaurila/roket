@@ -52,6 +52,10 @@ export const Config: IConfig = {
             fadeOutDuration: 0.5
         },
 
+        mainMenu: {
+            windowWidth: 500
+        },
+
         alert: {
             windowWidth: 500,
             fontSize: 13,

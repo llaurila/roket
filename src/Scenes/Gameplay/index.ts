@@ -1,5 +1,4 @@
 import Game from "@/Game";
-import type Camera from "../../Graphics/Camera";
 import Keys from "../../Controls/Keys";
 import { panTowardsShip } from "../../cinematics";
 import { drawFps } from "../../debug";
@@ -8,6 +7,7 @@ import VelocityControl from "@/Levels/VelocityControl";
 import CollectFuel from "@/Levels/CollectFuel";
 import DeepSpaceMission from "@/Levels/DeepSpaceMission";
 import type Level from "@/Level";
+import type { Viewport } from "@/Graphics/Viewport";
 
 const restartButton = () => Keys.wasPressed("Escape");
 const continueButton = () => Keys.wasPressed("Enter");
@@ -27,9 +27,9 @@ let currentLevel = 0;
 export function loadLevel(number: number) {
     const level: Level = new levelTypes[number];
 
-    const game = new Game(update, draw, level.camera);
+    const game = new Game(update, draw, level.viewport);
 
-    level.init(game.ctx, number);
+    level.init(game.viewport, number);
 
     game.every(1, () => {
         level.physics.cleanUp();
@@ -70,14 +70,15 @@ export function loadLevel(number: number) {
         }
     }
 
-    function draw(ctx: CanvasRenderingContext2D, camera: Camera): void {
-        ctx.canvas.width  = window.innerWidth;
-        ctx.canvas.height = window.innerHeight;
+    function draw(viewport: Viewport): void {
+        viewport.update();
+
+        const { ctx } = viewport;
 
         ctx.save();
         ctx.transform(1, 0, 0, -1, 0, ctx.canvas.height);
 
-        level.graphics.draw(ctx, camera);
+        level.graphics.draw(viewport);
 
         ctx.restore();
 

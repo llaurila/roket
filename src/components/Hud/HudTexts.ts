@@ -4,6 +4,7 @@ import type { GetColor} from "./HudItem";
 import { DefaultColor, HudItem } from "./HudItem";
 import { Config } from "@/config";
 import { getColorString } from "@/Graphics/Color";
+import type { Viewport } from "@/Graphics/Viewport";
 
 const OFFSET_X = 320;
 const OFFSET_Y = 10;
@@ -21,8 +22,10 @@ export class HudTexts implements IDrawable {
         this.items.push(new HudItem(getText, getColor));
     }
 
-    public draw(ctx: CanvasRenderingContext2D) {
+    public draw(viewport: Viewport) {
         const { hud: config } = Config;
+
+        const { ctx } = viewport;
 
         ctx.save();
         ctx.font = `${config.fontSize}px ${Config.typography.fontFamily}`;

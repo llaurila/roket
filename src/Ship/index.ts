@@ -2,7 +2,6 @@ import Body from "../Physics/Body";
 import type IDrawable from "../Graphics/IDrawable";
 import type Polygon from "../Graphics/Polygon";
 import type Vector from "../Physics/Vector";
-import type Camera from "../Graphics/Camera";
 import type Engine from "../Engine";
 import FuelTank from "../FuelTank";
 import ExplosionParticleEngine from "../Graphics/ExplosionParticleEngine";
@@ -14,6 +13,8 @@ import { getColorString } from "../Graphics/Color";
 import { initLeftEngine, initRightEngine, updateEngines } from "./utils";
 import ShipConfig from "./config";
 import { Stats } from "../Level/Stats";
+import type { Viewport } from "@/Graphics/Viewport";
+import type { DrawContext } from "@/Graphics/DrawContext";
 
 const { ship } = Config;
 
@@ -79,14 +80,15 @@ class Ship extends Body implements IDrawable {
         return super.getMass() + this.fuelTank.getMass();
     }
 
-    public draw(ctx: CanvasRenderingContext2D, camera: Camera) {
+    public draw(viewport: Viewport) {
         if (this.alive) {
-            const drawContext = {
+            const drawContext: DrawContext = {
+                viewport,
                 pos: this.pos,
-                rotation: this.rotation,
-                ctx,
-                camera
+                rotation: this.rotation
             };
+
+            const { ctx } = viewport;
 
             ctx.save();
             ctx.lineWidth = 1;
@@ -97,8 +99,8 @@ class Ship extends Body implements IDrawable {
             ctx.stroke();
             ctx.restore();
 
-            this.engineLeft.draw(ctx, camera);
-            this.engineRight.draw(ctx, camera);
+            this.engineLeft.draw(viewport);
+            this.engineRight.draw(viewport);
         }
     }
 

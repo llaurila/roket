@@ -4,10 +4,12 @@ import type Vector from "./Physics/Vector";
 const MAX_V = 150;
 
 export function panTowardsShip(level: Level, delta: number): void {
+    const { camera } = level.viewport;
+
     const v = level.ship.v.length();
 
     // eslint-disable-next-line no-magic-numbers
-    level.camera.zoom = 5 - Math.min(99, v) / 33;
+    camera.zoom = 5 - Math.min(99, v) / 33;
 
     let target: Vector;
 
@@ -24,10 +26,10 @@ export function panTowardsShip(level: Level, delta: number): void {
         );
     }
 
-    const towards = target.sub(level.camera.pos);
+    const towards = target.sub(camera.pos);
 
     if (towards.length() > 0)
     {
-        level.camera.pos = level.camera.pos.add(towards.mul(delta));
+        camera.pos = camera.pos.add(towards.mul(delta));
     }
 }

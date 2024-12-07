@@ -2,6 +2,7 @@ import type IDrawable from "@/Graphics/IDrawable";
 import UniqueIdProvider from "@/UniqueIdProvider";
 import { getColorString, getInterpolatedColor } from "@/Graphics/Color";
 import { Config } from "@/config";
+import type { Viewport } from "@/Graphics/Viewport";
 
 const WIDTH = Config.barGauge.width;
 const HEIGHT = Config.barGauge.height;
@@ -34,7 +35,7 @@ export class BarGauge implements IDrawable {
         return this._alive;
     }
 
-    public draw(ctx: CanvasRenderingContext2D): void {
+    public draw(viewport: Viewport): void {
         const max = this.getMax();
         const value = Math.max(Math.min(this.getCurrent(), max), 0);
         const relative = value / max;
@@ -47,6 +48,8 @@ export class BarGauge implements IDrawable {
         ], relative);
 
         const style = getColorString(color);
+
+        const { ctx } = viewport;
 
         ctx.save();
 

@@ -1,5 +1,5 @@
 import type IDrawable from "./IDrawable";
-import type Camera from "./Camera";
+import type { Viewport } from "./Viewport";
 
 class Graphics {
     private objects: Set<IDrawable> = new Set<IDrawable>();
@@ -20,10 +20,10 @@ class Graphics {
         obj.graphics = undefined;
     }
 
-    public draw(ctx: CanvasRenderingContext2D, camera: Camera) {
+    public draw(viewport: Viewport) {
         this.objects.forEach(obj => {
             if (obj.alive) {
-                obj.draw(ctx, camera);
+                obj.draw(viewport);
             }
         });
     }

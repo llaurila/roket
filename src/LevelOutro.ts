@@ -2,9 +2,9 @@ import type IDrawable from "./Graphics/IDrawable";
 import UniqueIdProvider from "./UniqueIdProvider";
 import type Level from "./Level";
 import type IUpdatable from "./Physics/IUpdatable";
-import type Camera from "./Graphics/Camera";
 import { getDeltaTimeFormatted, getTableRow } from "./text";
 import Alert from "./components/UIWindow/Alert";
+import type { Viewport } from "./Graphics/Viewport";
 
 class LevelOutro implements IDrawable, IUpdatable {
     public id: number = UniqueIdProvider.next();
@@ -34,8 +34,8 @@ class LevelOutro implements IDrawable, IUpdatable {
         this.alert.update(time, delta);
     }
 
-    public draw(ctx: CanvasRenderingContext2D, camera: Camera) {
-        this.alert.draw(ctx, camera);
+    public draw(viewport: Viewport) {
+        this.alert.draw(viewport);
     }
 
     private getSuccessMessage(): string {

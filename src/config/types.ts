@@ -44,6 +44,10 @@ export interface IConfig {
             fadeOutDuration: number;
         }
 
+        mainMenu: {
+            windowWidth: number;
+        }
+
         alert: {
             windowWidth: number;
             fontSize: number;

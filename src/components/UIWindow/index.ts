@@ -1,13 +1,12 @@
 import { Config } from "@/config";
-import type Camera from "@/Graphics/Camera";
 import { getColorString } from "@/Graphics/Color";
 import type IDrawable from "@/Graphics/IDrawable";
 import Rectangle from "@/Graphics/Rectangle";
 import type IUpdatable from "@/Physics/IUpdatable";
 import Vector from "@/Physics/Vector";
 import UniqueIdProvider from "@/UniqueIdProvider";
-import { getCenter } from "@/Utils";
 import { makeBgGradient } from "./utils";
+import type { Viewport } from "@/Graphics/Viewport";
 
 const config = Config.ui.window;
 
@@ -26,12 +25,13 @@ export class UIWindow implements IDrawable, IUpdatable {
     public title = "ROKET";
     public error = false;
 
-    public fadeOut = false;
     public opacity = 1;
 
     public position = WindowPosition.Center;
     public absolutePosition = Vector.Zero;
     public relativePosition = Vector.Zero;
+
+    private fadeOutCallback: (() => void)|undefined;
 
     public constructor(width: number, height: number) {
         this.width = width;
@@ -39,42 +39,56 @@ export class UIWindow implements IDrawable, IUpdatable {
     }
 
     public update(_time: number, delta: number) {
-        if (this.fadeOut) {
+        if (this.fadeOutCallback) {
             this.opacity = Math.max(0, this.opacity - delta / config.fadeOutDuration);
             if (this.opacity == 0) {
                 this.alive = false;
+                this.fadeOutCallback();
             }
         }
     }
 
-    public draw(ctx: CanvasRenderingContext2D, _camera: Camera) {
+    public draw(viewport: Viewport) {
+        const { ctx } = viewport;
+
         ctx.save();
         ctx.resetTransform();
 
         ctx.globalAlpha = this.opacity;
 
-        this.drawTitle(ctx);
-        this.drawContent(ctx);
+        this.drawTitle(viewport);
+        this.drawContent(viewport);
 
         ctx.restore();
     }
 
-    protected getContentRect(ctx: CanvasRenderingContext2D): Rectangle {
-        const titleRect = this.getTitleRect(ctx);
+    public setContentHeight(height: number) {
+        this.height = config.titleHeight + height + config.margin;
+    }
+
+    public fadeOut(callback?: () => void) {
+        this.fadeOutCallback = callback;
+    }
+
+    public getContentRect(viewport: Viewport): Rectangle {
+        const titleRect = this.getTitleRect(viewport);
         const titleSpace = titleRect.size.y + config.margin;
 
         return new Rectangle(
             titleRect.topLeft.add(Vector.UnitY.mul(titleSpace)),
-            new Vector(this.width, this.getHeight(ctx) - titleSpace)
+            new Vector(this.width, this.getHeight(viewport) - titleSpace)
         );
     }
 
-    private getHeight(ctx: CanvasRenderingContext2D): number {
-        return Math.min(this.height, ctx.canvas.height - Config.ui.window.margin * 2);
+    private getHeight(viewport: Viewport): number {
+        return Math.min(this.height, viewport.height - Config.ui.window.margin * 2);
     }
 
-    private drawTitle(ctx: CanvasRenderingContext2D) {
-        const titleRect = this.getTitleRect(ctx);
+    private drawTitle(viewport: Viewport) {
+        const titleRect = this.getTitleRect(viewport);
+
+        const { ctx } = viewport;
+
         ctx.fillStyle = getColorString(
             this.error ? config.titleBackgroundColorError : config.titleBackgroundColor);
         titleRect.fill(ctx);
@@ -92,8 +106,10 @@ export class UIWindow implements IDrawable, IUpdatable {
         );
     }
 
-    private drawContent(ctx: CanvasRenderingContext2D) {
-        const contentRect = this.getContentRect(ctx);
+    private drawContent(viewport: Viewport) {
+        const contentRect = this.getContentRect(viewport);
+
+        const { ctx } = viewport;
 
         ctx.fillStyle = makeBgGradient(ctx, contentRect);
         contentRect.fill(ctx);
@@ -103,7 +119,7 @@ export class UIWindow implements IDrawable, IUpdatable {
         contentRect.stroke(ctx);
     }
 
-    private getTitleRect(ctx: CanvasRenderingContext2D): Rectangle {
+    private getTitleRect(viewport: Viewport): Rectangle {
         let topLeft: Vector;
         const size = new Vector(this.width, config.titleHeight);
 
@@ -111,9 +127,9 @@ export class UIWindow implements IDrawable, IUpdatable {
             topLeft = this.absolutePosition.add(this.relativePosition);
         }
         else {
-            const center = getCenter(ctx);
+            const center = viewport.getCenter();
             topLeft = (
-                new Vector(center.x - this.width / 2, center.y - this.getHeight(ctx) / 2)
+                new Vector(center.x - this.width / 2, center.y - this.getHeight(viewport) / 2)
             ).add(this.relativePosition);
         }
 

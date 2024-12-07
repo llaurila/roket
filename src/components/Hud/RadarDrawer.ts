@@ -1,37 +1,32 @@
 import { Config } from "@/config";
-import type Camera from "@/Graphics/Camera";
 import { getGrayHex } from "@/Graphics/Color";
 import Shapes from "@/Graphics/Shapes";
+import type { Viewport } from "@/Graphics/Viewport";
 import Vector from "@/Physics/Vector";
 import { formatDistance } from "@/text";
-import { getCenter } from "@/Utils";
 
 const config = Config.radar;
 
 const TRIANGLE_SHAPE = Shapes.Triangle.rotate(Math.PI);
 
 export class RadarDrawer {
-    private ctx: CanvasRenderingContext2D;
-    private camera: Camera;
     private pos: Vector;
     private center: Vector;
     private size: number;
 
-    public constructor(ctx: CanvasRenderingContext2D, camera: Camera, pos: Vector) {
-        this.ctx = ctx;
-        this.camera = camera;
+    public constructor(private viewport: Viewport, pos: Vector) {
         this.pos = pos;
-
-        this.center = getCenter(ctx);
+        this.center = viewport.getCenter();
 
         this.size = Math.min(
-            ctx.canvas.width,
-            ctx.canvas.height
+            viewport.width,
+            viewport.height
         ) / 2 - config.margin;
     }
 
     public drawCircle() {
-        const { ctx, center, size } = this;
+        const { center, size } = this;
+        const { ctx } = this.viewport;
 
         ctx.strokeStyle = getGrayHex(1, config.circleOpacity);
         ctx.beginPath();
@@ -40,10 +35,11 @@ export class RadarDrawer {
     }
 
     public drawDot(to: Vector, color: string) {
-        const { ctx, center, size } = this;
+        const { center, size } = this;
+        const { ctx } = this.viewport;
 
         const screenDistanceToTarget =
-            this.camera.toScreenCoordinates(this.ctx, to)
+            this.viewport.toScreenCoordinates(to)
                 .sub(this.center).length();
 
         if (screenDistanceToTarget > this.size) {
@@ -72,7 +68,7 @@ export class RadarDrawer {
 
     public drawCircleMarker(to: Vector, radius: number, color: string) {
         this.drawMarker(to, markerPos => {
-            const { ctx } = this;
+            const { ctx } = this.viewport;
             ctx.strokeStyle = color;
             ctx.beginPath();
             ctx.arc(markerPos.x, markerPos.y, radius, 0, 2 * Math.PI);
@@ -86,7 +82,7 @@ export class RadarDrawer {
         const OFFSET_V = new Vector(OFFSET, 0);
 
         this.drawMarker(to, (markerPos, theta) => {
-            const { ctx } = this;
+            const { ctx } = this.viewport;
             ctx.strokeStyle = color;
 
             TRIANGLE_SHAPE

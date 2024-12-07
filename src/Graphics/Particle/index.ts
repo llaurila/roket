@@ -1,12 +1,10 @@
 import Body from "../../Physics/Body";
 import type IDrawable from "../IDrawable";
-import type Camera from "../Camera";
 import Vector from "../../Physics/Vector";
-import { getCenter } from "../../Utils";
-import type IDrawContext from "../IDrawContext";
 import Polygon from "../Polygon";
 import { getColorString, getInterpolatedColor } from "../Color";
 import { FLAME } from "./flame";
+import type { Viewport } from "../Viewport";
 
 class Particle extends Body implements IDrawable {
     public static Shape: Polygon = new Polygon([
@@ -46,27 +44,27 @@ class Particle extends Body implements IDrawable {
         return this.age < this.ttl;
     }
 
-    public toScreenCoordinates(drawContext: IDrawContext): Vector {
-        const origin = getCenter(drawContext.ctx);
-        const zoom = drawContext.camera.zoom;
+    public toScreenCoordinates(viewport: Viewport): Vector {
+        const origin = viewport.getCenter();
+        const zoom = viewport.camera.zoom;
 
         return this.pos
             .mul(zoom)
             .add(origin)
-            .add(drawContext.camera.pos.mul(-1 * zoom));
+            .add(viewport.camera.pos.mul(-1 * zoom));
     }
 
-    public draw(ctx: CanvasRenderingContext2D, camera: Camera) {
+    public draw(viewport: Viewport) {
+        const { ctx } = viewport;
         const color = getInterpolatedColor(FLAME, this.relativeAge);
 
         ctx.save();
         ctx.fillStyle = getColorString(color);
 
         Particle.Shape.mul(1 + this.relativeAge).toScreenCoordinates({
+            viewport,
             pos: this.pos,
-            rotation: this.rotation,
-            ctx,
-            camera
+            rotation: this.rotation
         }).makeClosedPath(ctx);
 
         ctx.fill();

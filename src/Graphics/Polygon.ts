@@ -1,6 +1,5 @@
 import Vector from "../Physics/Vector";
-import { getCenter } from "../Utils";
-import type IDrawContext from "./IDrawContext";
+import type { DrawContext } from "./DrawContext";
 
 class Polygon {
     public pts: Vector[];
@@ -53,22 +52,24 @@ class Polygon {
         );
     }
 
-    public toScreenCoordinates(drawContext?: IDrawContext): Polygon {
-        if (drawContext == undefined) {
+    public toScreenCoordinates(drawContext?: DrawContext): Polygon {
+        if (!drawContext) {
             return this.scale(1, -1);
         }
 
-        const origin = getCenter(drawContext.ctx);
-        const zoom = drawContext.camera.zoom;
+        const { viewport } = drawContext;
+
+        const origin = viewport.getCenter();
+        const zoom = viewport.camera.zoom;
 
         return this
             .toWorldCoordinates(drawContext)
             .mul(zoom)
             .translate(origin)
-            .translate(drawContext.camera.pos.mul(-1 * zoom));
+            .translate(viewport.camera.pos.mul(-1 * zoom));
     }
 
-    public toWorldCoordinates(drawContext: IDrawContext): Polygon {
+    public toWorldCoordinates(drawContext: DrawContext): Polygon {
         return this
             .rotate(drawContext.rotation)
             .translate(drawContext.pos);

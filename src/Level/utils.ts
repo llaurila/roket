@@ -16,7 +16,7 @@ export function initHud(level: Level) {
 
     texts.add(() => {
         const screen = Pointer.getPosition();
-        const world = level.camera.toWorldCoordinates(level.ctx, screen);
+        const world = level.viewport.toWorldCoordinates(screen);
         return `MOUSE: ${screen.toString(0)} (SCREEN) ${world.toString()} (WORLD)`;
     }, debugColor);
 

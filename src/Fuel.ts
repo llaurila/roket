@@ -1,5 +1,4 @@
 import type IDrawable from "./Graphics/IDrawable";
-import type Camera from "./Graphics/Camera";
 import type Polygon from "./Graphics/Polygon";
 import Shapes from "./Graphics/Shapes";
 import Body from "./Physics/Body";
@@ -8,6 +7,7 @@ import type { Graphics } from "./Graphics/Graphics";
 import CircleCollider from "./Physics/CircleCollider";
 import { getColorString } from "./Graphics/Color";
 import { Config } from "./config";
+import type { Viewport } from "./Graphics/Viewport";
 
 enum State {
     Pulse,
@@ -69,13 +69,14 @@ class Fuel extends Body implements IDrawable {
         }
     }
 
-    public draw(ctx: CanvasRenderingContext2D, camera: Camera) {
+    public draw(viewport: Viewport) {
         const drawContext = {
+            viewport,
             pos: this.pos,
-            rotation: this.rotation,
-            ctx,
-            camera
+            rotation: this.rotation
         };
+
+        const { ctx } = viewport;
 
         ctx.save();
         ctx.lineWidth = 1;

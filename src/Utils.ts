@@ -1,7 +1,5 @@
-import Vector from "./Physics/Vector";
-import type IDrawContext from "./Graphics/IDrawContext";
-import { Config } from "./config";
-import { toScreenCoordinates } from "./Graphics/projection";
+import type Vector from "./Physics/Vector";
+import type { Viewport } from "./Graphics/Viewport";
 
 const DEG_HALF_CIRCLE = 180;
 const DEG_QUARTER_CIRCLE = 90;
@@ -15,13 +13,6 @@ export interface DistanceFormat {
 }
 
 export const DEG90 = degToRad(DEG_QUARTER_CIRCLE);
-
-export function getCenter(ctx: CanvasRenderingContext2D): Vector {
-    return new Vector(
-        ctx.canvas.width / 2 + Config.ui.missionControl.windowWidth / 2,
-        ctx.canvas.height / 2
-    );
-}
 
 export function degToRad(deg: number) {
     return deg * Math.PI / DEG_HALF_CIRCLE;
@@ -41,14 +32,14 @@ export function random(min: number, max: number): number {
 
 export function drawLine(
     ctx: CanvasRenderingContext2D,
-    drawContext: IDrawContext,
+    viewport: Viewport,
     from: Vector,
     to: Vector
 ): void
 {
     const
-        screenFrom = toScreenCoordinates(from, drawContext),
-        screenTo = toScreenCoordinates(to, drawContext);
+        screenFrom = viewport.toScreenCoordinates(from),
+        screenTo = viewport.toScreenCoordinates(to);
 
     ctx.save();
     ctx.lineWidth = 1;

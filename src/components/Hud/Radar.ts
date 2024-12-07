@@ -1,5 +1,4 @@
 import type IDrawable from "@/Graphics/IDrawable";
-import type Camera from "@/Graphics/Camera";
 import Ship from "@/Ship";
 import UniqueIdProvider from "@/UniqueIdProvider";
 import type PhysicsEngine from "@/Physics/PhysicsEngine";
@@ -8,6 +7,7 @@ import type Body from "@/Physics/Body";
 import { getColorString, getColorStringFromRGBA } from "@/Graphics/Color";
 import { RadarDrawer } from "./RadarDrawer";
 import { Config } from "@/config";
+import type { Viewport } from "@/Graphics/Viewport";
 
 const config = Config.radar;
 
@@ -23,10 +23,12 @@ export class Radar implements IDrawable {
         this.physics = physics;
     }
 
-    public draw(ctx: CanvasRenderingContext2D, camera: Camera): void {
+    public draw(viewport: Viewport): void {
         if (!this.ship.alive) return;
 
-        const drawer = new RadarDrawer(ctx, camera, this.ship.pos);
+        const drawer = new RadarDrawer(viewport, this.ship.pos);
+
+        const { ctx } = viewport;
 
         ctx.save();
 

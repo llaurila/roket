@@ -1,9 +1,9 @@
 import type IDrawable from "@/Graphics/IDrawable";
-import type Camera from "@/Graphics/Camera";
 import UniqueIdProvider from "@/UniqueIdProvider";
 import type Level from "@/Level";
 import type IUpdatable from "@/Physics/IUpdatable";
 import Alert from "@/components/UIWindow/Alert";
+import type { Viewport } from "./Graphics/Viewport";
 
 class LevelIntro implements IDrawable, IUpdatable {
     public id: number = UniqueIdProvider.next();
@@ -17,14 +17,19 @@ class LevelIntro implements IDrawable, IUpdatable {
         this.alert = new Alert();
     }
 
-    public draw(ctx: CanvasRenderingContext2D, camera: Camera) {
+    public draw(viewport: Viewport) {
+        const { camera } = viewport;
+
         if (camera.pos.x != 0 || camera.pos.y != 0) {
-            this.alert.fadeOut = true;
+            this.alert.fadeOut(
+                () => this.alive = false
+            );
         }
+
         this.alert.title = this.level.name;
         this.alert.content = this.level.description;
 
-        this.alert.draw(ctx, camera);
+        this.alert.draw(viewport);
     }
 
     public update(time: number, delta: number) {

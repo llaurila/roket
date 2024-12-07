@@ -1,7 +1,6 @@
 import type Body from "../Physics/Body";
 import type IUpdatable from "../Physics/IUpdatable";
 import type Vector from "../Physics/Vector";
-import type Camera from "../Graphics/Camera";
 import type FuelTank from "../FuelTank";
 import UniqueIdProvider from "../UniqueIdProvider";
 import type IDrawable from "../Graphics/IDrawable";
@@ -10,6 +9,7 @@ import type { IEngineConfig } from "@/config/types";
 import ParticleEngineController from "./ParticleEngineController";
 import { calculateEngineOutputChange } from "./utils";
 import { Stats } from "../Level/Stats";
+import type { Viewport } from "@/Graphics/Viewport";
 
 class Engine implements IUpdatable, IDrawable {
     public id: number;
@@ -108,8 +108,8 @@ class Engine implements IUpdatable, IDrawable {
         this.particleEngineController.update(time, delta);
     }
 
-    public draw = (ctx: CanvasRenderingContext2D, camera: Camera) => {
-        this.particleEngineController.draw(ctx, camera);
+    public draw = (viewport: Viewport) => {
+        this.particleEngineController.draw(viewport);
     };
 
     private updateOutput(delta: number) {

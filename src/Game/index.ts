@@ -1,8 +1,8 @@
 import { initializeGraphics } from "@/Graphics/Graphics";
-import type Camera from "@/Graphics/Camera";
 import type { Action, IRecurringTask } from "@/types";
 import { Config } from "@/config";
 import { FPSTracker } from "./FPSTracker";
+import type { Viewport } from "@/Graphics/Viewport";
 
 const FPS_TRACKER_HZ = 5;
 
@@ -11,10 +11,9 @@ class Game {
 
     public ctx: CanvasRenderingContext2D;
     public updateFunc: (time: number, delta: number) => void;
-    public drawFunc: (ctx: CanvasRenderingContext2D, camera: Camera) => void;
+    public drawFunc: (viewport: Viewport) => void;
     public prev = 0;
     public running = false;
-    public camera: Camera;
     public startTime = 0;
     public recurringTasks: IRecurringTask[] = [];
 
@@ -22,14 +21,13 @@ class Game {
 
     public constructor(
         update: (time: number, delta: number) => void,
-        draw: (ctx: CanvasRenderingContext2D, camera: Camera) => void,
-        camera: Camera) {
-
+        draw: (viewport: Viewport) => void,
+        public viewport: Viewport
+    ) {
         this.ctx = initializeGraphics("game");
 
         this.updateFunc = update;
         this.drawFunc = draw;
-        this.camera = camera;
     }
 
     public start(): void {
@@ -51,7 +49,7 @@ class Game {
             const delta = time - this.prev;
 
             this.updatePhysics(delta, time);
-            this.drawFunc(this.ctx, this.camera);
+            this.drawFunc(this.viewport);
             this.runRecurringTasks(time);
 
             this.prev = time;

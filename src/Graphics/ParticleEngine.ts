@@ -1,11 +1,11 @@
 import type IDrawable from "./IDrawable";
 import type IUpdatable from "../Physics/IUpdatable";
 import type Vector from "../Physics/Vector";
-import type Camera from "./Camera";
 import type Particle from "./Particle";
 import UniqueIdProvider from "../UniqueIdProvider";
 import type PhysicsEngine from "../Physics/PhysicsEngine";
 import type { Graphics } from "./Graphics";
+import type { Viewport } from "./Viewport";
 
 class ParticleEngine implements IDrawable, IUpdatable {
     public id: number;
@@ -36,10 +36,10 @@ class ParticleEngine implements IDrawable, IUpdatable {
         }
     }
 
-    public draw(ctx: CanvasRenderingContext2D, camera: Camera) {
+    public draw(viewport: Viewport) {
         for (const particle of this.particles) {
             if (particle.alive) {
-                particle.draw(ctx, camera);
+                particle.draw(viewport);
             }
         }
     }

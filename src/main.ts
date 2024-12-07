@@ -1,3 +1,3 @@
-import { loadLevel } from "./Scenes/Gameplay";
+import { enterMainMenu } from "./Scenes/MainMenu";
 
-loadLevel(0);
+enterMainMenu();

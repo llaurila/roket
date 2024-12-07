@@ -1,5 +1,4 @@
 import type IDrawable from "@/Graphics/IDrawable";
-import type Camera from "@/Graphics/Camera";
 import UniqueIdProvider from "@/UniqueIdProvider";
 import { UIWindow, WindowPosition } from "@/components/UIWindow";
 import Vector from "@/Physics/Vector";
@@ -8,6 +7,7 @@ import UIDrawer from "./UIDrawer";
 import type Level from "@/Level";
 import { getBearing } from "./utils";
 import { getDeltaTimeFormatted } from "@/text";
+import type { Viewport } from "@/Graphics/Viewport";
 
 const config = Config.ui.missionControl;
 
@@ -25,10 +25,12 @@ export class UI implements IDrawable {
         this.window.absolutePosition = new Vector(Config.ui.window.margin, Config.ui.window.margin);
     }
 
-    public draw(ctx: CanvasRenderingContext2D, camera: Camera) {
+    public draw(viewport: Viewport) {
         const { ship, physics, objectives } = this.level;
 
-        this.window.draw(ctx, camera);
+        this.window.draw(viewport);
+
+        const { ctx } = viewport;
 
         ctx.save();
         ctx.resetTransform();

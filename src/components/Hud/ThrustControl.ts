@@ -1,5 +1,5 @@
+import type { Viewport } from "@/Graphics/Viewport";
 import { Config } from "../../config";
-import type Camera from "../../Graphics/Camera";
 import { getColorString } from "../../Graphics/Color";
 import type IDrawable from "../../Graphics/IDrawable";
 import Rectangle from "../../Graphics/Rectangle";
@@ -31,8 +31,10 @@ export class ThrustControl implements IDrawable {
 
     public constructor(private ship: Ship) {}
 
-    public draw(ctx: CanvasRenderingContext2D, _camera: Camera) {
+    public draw(viewport: Viewport) {
         if (!this.ship.alive) return;
+
+        const { ctx } = viewport;
 
         ctx.save();
 

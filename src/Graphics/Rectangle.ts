@@ -20,6 +20,15 @@ export default class Rectangle {
         return this.topLeft.add(this.size);
     }
 
+    public contains(point: Vector): boolean {
+        return (
+            point.x >= this.topLeft.x &&
+            point.x <= this.bottomRight.x &&
+            point.y >= this.topLeft.y &&
+            point.y <= this.bottomRight.y
+        );
+    }
+
     public fill(ctx: CanvasRenderingContext2D) {
         ctx.fillRect(this.topLeft.x, this.topLeft.y, this.size.x, this.size.y);
     }

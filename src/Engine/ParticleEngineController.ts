@@ -1,7 +1,7 @@
 import type Engine from ".";
 import type { IEngineConfig } from "@/config/types";
-import type Camera from "@/Graphics/Camera";
 import SprayParticleEngine from "@/Graphics/SprayParticleEngine";
+import type { Viewport } from "@/Graphics/Viewport";
 import type Vector from "@/Physics/Vector";
 import { random } from "@/Utils";
 
@@ -47,8 +47,8 @@ class ParticleEngineController {
         this.particleEngine.update(time, delta);
     }
 
-    public draw(ctx: CanvasRenderingContext2D, camera: Camera) {
-        this.particleEngine.draw(ctx, camera);
+    public draw(viewport: Viewport) {
+        this.particleEngine.draw(viewport);
     }
 
     private start() {

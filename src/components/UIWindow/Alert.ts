@@ -1,8 +1,8 @@
 import { UIWindow } from ".";
 import { Config } from "@/config";
-import type Camera from "@/Graphics/Camera";
 import { getColorString } from "@/Graphics/Color";
 import Rectangle from "@/Graphics/Rectangle";
+import type { Viewport } from "@/Graphics/Viewport";
 import { getTextLines } from "@/Typography";
 
 const config = Config.ui.alert;
@@ -17,27 +17,31 @@ export default class Alert extends UIWindow {
         super(config.windowWidth, 0);
     }
 
-    public draw(ctx: CanvasRenderingContext2D, camera: Camera) {
+    public draw(viewport: Viewport) {
+        const { ctx } = viewport;
+
         ctx.save();
         ctx.resetTransform();
 
-        this.updateContent(ctx);
+        this.updateContent(viewport);
         this.height = this.getWindowHeight();
 
-        super.draw(ctx, camera);
+        super.draw(viewport);
 
         ctx.globalAlpha = this.opacity;
-        this.drawText(ctx);
+        this.drawText(viewport);
 
         ctx.restore();
     }
 
-    private updateContent(ctx: CanvasRenderingContext2D): void {
+    private updateContent(viewport: Viewport): void {
+        const { ctx } = viewport;
+
         ctx.font = `${config.fontSize}px ${Config.typography.fontFamily}`;
         ctx.textBaseline = "top";
         ctx.fillStyle = getColorString(config.fontColor);
 
-        this.contentRect = this.getContentRect(ctx);
+        this.contentRect = this.getContentRect(viewport);
 
         this.lines = getTextLines(
             ctx,
@@ -53,7 +57,8 @@ export default class Alert extends UIWindow {
             Config.ui.window.margin;
     }
 
-    private drawText(ctx: CanvasRenderingContext2D): void {
+    private drawText(viewport: Viewport): void {
+        const { ctx } = viewport;
         const { lines } = this;
 
         for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {

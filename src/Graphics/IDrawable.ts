@@ -1,9 +1,9 @@
-import type Camera from "./Camera";
 import type { Graphics } from "./Graphics";
+import type { Viewport } from "./Viewport";
 
 interface IDrawable {
     id: number;
-    draw: (ctx: CanvasRenderingContext2D, camera: Camera) => void;
+    draw: (viewport: Viewport) => void;
     alive: boolean;
     graphics?: Graphics;
 }

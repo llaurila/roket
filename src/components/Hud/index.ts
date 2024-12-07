@@ -5,8 +5,8 @@ import { ThrustControl } from "./ThrustControl";
 import type IDrawable from "../../Graphics/IDrawable";
 import UniqueIdProvider from "../../UniqueIdProvider";
 import type Level from "../../Level";
-import type Camera from "../../Graphics/Camera";
 import Game from "@/Game";
+import type { Viewport } from "@/Graphics/Viewport";
 
 export class Hud implements IDrawable {
     public id: number = UniqueIdProvider.next();
@@ -43,17 +43,19 @@ export class Hud implements IDrawable {
         this.thrustControl = new ThrustControl(ship);
     }
 
-    public draw(ctx: CanvasRenderingContext2D, camera: Camera) {
+    public draw(viewport: Viewport) {
+        const { ctx } = viewport;
+
         ctx.save();
         ctx.resetTransform();
 
-        this.radar.draw(ctx, camera);
+        this.radar.draw(viewport);
 
-        this.gauges.forEach(gauge => { gauge.draw(ctx); });
+        this.gauges.forEach(gauge => { gauge.draw(viewport); });
 
-        this.thrustControl.draw(ctx, camera);
+        this.thrustControl.draw(viewport);
 
-        this.texts.draw(ctx);
+        this.texts.draw(viewport);
 
         ctx.restore();
     }

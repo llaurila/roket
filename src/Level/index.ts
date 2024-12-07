@@ -13,14 +13,29 @@ import { initHud, initUI } from "./utils";
 import { getMissionStatus, LevelEndController } from "./mission";
 import { Stats } from "./Stats";
 import { Hud } from "../components/Hud";
+import { Viewport } from "@/Graphics/Viewport";
 
 const DEFAULT_ZOOM = 3;
 
+function createViewport(): Viewport {
+    const viewport = new Viewport(
+        initializeGraphics("game"),
+        new Camera(Vector.Zero, DEFAULT_ZOOM)
+    );
+
+    viewport.getCenter = () => new Vector(
+        viewport.width / 2 + Config.ui.missionControl.windowWidth / 2,
+        viewport.height / 2
+    );
+
+    return viewport;
+}
+
 abstract class Level extends EventTarget {
-    public ctx: CanvasRenderingContext2D = initializeGraphics("game");
+    public viewport = createViewport();
+
     public graphics: Graphics = new Graphics();
     public physics: PhysicsEngine = new PhysicsEngine(VacuumOfSpace);
-    public camera: Camera = new Camera(Vector.Zero, DEFAULT_ZOOM);
     public ship: Ship = new Ship(Vector.Zero);
     public shipController?: ShipController;
     public failureMessage?: string;
@@ -40,8 +55,8 @@ abstract class Level extends EventTarget {
 
     public abstract get description(): string;
 
-    public init(ctx: CanvasRenderingContext2D, number: number) {
-        this.ctx = ctx;
+    public init(viewport: Viewport, number: number) {
+        this.viewport = viewport;
         this.number = number;
 
         this.graphics = this.getGraphics();
