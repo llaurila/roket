@@ -1,4 +1,4 @@
-import { Store } from "@/store";
+import { Store } from "@/Store";
 
 const PL1_DEFAULT_NAME = "ROKETMAN";
 
