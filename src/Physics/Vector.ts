@@ -84,6 +84,10 @@ class Vector {
         return Math.sqrt(this.x * this.x + this.y * this.y);
     }
 
+    public distanceTo(v2: Vector): number {
+        return this.sub(v2).length();
+    }
+
     public rotate(theta: number): Vector {
         return new Vector(
             Math.cos(theta) * this.x - Math.sin(theta) * this.y,

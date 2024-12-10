@@ -1,17 +1,16 @@
 name: "LEVEL 4: DEEP SPACE MISSION"
 description: >
   ACCELERATE TO HIGH VELOCITY TO COLLECT THE FAR AWAY FUEL CAPSULE AS FAST
-  AS POSSIBLE AND RETURN BACK TO COLLECT THE OTHER OTHER CAPSULE.
+  AS POSSIBLE. THEN RETURN BACK TO THE BEACON.
 
 ship:
   fuelTank:
     currentAmount: 500
 
 objects:
-  - id: near-fuel
-    type: fuel
+  - id: near-beacon
+    type: beacon
     position: [0, -44]
-    angularVelocity: -1
   - id: far-fuel
     type: fuel
     position: [-48818, 87274]
@@ -23,10 +22,7 @@ objectives:
   - id: far-fuel
     title: COLLECT THE FAR FUEL CAPSULE 
     externalSuccessCheck: farFuelCollected
-    externalFailureCheck:
-      test: nearFuelCollected
-      message: FAILED TO COLLECT THE FAR FUEL CAPSULE FIRST.
-  - id: near-fuel
-    title: COLLECT THE NEAR FUEL CAPSULE
-    externalSuccessCheck: nearFuelCollected
+  - id: near-beacon
+    title: RETURN TO THE BEACON
+    externalSuccessCheck: nearBeaconReached
     dependsOn: far-fuel

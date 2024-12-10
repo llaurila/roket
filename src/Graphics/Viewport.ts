@@ -42,6 +42,10 @@ export class Viewport {
             .add(pos.mul(-1 * zoom));
     }
 
+    public toScreenScale(scale: number): number {
+        return scale * this.camera.zoom;
+    }
+
     public toWorldCoordinates(p: Vector): Vector {
         const origin = this.getOrigin();
         return flipY(p.sub(origin)).div(this.camera.zoom);

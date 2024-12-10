@@ -18,7 +18,7 @@ class PhysicsEngine {
         return this.objects.size;
     }
 
-    public getNearestObject(pos: Vector, criteria: (obj: IUpdatable) => boolean): Body|undefined {
+    public getNearestObject<T>(pos: Vector, criteria: (obj: IUpdatable) => boolean): T|undefined {
         const objects = this
             .filter(obj => obj.alive && obj instanceof Body)
             .filter(criteria)
@@ -26,7 +26,7 @@ class PhysicsEngine {
             .sort((a, b) => a.pos.sub(pos).length() - b.pos.sub(pos).length());
 
         if (objects.length > 0) {
-            return objects[0];
+            return objects[0] as T;
         }
 
         return undefined;

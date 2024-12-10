@@ -97,9 +97,9 @@ export function enterMainMenu() {
 
     const menu = new Menu("MAIN MENU");
 
-    menu.addItem("PL1: " + Player.PL1.name);
+    menu.addItem("PLAYER: " + Player.PL1.name);
 
-    menu.addItem("PL2: (NONE)").disabled = true;
+    menu.addItem("SETTINGS").disabled = true;
 
     menu.addItem("START GAME").addEventListener("click", () => {
         exitMainMenu();

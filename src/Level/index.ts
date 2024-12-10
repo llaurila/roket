@@ -14,6 +14,7 @@ import { getMissionStatus, LevelEndController } from "./mission";
 import { Stats } from "./Stats";
 import { Hud } from "../components/Hud";
 import { Viewport } from "@/Graphics/Viewport";
+import type { Beacon } from "@/Beacon";
 
 const DEFAULT_ZOOM = 3;
 
@@ -90,6 +91,11 @@ abstract class Level extends EventTarget {
                 fuelCapsule.collect(this.ship);
             }
         });
+    }
+
+    public addBeacon(beacon: Beacon): void {
+        this.physics.add(beacon);
+        this.graphics.add(beacon);
     }
 
     public update(time: number, delta: number) {

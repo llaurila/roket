@@ -2,6 +2,7 @@ import DataLevel from "@/Level/DataLevel";
 import type { LevelData } from "@/Level/types";
 import type Fuel from "@/Fuel";
 import data from "./level.yaml";
+import type { Beacon } from "@/Beacon";
 
 class DeepSpaceMission extends DataLevel {
     public constructor() {
@@ -9,9 +10,11 @@ class DeepSpaceMission extends DataLevel {
     }
 
     protected registerObjectiveChecks(): void {
-        const fuelCollectedCheck = (id: string) => () => !this.getObject<Fuel>(id).alive;
-        this.registerObjectiveTest("farFuelCollected", fuelCollectedCheck("far-fuel"));
-        this.registerObjectiveTest("nearFuelCollected", fuelCollectedCheck("near-fuel"));
+        this.registerObjectiveTest("farFuelCollected",
+            () => !this.getObject<Fuel>("far-fuel").alive);
+
+        this.registerObjectiveTest("nearBeaconReached",
+            () =>  this.getObject<Beacon>("near-beacon").canDetectShip(this.ship));
     }
 }
 

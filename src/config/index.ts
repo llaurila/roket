@@ -97,6 +97,7 @@ export const Config: IConfig = {
         dotRadius: 4,
         labelOffset: 28,
         fontSize: 10,
+        beaconColor: { R: 1, G: 0, B: 0, A: 1 },
         fuelColor: { R: 0, G: 1, B: 0, A: 0.5 },
         numberOfNearestFuelToDisplay: 3,
         headingMarkerRadius: 12,
@@ -144,5 +145,14 @@ export const Config: IConfig = {
         opacityMax: 1.00,
         pulseHz: 0.5,
         color: { R: 0, G: 1, B: 0, A: 1 }
+    },
+
+    beacon: {
+        radius: 2,
+        opacityMin: 0.25,
+        opacityMax: 1.0,
+        blinkInterval: 2,
+        fadeDuration: 1,
+        detectionRadius: 20
     }
 };

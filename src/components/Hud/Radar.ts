@@ -8,6 +8,7 @@ import { getColorString, getColorStringFromRGBA } from "@/Graphics/Color";
 import { RadarDrawer } from "./RadarDrawer";
 import { Config } from "@/config";
 import type { Viewport } from "@/Graphics/Viewport";
+import { Beacon } from "@/Beacon";
 
 const config = Config.radar;
 
@@ -33,6 +34,7 @@ export class Radar implements IDrawable {
         ctx.save();
 
         drawer.drawCircle();
+        this.drawBeacons(drawer);
         this.drawNearestFuel(drawer, config.numberOfNearestFuelToDisplay);
         this.drawNearestShip(drawer);
         this.drawHeading(drawer);
@@ -58,6 +60,16 @@ export class Radar implements IDrawable {
             config.vectorMarkerRadius,
             getColorString(config.vectorMarkerColor)
         );
+    }
+
+    private drawBeacons(drawer: RadarDrawer) {
+        const beacons = this.physics
+            .filter(obj => obj instanceof Beacon)
+            .map(obj => obj as Beacon);
+
+        for (const beacon of beacons) {
+            drawer.drawDot(beacon.pos, getColorString(config.beaconColor));
+        }
     }
 
     private drawNearestFuel(drawer: RadarDrawer, count = 1) {

@@ -8,6 +8,7 @@ import Vector from "@/Physics/Vector";
 import ShipController from "@/ShipController";
 import RNG from "@/RNG";
 import { formatString } from "@/Utils";
+import { Beacon } from "@/Beacon";
 
 const DEFAULT_RAND_SEED = 951337;
 
@@ -165,11 +166,18 @@ abstract class DataLevel extends Level {
 
     private createDynamicObjects(): void {
         if (!this.data.objects) return;
+
+        type ObjectFactory = (o: GameObject) => void;
+
+        const factories: Record<string, ObjectFactory> = {
+            fuel: this.createFuel.bind(this),
+            beacon: this.createBeacon.bind(this)
+        };
+
         for (const o of this.data.objects) {
-            switch (o.type) {
-                case "fuel":
-                    this.createFuel(o);
-                    break;
+            const factory = factories[o.type];
+            if (factory) {
+                factory(o);
             }
         }
     }
@@ -184,6 +192,12 @@ abstract class DataLevel extends Level {
         fuel.angularVelocity = o.angularVelocity || FUEL_DEFAULT_ANGULAR_VELOCITY;
         this.objects[o.id] = fuel;
         this.addFuelCapsule(fuel);
+    }
+
+    private createBeacon(o: GameObject) {
+        const beacon = new Beacon(Vector.fromComponents(o.position));
+        this.objects[o.id] = beacon;
+        this.addBeacon(beacon);
     }
 
     private setCosmos(): void {

@@ -83,6 +83,7 @@ export interface IConfig {
         dotRadius: number;
         labelOffset: number;
         fontSize: number;
+        beaconColor: IColor;
         fuelColor: IColor;
         numberOfNearestFuelToDisplay: number;
         headingMarkerRadius: number;
@@ -134,6 +135,15 @@ export interface IConfig {
         opacityMax: number;
         pulseHz: number;
         color: IColor;
+    }
+
+    beacon: {
+        radius: number;
+        opacityMin: number;
+        opacityMax: number;
+        blinkInterval: number;
+        fadeDuration: number;
+        detectionRadius: number;
     }
 }
 
