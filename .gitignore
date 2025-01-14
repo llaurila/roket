@@ -2,3 +2,4 @@ node_modules/
 dist/
 .cache/
 .nyc_output/
+tsconfig.tsbuildinfo
