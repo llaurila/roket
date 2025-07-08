@@ -105,8 +105,8 @@ export interface IConfig {
 
     cosmos: {
         starDensity: number; // stars/km²
-        starBrighnessMax: number;
-        starBrighnessMin: number;
+        starBrightnessMax: number;
+        starBrightnessMin: number;
     }
 
     ship: {

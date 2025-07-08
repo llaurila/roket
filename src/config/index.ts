@@ -109,8 +109,8 @@ export const Config: IConfig = {
 
     cosmos: {
         starDensity: 400,
-        starBrighnessMin: 0.25,
-        starBrighnessMax: 1.00
+        starBrightnessMin: 0.25,
+        starBrightnessMax: 1.00
     },
 
     ship: {
