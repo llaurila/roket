@@ -28,14 +28,19 @@ class NPCAI {
     private accelerateTowardsTarget(turn: number) {
         this.resetThrottle();
 
+        const speed = this.me.v.length();
+        const canThrustForward = speed < LevelConfig.MAX_SPEED;
+
         if (Math.abs(turn) < LevelConfig.CORRECT_HEADING_TOLERANCE) {
-            this.me.engineLeft.setThrottle(1);
-            this.me.engineRight.setThrottle(1);
+            if (canThrustForward) {
+                this.me.engineLeft.setThrottle(1);
+                this.me.engineRight.setThrottle(1);
+            }
         }
         else if (turn >= 0) {
-            this.me.engineRight.setThrottle(turn);
+            this.me.engineRight.setThrottle(Math.min(turn, 1));
         } else {
-            this.me.engineLeft.setThrottle(-turn);
+            this.me.engineLeft.setThrottle(Math.min(-turn, 1));
         }
     }
 
@@ -64,7 +69,13 @@ class NPCAI {
         return this.me.getHeading().cross(headingToTarget);
     }
 
-    private getVectorToTarget = () => this.player.pos.add(this.player.v.neg());
+    private getVectorToTarget = () => {
+        const distance = this.me.pos.distanceTo(this.player.pos);
+        if (distance > LevelConfig.MAX_DISTANCE_FROM_PLAYER) {
+            return this.player.pos;
+        }
+        return this.player.pos.add(this.player.v.neg());
+    };
 }
 
 export default NPCAI;

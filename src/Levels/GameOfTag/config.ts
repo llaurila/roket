@@ -7,6 +7,8 @@ const config = {
     FUEL_CAPSULE_DISTANCE_MIN: 50,
     FUEL_CAPSULE_DISTANCE_MAX: 200,
     CORRECT_HEADING_TOLERANCE: 0.15,
+    MAX_DISTANCE_FROM_PLAYER: 120,
+    MAX_SPEED: 30,
 };
 /* eslint-enable no-magic-numbers */
 
