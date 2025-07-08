@@ -108,7 +108,8 @@ function handleDebugLevelChangeNext(game: Game) {
 
 function handleDebugLevelChangePrevious(game: Game) {
     if (previousLevelButton()) {
-        if (currentLevel-- > 0) {
+        if (currentLevel > 0) {
+            currentLevel--;
             game.stop();
             loadLevel(currentLevel);
         }
