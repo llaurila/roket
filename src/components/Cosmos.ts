@@ -99,7 +99,7 @@ function generateStars(x: number, y: number) {
             ).mul(SEGMENT_SIZE * MAX_Z)),
             z: random(1, MAX_Z),
             size: 1 + Math.random() * 2,
-            opacity: random(config.starBrighnessMin, config.starBrighnessMax)
+            opacity: random(config.starBrightnessMin, config.starBrightnessMax)
         });
     }
 
