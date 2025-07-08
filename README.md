@@ -1,6 +1,6 @@
 # Roket
 
-2D spaceship game with Newtonian physics.  
+2D spaceship game with Newtonian physics.
 © Vincent Laurila 2019-2025
 
 ## How to Develop
@@ -16,3 +16,11 @@
 - Install Docker
 - `./docker-build.sh`
 - `./docker-run.sh`
+
+## Testing
+
+Run the unit tests with:
+
+```bash
+npm test
+```
