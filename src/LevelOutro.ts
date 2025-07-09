@@ -41,7 +41,7 @@ class LevelOutro implements IDrawable, IUpdatable {
     private getSuccessMessage(): string {
         return this.getStatString() + "\n" +
             "\n" +
-            "PRESS <ESC> TO RESTART.";
+            "PRESS <ENTER> TO CONTINUE, <ESC> TO RESTART.";
     }
 
     private getFailureMessage(): string {
@@ -51,7 +51,7 @@ class LevelOutro implements IDrawable, IUpdatable {
             "\n" +
             this.getStatString() + "\n" +
             "\n" +
-            "PRESS <ENTER> TO CONTINUE.";
+            "PRESS <ESC> TO RESTART.";
     }
 
     private getStatString(): string {
