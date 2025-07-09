@@ -1,0 +1,22 @@
+name: "LEVEL 5: GAME OF TAG"
+description: >
+  CATCH THE OTHER SHIP.
+
+randomSeed: 89321
+
+variables:
+  OTHER_SHIP_OFFSET: [-20, 60]
+  FUEL_CAPSULE_DISTANCE_MIN: 50
+  FUEL_CAPSULE_DISTANCE_MAX: 200
+  CORRECT_HEADING_TOLERANCE: 0.15
+  MAX_DISTANCE_FROM_PLAYER: 120
+  MAX_SPEED: 30
+
+ship:
+  fuelTank:
+    currentAmount: 150
+
+objectives:
+  - id: catch
+    title: CATCH THE OTHER SHIP.
+    externalSuccessCheck: caught

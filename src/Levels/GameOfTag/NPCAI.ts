@@ -1,13 +1,20 @@
 import type Ship from "../../Ship";
-import LevelConfig from "./config";
+
+interface AIConfig {
+    headingTolerance: number;
+    maxDistanceFromPlayer: number;
+    maxSpeed: number;
+}
 
 class NPCAI {
     private player: Ship;
     private me: Ship;
+    private cfg: AIConfig;
 
-    public constructor(ship: Ship, enemy: Ship) {
+    public constructor(ship: Ship, enemy: Ship, cfg: AIConfig) {
         this.player = ship;
         this.me = enemy;
+        this.cfg = cfg;
     }
 
     public think(): void {
@@ -29,9 +36,9 @@ class NPCAI {
         this.resetThrottle();
 
         const speed = this.me.v.length();
-        const canThrustForward = speed < LevelConfig.MAX_SPEED;
+        const canThrustForward = speed < this.cfg.maxSpeed;
 
-        if (Math.abs(turn) < LevelConfig.CORRECT_HEADING_TOLERANCE) {
+        if (Math.abs(turn) < this.cfg.headingTolerance) {
             if (canThrustForward) {
                 this.me.engineLeft.setThrottle(1);
                 this.me.engineRight.setThrottle(1);
@@ -71,7 +78,7 @@ class NPCAI {
 
     private getVectorToTarget = () => {
         const distance = this.me.pos.distanceTo(this.player.pos);
-        if (distance > LevelConfig.MAX_DISTANCE_FROM_PLAYER) {
+        if (distance > this.cfg.maxDistanceFromPlayer) {
             return this.player.pos;
         }
         return this.player.pos.add(this.player.v.neg());

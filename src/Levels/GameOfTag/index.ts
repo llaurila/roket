@@ -1,29 +1,44 @@
 
-import Level from "../../Level";
-import Cosmos from "../../components/Cosmos";
-import ShipController from "../../ShipController";
-import Objective from "../../Level/Objective";
-import Ship from "../../Ship";
-import RNG from "../../RNG";
-import { Config } from "../../config";
-import LevelConfig from "./config";
+import data from "./level.yaml";
+import DataLevel from "@/Level/DataLevel";
+import type { LevelData } from "@/Level/types";
+import Ship from "@/Ship";
+import { Config } from "@/config";
 import { generateFuelCapsule } from "./fuel";
 import NPCAI from "./NPCAI";
+import Vector from "@/Physics/Vector";
 
-class GameOfTag extends Level {
-    public name = "LEVEL 5: GAME OF TAG";
-    public description = "CATCH THE OTHER SHIP.";
-
-    public rng: RNG = new RNG(LevelConfig.RAND_SEED);
-    public enemy: Ship = new Ship(LevelConfig.OTHER_SHIP_OFFSET);
+class GameOfTag extends DataLevel {
+    public enemy: Ship;
     public ai?: NPCAI;
 
     public started = false;
     public caught = false;
 
+    private readonly otherShipOffset: Vector;
+    private readonly fuelCapsuleDistanceMin: number;
+    private readonly fuelCapsuleDistanceMax: number;
+    private readonly headingTolerance: number;
+    private readonly maxDistanceFromPlayer: number;
+    private readonly maxSpeed: number;
+
+    public constructor() {
+        super(data as LevelData);
+
+        this.otherShipOffset = Vector.fromComponents(
+            this.getEnv<number[]>("OTHER_SHIP_OFFSET")
+        );
+        this.fuelCapsuleDistanceMin = this.getEnv<number>("FUEL_CAPSULE_DISTANCE_MIN");
+        this.fuelCapsuleDistanceMax = this.getEnv<number>("FUEL_CAPSULE_DISTANCE_MAX");
+        this.headingTolerance = this.getEnv<number>("CORRECT_HEADING_TOLERANCE");
+        this.maxDistanceFromPlayer = this.getEnv<number>("MAX_DISTANCE_FROM_PLAYER");
+        this.maxSpeed = this.getEnv<number>("MAX_SPEED");
+
+        this.enemy = new Ship(this.otherShipOffset);
+    }
+
     public createObjects(): void {
-        this.graphics.add(new Cosmos());
-        this.shipController = new ShipController(this.ship);
+        super.createObjects();
 
         this.physics.add(this.enemy);
         this.graphics.add(this.enemy);
@@ -40,13 +55,22 @@ class GameOfTag extends Level {
             }
         });
 
-        this.ai = new NPCAI(this.ship, this.enemy);
+        this.ai = new NPCAI(this.ship, this.enemy, {
+            headingTolerance: this.headingTolerance,
+            maxDistanceFromPlayer: this.maxDistanceFromPlayer,
+            maxSpeed: this.maxSpeed
+        });
 
         this.generateNewFuelCapsule();
     }
 
     public generateNewFuelCapsule() {
-        const fuel = generateFuelCapsule(this);
+        const fuel = generateFuelCapsule(
+            this.ship.pos,
+            this.rng,
+            this.fuelCapsuleDistanceMin,
+            this.fuelCapsuleDistanceMax
+        );
 
         fuel.onCollision(e => {
             if (!fuel.collected && e.target == this.ship) {
@@ -57,11 +81,8 @@ class GameOfTag extends Level {
         this.addFuelCapsule(fuel);
     }
 
-    public createObjectives() {
-        this.objectives.push(new Objective(
-            "CATCH THE OTHER SHIP.",
-            () => this.caught
-        ));
+    protected registerObjectiveChecks(): void {
+        this.registerObjectiveTest("caught", () => this.caught);
     }
 
     public update(time: number, delta: number) {
