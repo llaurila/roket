@@ -1,13 +1,28 @@
+import type Vector from "@/Physics/Vector";
 import type Ship from "../../Ship";
-import LevelConfig from "./config";
+
+interface AIConfig {
+    headingTolerance: number;
+    maxDistanceFromPlayer: number;
+    maxSpeed: number;
+}
+
+interface Target {
+    pos: Vector;
+    v: Vector;
+}
+
+type GetTarget = () => Target;
 
 class NPCAI {
-    private player: Ship;
-    private me: Ship;
+    private ship: Ship;
+    private cfg: AIConfig;
+    private getTarget: GetTarget;
 
-    public constructor(ship: Ship, enemy: Ship) {
-        this.player = ship;
-        this.me = enemy;
+    public constructor(ship: Ship, cfg: AIConfig, getTarget: GetTarget) {
+        this.ship = ship;
+        this.cfg = cfg;
+        this.getTarget = getTarget;
     }
 
     public think(): void {
@@ -21,60 +36,63 @@ class NPCAI {
     }
 
     private resetThrottle() {
-        this.me.engineLeft.setThrottle(0);
-        this.me.engineRight.setThrottle(0);
+        this.ship.engineLeft.setThrottle(0);
+        this.ship.engineRight.setThrottle(0);
     }
 
     private accelerateTowardsTarget(turn: number) {
         this.resetThrottle();
 
-        const speed = this.me.v.length();
-        const canThrustForward = speed < LevelConfig.MAX_SPEED;
+        const speed = this.ship.v.length();
+        const canThrustForward = speed < this.cfg.maxSpeed;
 
-        if (Math.abs(turn) < LevelConfig.CORRECT_HEADING_TOLERANCE) {
+        if (Math.abs(turn) < this.cfg.headingTolerance) {
             if (canThrustForward) {
-                this.me.engineLeft.setThrottle(1);
-                this.me.engineRight.setThrottle(1);
+                this.ship.engineLeft.setThrottle(1);
+                this.ship.engineRight.setThrottle(1);
             }
         }
         else if (turn >= 0) {
-            this.me.engineRight.setThrottle(Math.min(turn, 1));
+            this.ship.engineRight.setThrottle(Math.min(turn, 1));
         } else {
-            this.me.engineLeft.setThrottle(Math.min(-turn, 1));
+            this.ship.engineLeft.setThrottle(Math.min(-turn, 1));
         }
     }
 
     private handleSpin() {
         this.resetThrottle();
 
-        if (this.me.angularVelocity >= 0) {
-            this.me.engineLeft.setThrottle(
-                Math.min(this.me.angularVelocity, 1)
+        if (this.ship.angularVelocity >= 0) {
+            this.ship.engineLeft.setThrottle(
+                Math.min(this.ship.angularVelocity, 1)
             );
         } else {
-            this.me.engineRight.setThrottle(
-                Math.min(-this.me.angularVelocity, 1)
+            this.ship.engineRight.setThrottle(
+                Math.min(-this.ship.angularVelocity, 1)
             );
         }
     }
 
     private isSpinning(): boolean {
         const SPIN_THRESHOLD = 0.5;
-        return Math.abs(this.me.angularVelocity) > SPIN_THRESHOLD;
+        return Math.abs(this.ship.angularVelocity) > SPIN_THRESHOLD;
     }
 
     private getTurnTowardsTarget(): number {
         const target = this.getVectorToTarget();
-        const headingToTarget = target.sub(this.me.pos).normalize();
-        return this.me.getHeading().cross(headingToTarget);
+        const headingToTarget = target.sub(this.ship.pos).normalize();
+        return this.ship.getHeading().cross(headingToTarget);
     }
 
-    private getVectorToTarget = () => {
-        const distance = this.me.pos.distanceTo(this.player.pos);
-        if (distance > LevelConfig.MAX_DISTANCE_FROM_PLAYER) {
-            return this.player.pos;
+    private getVectorToTarget(): Vector {
+        const target = this.getTarget();
+
+        const distance = this.ship.pos.distanceTo(target.pos);
+        if (distance > this.cfg.maxDistanceFromPlayer) {
+            return target.pos;
         }
-        return this.player.pos.add(this.player.v.neg());
+
+        return target.pos.add(target.v.neg());
     };
 }
 
