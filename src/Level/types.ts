@@ -17,7 +17,7 @@ export interface LevelObjective {
     id: string;
     title: string;
     successChecks?: LevelSuccessCheck[];
-    externalSuccessCheck?: string;
+    externalSuccessCheck?: string | { test: string; args?: unknown[] };
     externalFailureCheck?: {
         test: string;
         message: string;
