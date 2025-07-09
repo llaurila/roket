@@ -95,13 +95,14 @@ export default class UITextInput extends EventTarget {
     };
 
     private handleKey(key: string) {
-        const keys: Record<string, () => void> = {
+        const controlKeys: Record<string, () => void> = {
             "Backspace": () => this._value = this._value.slice(0, -1),
             "Enter": () => this.dispatchEvent(new Event("enter")),
+            "Escape": () => this.dispatchEvent(new Event("escape"))
         };
 
-        if (keys[key]) {
-            keys[key]();
+        if (controlKeys[key]) {
+            controlKeys[key]();
             return;
         }
 

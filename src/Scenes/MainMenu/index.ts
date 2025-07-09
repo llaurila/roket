@@ -101,8 +101,29 @@ export function enterMainMenu() {
     const menu = new Menu("MAIN MENU");
 
     const dialog = new UIDialog(400, 150);
+
+    const okHandler = () => {
+        try {
+            Player.PL1.setName(nameInput.value);
+            playerItem.text = "PLAYER: " + Player.PL1.name;
+            dialog.hide();
+            menu.show();
+        }
+        catch {
+            dialog.error = true;
+            dialog.title = "INVALID NAME";
+        }
+    };
+
+    const cancelHandler = () => {
+        dialog.hide();
+        menu.show();
+    };
+
     const nameInput = dialog.addTextInput(Player.PL1.name);
     nameInput.maxLength = 8;
+    nameInput.addEventListener("enter", okHandler);
+    nameInput.addEventListener("escape", cancelHandler);
 
     const playerItem = menu.addItem("PLAYER: " + Player.PL1.name);
 
@@ -110,9 +131,11 @@ export function enterMainMenu() {
         nameInput.value = Player.PL1.name;
         dialog.error = false;
         dialog.title = "ENTER PLAYER NAME";
+
         menu.hide();
         dialog.show();
-        nameInput.focus();
+
+        setTimeout(() => { nameInput.focus(); }, 0);
     });
 
     menu.addItem("SETTINGS").disabled = true;
@@ -126,22 +149,8 @@ export function enterMainMenu() {
 
     graphics.add(menu);
 
-    dialog.addButton("OK").addEventListener("click", () => {
-        try {
-            Player.PL1.setName(nameInput.value);
-            playerItem.text = "PLAYER: " + Player.PL1.name;
-            dialog.hide();
-            menu.show();
-        }
-        catch {
-            dialog.error = true;
-            dialog.title = "INVALID NAME";
-        }
-    });
-    dialog.addButton("CANCEL").addEventListener("click", () => {
-        dialog.hide();
-        menu.show();
-    });
+    dialog.addButton("OK").addEventListener("click", okHandler);
+    dialog.addButton("CANCEL").addEventListener("click", cancelHandler);
     dialog.visible = false;
     graphics.add(dialog);
 
