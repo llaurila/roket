@@ -15,6 +15,7 @@ import ShipConfig from "./config";
 import { Stats } from "../Level/Stats";
 import type { Viewport } from "@/Graphics/Viewport";
 import type { DrawContext } from "@/Graphics/DrawContext";
+import { playShipDestroyedSound } from "@/Sounds";
 
 const { ship } = Config;
 
@@ -62,6 +63,8 @@ class Ship extends Body implements IDrawable {
     public die(): void {
         this._alive = false;
         this.hullIntegrity = 0;
+
+        playShipDestroyedSound();
 
         if (this.physics && this.graphics) {
             const explosion = new ExplosionParticleEngine(this.pos, {

@@ -1,3 +1,5 @@
+/* eslint-disable no-magic-numbers */
+
 const LOW_VOLUME = 0.33;
 const SHORT_DURATION = 0.05;
 const LONG_DURATION = 0.4;
@@ -36,4 +38,38 @@ export const playObjectiveClearedSound = () => {
 export const playMissionSuccessSound = () => {
     const HZ = 820;
     playOscillatorSound(HZ, LONG_DURATION);
+};
+
+export const playExplosionSound = (duration: number) => {
+    const bufferSize = audioCtx.sampleRate * duration;
+    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+
+    for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+    }
+
+    const noise = audioCtx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = "lowpass";
+    filter.frequency.setValueAtTime(1000, audioCtx.currentTime);
+    filter.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + duration);
+
+    const gain = audioCtx.createGain();
+    gain.gain.setValueAtTime(1, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    noise.start();
+    noise.stop(audioCtx.currentTime + duration);
+};
+
+export const playShipDestroyedSound = () => {
+    const DURATION = .6;
+    playExplosionSound(DURATION);
 };
