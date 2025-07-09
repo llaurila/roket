@@ -1,5 +1,5 @@
 import type Vector from "@/Physics/Vector";
-import type Ship from "../../Ship";
+import type Ship from "../Ship";
 
 interface AIConfig {
     headingTolerance: number;

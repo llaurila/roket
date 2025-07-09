@@ -5,7 +5,7 @@ import type { LevelData } from "@/Level/types";
 import Ship from "@/Ship";
 import { Config } from "@/config";
 import { generateFuelCapsule } from "./fuel";
-import NPCAI from "./NPCAI";
+import NPCAI from "../NPCAI";
 import Vector from "@/Physics/Vector";
 import type Fuel from "@/Fuel";
 import type { IColor } from "@/Graphics/Color";
