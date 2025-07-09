@@ -102,8 +102,10 @@ export function enterMainMenu() {
 
     const dialog = new UIDialog(400, 150);
     const nameInput = dialog.addTextInput(Player.PL1.name);
+    nameInput.maxLength = 8;
 
     const playerItem = menu.addItem("PLAYER: " + Player.PL1.name);
+
     playerItem.addEventListener("click", () => {
         nameInput.value = Player.PL1.name;
         dialog.error = false;

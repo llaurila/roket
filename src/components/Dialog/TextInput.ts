@@ -11,29 +11,19 @@ import type UIDialog from "./index";
 const HEIGHT = 30;
 const MARGIN = 8;
 const PADDING_X = 10;
+const PADDING_Y = 5;
 const FONT_SIZE = Config.typography.messageFontSize;
+const DEFAULT_MAX_LENGTH = 255;
 
 export default class UITextInput extends EventTarget {
     public id: number = UniqueIdProvider.next();
     public alive = true;
 
+    public maxLength = DEFAULT_MAX_LENGTH;
+
     private mouseWasDown = false;
     private focused = false;
     private _value: string;
-
-    private readonly keyHandler = (e: KeyboardEvent) => {
-        if (!this.focused) return;
-
-        if (e.key === "Backspace") {
-            this._value = this._value.slice(0, -1);
-        }
-        else if (e.key.length === 1) {
-            const ch = e.key.toUpperCase();
-            if (/^[A-Z0-9]$/.test(ch) && this._value.length < 8) {
-                this._value += ch;
-            }
-        }
-    };
 
     public constructor(private dialog: UIDialog, value = "") {
         super();
@@ -67,7 +57,12 @@ export default class UITextInput extends EventTarget {
 
         if (this.focused) {
             const width = ctx.measureText(this._value).width;
-            ctx.fillRect(rect.topLeft.x + PADDING_X + width + 2, rect.topLeft.y + 5, 1, rect.size.y - 10);
+            ctx.fillRect(
+                rect.topLeft.x + PADDING_X + width + 2,
+                rect.topLeft.y + PADDING_Y,
+                1,
+                rect.size.y - PADDING_Y * 2
+            );
         }
 
         ctx.restore();
@@ -79,10 +74,13 @@ export default class UITextInput extends EventTarget {
         const mouseIsDown = Pointer.leftPressed();
         const mouseOver = this.isMouseOver(viewport);
 
-        if (mouseOver && mouseIsDown && !this.mouseWasDown) {
+        const shouldGetFocus = () => mouseOver && mouseIsDown && !this.mouseWasDown;
+        const shouldLoseFocus = () => !mouseOver && mouseIsDown && !this.mouseWasDown;
+
+        if (shouldGetFocus()) {
             this.focused = true;
         }
-        else if (!mouseOver && mouseIsDown && !this.mouseWasDown) {
+        else if (shouldLoseFocus()) {
             this.focused = false;
         }
 
@@ -91,10 +89,41 @@ export default class UITextInput extends EventTarget {
 
     public getHeight(): number { return HEIGHT; }
 
+    private readonly keyHandler = (e: KeyboardEvent) => {
+        if (!this.focused) return;
+        this.handleKey(e.key);
+    };
+
+    private handleKey(key: string) {
+        const keys: Record<string, () => void> = {
+            "Backspace": () => this._value = this._value.slice(0, -1),
+            "Enter": () => this.dispatchEvent(new Event("enter")),
+        };
+
+        if (keys[key]) {
+            keys[key]();
+            return;
+        }
+
+        this.handleInputKey(key);
+    }
+
+    private handleInputKey(key: string) {
+        if (key.length === 1) {
+            const ch = key.toUpperCase();
+            if (/^[A-Z0-9]$/.test(ch) && this._value.length < this.maxLength) {
+                this._value += ch;
+            }
+        }
+    }
+
     private getRect(viewport: Viewport): Rectangle {
         const parentRect = this.dialog.getContentRect(viewport);
         const width = parentRect.size.x - MARGIN * 2;
-        const pos = new Vector(parentRect.topLeft.x + MARGIN, parentRect.topLeft.y + MARGIN + this.dialog.textInputs.indexOf(this) * (HEIGHT + MARGIN));
+        const pos = new Vector(
+            parentRect.topLeft.x + MARGIN,
+            parentRect.topLeft.y + MARGIN + this.dialog.textInputs.indexOf(this) * (HEIGHT + MARGIN)
+        );
         return new Rectangle(pos, new Vector(width, HEIGHT));
     }
 
