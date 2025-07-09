@@ -1,5 +1,4 @@
 import type Level from "./Level";
-import type Vector from "./Physics/Vector";
 import { Config } from "./config";
 
 export function panTowardsShip(level: Level, delta: number): void {
@@ -22,20 +21,11 @@ export function panTowardsShip(level: Level, delta: number): void {
         defaultZoom - Math.min(zoomVelocityCap, v) / zoomScale
     );
 
-    let target: Vector;
+    const lookAhead = Math.min(v * lookAheadMultiplier, maxLookAhead);
 
-    if (v > maxLookAhead) {
-        target = level.ship.pos.add(
-            level.ship.v
-        ).add(
-            level.ship.v.normalize().mul(maxLookAhead)
-        );
-    }
-    else {
-        target = level.ship.pos.add(
-            level.ship.v.mul(lookAheadMultiplier)
-        );
-    }
+    const target = level.ship.pos.add(
+        level.ship.v.normalize().mul(lookAhead)
+    );
 
     const towards = target.sub(camera.pos);
 
