@@ -17,6 +17,12 @@ class HotLap extends DataLevel {
         this.elapsed = time;
     }
 
+    protected override getRuntimeVars(): Record<string, string> {
+        return {
+            timeLimit: this.timeLimit.toString()
+        };
+    }
+
     protected registerObjectiveChecks(): void {
         this.registerObjectiveTest("beaconReached", (id: unknown) =>
             this.getObject<Beacon>(id as string).canDetectShip(this.ship)

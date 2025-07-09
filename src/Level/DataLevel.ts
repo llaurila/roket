@@ -34,7 +34,7 @@ abstract class DataLevel extends Level {
     }
 
     public get description(): string {
-        return this.data.description;
+        return formatString(this.data.description, this.getRuntimeVars());
     }
 
     public createObjects(): void {
@@ -138,7 +138,10 @@ abstract class DataLevel extends Level {
         if (test) {
             externalFailureCheck = () => {
                 if (this.objectiveTests[test]()) {
-                    return o.externalFailureCheck?.message || "OBJECTIVE FAILED";
+                    return formatString(
+                        o.externalFailureCheck?.message || "OBJECTIVE FAILED",
+                        this.getRuntimeVars()
+                    );
                 }
                 return null;
             };

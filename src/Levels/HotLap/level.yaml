@@ -1,6 +1,6 @@
 name: "LEVEL 6: HOT LAP"
 description: >
-  FLY THROUGH ALL BEACONS TO COMPLETE A LAP IN LESS THAN 60 SECONDS.
+  FLY THROUGH ALL BEACONS TO COMPLETE A LAP IN LESS THAN ${timeLimit} SECONDS.
 
 variables:
    TIME_LIMIT: 60
@@ -40,6 +40,6 @@ objectives:
     externalSuccessCheck: { test: beaconReached, args: [beacon-4] }
     externalFailureCheck:
       test: timeExceeded
-      message: TOO SLOW. YOUR NEED TO COMPLETE THE LAP IN LESS THAN 60 SECONDS.
+      message: TOO SLOW. YOUR NEED TO COMPLETE THE LAP IN LESS THAN ${timeLimit} SECONDS.
     dependsOn: beacon-3
   
