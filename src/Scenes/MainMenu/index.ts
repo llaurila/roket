@@ -1,3 +1,4 @@
+/* eslint-disable no-magic-numbers */
 import Cosmos from "@/components/Cosmos";
 import { Menu } from "@/components/Menu";
 import Game from "@/Game";
@@ -11,6 +12,7 @@ import { Viewport } from "@/Graphics/Viewport";
 import { Player } from "@/Player";
 import { loadLevel } from "../Gameplay";
 import { getQueryStringValue } from "@/Utils";
+import UIDialog from "@/components/Dialog";
 
 const ZOOM = 3;
 const PARALLAX_SPEED = 10;
@@ -98,7 +100,10 @@ export function enterMainMenu() {
 
     const menu = new Menu("MAIN MENU");
 
-    menu.addItem("PLAYER: " + Player.PL1.name);
+    menu.addItem("PLAYER: " + Player.PL1.name).addEventListener("click", () => {
+        menu.hide();
+        dialog.show();
+    });
 
     menu.addItem("SETTINGS").disabled = true;
 
@@ -110,6 +115,19 @@ export function enterMainMenu() {
     });
 
     graphics.add(menu);
+
+    const dialog = new UIDialog(400, 300);
+    dialog.title = "NOT IMPLEMENTED, SORRY";
+    dialog.addButton("OK").addEventListener("click", () => {
+        dialog.hide();
+        menu.show();
+    });
+    dialog.addButton("CANCEL").addEventListener("click", () => {
+        dialog.hide();
+        menu.show();
+    });
+    dialog.visible = false;
+    graphics.add(dialog);
 
     game = new Game(update, draw, viewport);
 

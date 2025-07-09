@@ -31,11 +31,21 @@ export class UIWindow implements IDrawable, IUpdatable {
     public absolutePosition = Vector.Zero;
     public relativePosition = Vector.Zero;
 
+    public visible = true;
+
     private fadeOutCallback: (() => void)|undefined;
 
     public constructor(width: number, height: number) {
         this.width = width;
         this.height = height;
+    }
+
+    public show() {
+        this.visible = true;
+    }
+
+    public hide() {
+        this.visible = false;
     }
 
     public update(_time: number, delta: number) {
@@ -49,6 +59,8 @@ export class UIWindow implements IDrawable, IUpdatable {
     }
 
     public draw(viewport: Viewport) {
+        if (!this.visible) return;
+
         const { ctx } = viewport;
 
         ctx.save();

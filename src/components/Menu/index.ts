@@ -20,6 +20,8 @@ export class Menu extends UIWindow {
     }
 
     public draw(viewport: Viewport) {
+        if (!this.visible) return;
+
         const { ctx } = viewport;
 
         ctx.save();
