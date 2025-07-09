@@ -102,7 +102,10 @@ abstract class DataLevel extends Level {
 
         const combinedChecks = () => {
             if (!checkFunctions.every(f => f())) return false;
-            if (externalSuccessCheck != undefined && !externalSuccessCheck(...(externalArgs || []))) return false;
+            if (externalSuccessCheck != undefined &&
+                !externalSuccessCheck(...(externalArgs || []))) {
+                    return false;
+            }
             return true;
         };
 
