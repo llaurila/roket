@@ -7,6 +7,8 @@ import { Config } from "@/config";
 import { generateFuelCapsule } from "./fuel";
 import NPCAI from "./NPCAI";
 import Vector from "@/Physics/Vector";
+import type Fuel from "@/Fuel";
+import type { IColor } from "@/Graphics/Color";
 
 class GameOfTag extends DataLevel {
     public enemy: Ship;
@@ -14,6 +16,8 @@ class GameOfTag extends DataLevel {
 
     public started = false;
     public caught = false;
+
+    private fuel?: Fuel;
 
     private readonly otherShipOffset: Vector;
     private readonly fuelCapsuleDistanceMin: number;
@@ -28,6 +32,7 @@ class GameOfTag extends DataLevel {
         this.otherShipOffset = Vector.fromComponents(
             this.getEnv<number[]>("OTHER_SHIP_OFFSET")
         );
+
         this.fuelCapsuleDistanceMin = this.getEnv<number>("FUEL_CAPSULE_DISTANCE_MIN");
         this.fuelCapsuleDistanceMax = this.getEnv<number>("FUEL_CAPSULE_DISTANCE_MAX");
         this.headingTolerance = this.getEnv<number>("CORRECT_HEADING_TOLERANCE");
@@ -35,6 +40,7 @@ class GameOfTag extends DataLevel {
         this.maxSpeed = this.getEnv<number>("MAX_SPEED");
 
         this.enemy = new Ship(this.otherShipOffset);
+        this.enemy.color = this.getEnv<IColor>("ENEMY_COLOR");
     }
 
     public createObjects(): void {
@@ -42,8 +48,6 @@ class GameOfTag extends DataLevel {
 
         this.physics.add(this.enemy);
         this.graphics.add(this.enemy);
-
-        this.enemy.color = { R: 1, G: 0, B: 1, A: 1 };
 
         this.enemy.mass = Config.ship.mass;
         this.enemy.rotation = 2;
@@ -55,11 +59,18 @@ class GameOfTag extends DataLevel {
             }
         });
 
-        this.ai = new NPCAI(this.ship, this.enemy, {
-            headingTolerance: this.headingTolerance,
-            maxDistanceFromPlayer: this.maxDistanceFromPlayer,
-            maxSpeed: this.maxSpeed
-        });
+        this.ai = new NPCAI(
+            this.enemy,
+            {
+                headingTolerance: this.headingTolerance,
+                maxDistanceFromPlayer: this.maxDistanceFromPlayer,
+                maxSpeed: this.maxSpeed
+            },
+            () => ({
+                pos: this.ship.pos.add(this.fuel?.pos || Vector.Zero).mul(0.5),
+                v: this.ship.v
+            })
+        );
 
         this.generateNewFuelCapsule();
     }
@@ -79,10 +90,8 @@ class GameOfTag extends DataLevel {
         });
 
         this.addFuelCapsule(fuel);
-    }
 
-    protected registerObjectiveChecks(): void {
-        this.registerObjectiveTest("caught", () => this.caught);
+        this.fuel = fuel;
     }
 
     public update(time: number, delta: number) {
@@ -94,6 +103,10 @@ class GameOfTag extends DataLevel {
         else {
             this.startNpcWhenPlayerMoves();
         }
+    }
+
+    protected registerObjectiveChecks(): void {
+        this.registerObjectiveTest("caught", () => this.caught);
     }
 
     private startNpcWhenPlayerMoves() {

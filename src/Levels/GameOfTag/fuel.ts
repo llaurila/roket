@@ -7,7 +7,7 @@ export function generateFuelCapsule(
     rng: RNG,
     distanceMin: number,
     distanceMax: number
-) {
+): Fuel {
     return new Fuel(
         origin.add(
             Vector.Up.rotate(rng.next(0, Math.PI * 2))
