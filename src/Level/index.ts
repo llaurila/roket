@@ -16,12 +16,11 @@ import { Hud } from "../components/Hud";
 import { Viewport } from "@/Graphics/Viewport";
 import type { Beacon } from "@/Beacon";
 
-const DEFAULT_ZOOM = 3;
 
 function createViewport(): Viewport {
     const viewport = new Viewport(
         initializeGraphics("game"),
-        new Camera(Vector.Zero, DEFAULT_ZOOM)
+        new Camera(Vector.Zero, Config.camera.defaultZoom)
     );
 
     viewport.getCenter = () => new Vector(

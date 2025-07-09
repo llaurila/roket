@@ -1,28 +1,39 @@
 import type Level from "./Level";
 import type Vector from "./Physics/Vector";
-
-const MAX_V = 150;
+import { Config } from "./config";
 
 export function panTowardsShip(level: Level, delta: number): void {
     const { camera } = level.viewport;
 
     const v = level.ship.v.length();
 
-    // eslint-disable-next-line no-magic-numbers
-    camera.zoom = 5 - Math.min(99, v) / 33;
+    const {
+        defaultZoom,
+        minZoom,
+        zoomVelocityCap,
+        zoomScale,
+        lookAheadMultiplier,
+        maxLookAhead,
+        panSmoothing
+    } = Config.camera;
+
+    camera.zoom = Math.max(
+        minZoom,
+        defaultZoom - Math.min(zoomVelocityCap, v) / zoomScale
+    );
 
     let target: Vector;
 
-    if (v > MAX_V) {
+    if (v > maxLookAhead) {
         target = level.ship.pos.add(
             level.ship.v
         ).add(
-            level.ship.v.normalize().mul(MAX_V)
+            level.ship.v.normalize().mul(maxLookAhead)
         );
     }
     else {
         target = level.ship.pos.add(
-            level.ship.v.mul(2)
+            level.ship.v.mul(lookAheadMultiplier)
         );
     }
 
@@ -30,6 +41,6 @@ export function panTowardsShip(level: Level, delta: number): void {
 
     if (towards.length() > 0)
     {
-        camera.pos = camera.pos.add(towards.mul(delta));
+        camera.pos = camera.pos.add(towards.mul(delta * panSmoothing));
     }
 }

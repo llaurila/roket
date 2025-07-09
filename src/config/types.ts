@@ -109,6 +109,8 @@ export interface IConfig {
         starBrightnessMin: number;
     }
 
+    camera: ICameraConfig;
+
     ship: {
         mass: number;
         length: number;
@@ -156,4 +158,14 @@ export interface IEngineConfig {
     particleVelocityMin: number;
     particleVelocityMax: number;
     particleRateMax: number;
+}
+
+export interface ICameraConfig {
+    defaultZoom: number;
+    minZoom: number;
+    zoomVelocityCap: number;
+    zoomScale: number;
+    lookAheadMultiplier: number;
+    maxLookAhead: number;
+    panSmoothing: number;
 }
