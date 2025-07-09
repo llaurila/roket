@@ -22,6 +22,7 @@ const DEFAULT_COLOR: IColor = {
 
 export class Beacon extends Body implements IDrawable {
     public graphics?: Graphics;
+    public active = true;
 
     private opacity = config.opacityMin;
     private lastBlink = 0;
@@ -32,28 +33,28 @@ export class Beacon extends Body implements IDrawable {
         super(position);
     }
 
+    public activate(): void {
+        this.active = true;
+    }
+
+    public deactivate(): void {
+        this.active = false;
+        this.shipDetected = false;
+    }
+
     public canDetectShip(ship: Ship): boolean {
+        if (!this.active) return false;
         return this.pos.distanceTo(ship.pos) <= config.detectionRadius;
     }
 
-    public update(time: number, delta: number) {
+    public update(time: number, delta: number): void {
         super.update(time, delta);
 
-        if (time - this.lastBlink > config.blinkInterval) {
-            this.blink();
-            this.lastBlink = time;
-        }
-        else {
-            this.fade(delta);
-        }
+        this.updateBlink(time, delta);
 
-        const ship = this.physics?.getNearestObject<Ship>(this.pos, obj => obj instanceof Ship);
-        if (ship) {
-            this.shipDetected = this.canDetectShip(ship);
-        }
-        else {
-            this.shipDetected = false;
-        }
+        if (!this.active) return;
+
+        this.updateDetect();
     }
 
     public draw(viewport: Viewport) {
@@ -103,12 +104,24 @@ export class Beacon extends Body implements IDrawable {
         }
     }
 
-    private blink() {
-        this.opacity = config.opacityMax;
-    }
+    private updateBlink(time: number, delta: number) {
+        if (this.active && time - this.lastBlink > config.blinkInterval) {
+            this.opacity = config.opacityMax;
+            this.lastBlink = time;
+            return;
+        }
 
-    private fade(delta: number) {
         this.opacity -= delta / config.fadeDuration;
         this.opacity = Math.max(config.opacityMin, this.opacity);
+    }
+
+    private updateDetect() {
+        const ship = this.physics?.getNearestObject<Ship>(this.pos, obj => obj instanceof Ship);
+        if (ship) {
+            this.shipDetected = this.canDetectShip(ship);
+        }
+        else {
+            this.shipDetected = false;
+        }
     }
 }

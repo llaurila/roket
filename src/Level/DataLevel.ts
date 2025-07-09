@@ -223,6 +223,11 @@ abstract class DataLevel extends Level {
 
     private createBeacon(o: GameObject) {
         const beacon = new Beacon(Vector.fromComponents(o.position));
+
+        if (o.props?.active !== undefined) {
+            beacon.active = o.props.active as boolean;
+        }
+
         this.objects[o.id] = beacon;
         this.addBeacon(beacon);
     }

@@ -78,3 +78,14 @@ export function getDistanceFormat(n: number): DistanceFormat {
 export function formatString(template: string, values: Record<string, string>) {
     return template.replace(/\${(.*?)}/g, (_, key: string) => values[key]);
 }
+
+export function getQueryStringValue<T>(key: string, defaultValue: T): T {
+    const urlParams = new URLSearchParams(window.location.search);
+    const value = urlParams.get(key);
+
+    if (value === null) {
+        return defaultValue;
+    }
+
+    return value as unknown as T;
+}

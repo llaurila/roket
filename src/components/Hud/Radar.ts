@@ -65,7 +65,8 @@ export class Radar implements IDrawable {
     private drawBeacons(drawer: RadarDrawer) {
         const beacons = this.physics
             .filter(obj => obj instanceof Beacon)
-            .map(obj => obj as Beacon);
+            .map(obj => obj as Beacon)
+            .filter(beacon => beacon.active);
 
         for (const beacon of beacons) {
             drawer.drawDot(beacon.pos, getColorString(config.beaconColor));

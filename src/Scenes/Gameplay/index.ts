@@ -29,6 +29,11 @@ const levelTypes = [
 let currentLevel = 0;
 
 export function loadLevel(number: number) {
+    if (number < 0 || number >= levelTypes.length) {
+        window.document.body.innerHTML = "<h1>Invalid level number</h1>";
+        throw new Error(`Invalid level number: ${number}`);
+    }
+
     const level: Level = new levelTypes[number];
 
     const game = new Game(update, draw, level.viewport);
