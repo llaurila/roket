@@ -113,6 +113,16 @@ export const Config: IConfig = {
         starBrightnessMax: 1.00
     },
 
+    camera: {
+        defaultZoom: 5,
+        minZoom: 2,
+        zoomVelocityCap: 99,
+        zoomScale: 33,
+        lookAheadMultiplier: 2,
+        maxLookAhead: 150,
+        panSmoothing: 1
+    },
+
     ship: {
         mass: 800,
         length: 6,
