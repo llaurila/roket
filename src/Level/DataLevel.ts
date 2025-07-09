@@ -34,7 +34,7 @@ abstract class DataLevel extends Level {
     }
 
     public get description(): string {
-        return this.data.description;
+        return formatString(this.data.description, this.getRuntimeVars());
     }
 
     public createObjects(): void {
@@ -138,7 +138,10 @@ abstract class DataLevel extends Level {
         if (test) {
             externalFailureCheck = () => {
                 if (this.objectiveTests[test]()) {
-                    return o.externalFailureCheck?.message || "OBJECTIVE FAILED";
+                    return formatString(
+                        o.externalFailureCheck?.message || "OBJECTIVE FAILED",
+                        this.getRuntimeVars()
+                    );
                 }
                 return null;
             };
@@ -220,6 +223,11 @@ abstract class DataLevel extends Level {
 
     private createBeacon(o: GameObject) {
         const beacon = new Beacon(Vector.fromComponents(o.position));
+
+        if (o.props?.active !== undefined) {
+            beacon.active = o.props.active as boolean;
+        }
+
         this.objects[o.id] = beacon;
         this.addBeacon(beacon);
     }

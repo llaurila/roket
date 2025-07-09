@@ -10,6 +10,7 @@ import { ImageLoader } from "@/ImageLoader";
 import { Viewport } from "@/Graphics/Viewport";
 import { Player } from "@/Player";
 import { loadLevel } from "../Gameplay";
+import { getQueryStringValue } from "@/Utils";
 
 const ZOOM = 3;
 const PARALLAX_SPEED = 10;
@@ -103,7 +104,9 @@ export function enterMainMenu() {
 
     menu.addItem("START GAME").addEventListener("click", () => {
         exitMainMenu();
-        loadLevel(0);
+        loadLevel(
+            getQueryStringValue<number>("level", 1) - 1
+        );
     });
 
     graphics.add(menu);

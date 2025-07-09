@@ -43,7 +43,7 @@ class CollectFuel extends DataLevel {
         }
     }
 
-    protected getRuntimeVars(): Record<string, string> {
+    protected override getRuntimeVars(): Record<string, string> {
         return {
             collected: this.getCollectedFuelCapsuleCount().toString(),
             total: this.fuelCapsuleCount.toString()

@@ -1,6 +1,6 @@
 name: "LEVEL 6: HOT LAP"
 description: >
-  FLY THROUGH ALL BEACONS TO COMPLETE A LAP IN LESS THAN 60 SECONDS.
+  FLY THROUGH ALL BEACONS TO COMPLETE A LAP IN LESS THAN ${timeLimit} SECONDS.
 
 variables:
    TIME_LIMIT: 60
@@ -16,30 +16,45 @@ objects:
   - id: beacon-2
     type: beacon
     position: [150, 100]
+    props:
+      active: false
   - id: beacon-3
     type: beacon
     position: [150, -100]
+    props:
+      active: false
   - id: beacon-4
     type: beacon
     position: [0, -100]
+    props:
+      active: false
+  - id: beacon-5
+    type: beacon
+    position: [0, 0]
+    props:
+      active: false
 
 objectives:
   - id: beacon-1
     title: CHECKPOINT 1
-    externalSuccessCheck: { test: beaconReached, args: [beacon-1] }
+    externalSuccessCheck: { test: beaconReached, args: [beacon-1, beacon-2] }
   - id: beacon-2
     title: CHECKPOINT 2
-    externalSuccessCheck: { test: beaconReached, args: [beacon-2] }
+    externalSuccessCheck: { test: beaconReached, args: [beacon-2, beacon-3] }
     dependsOn: beacon-1
   - id: beacon-3
     title: CHECKPOINT 3
-    externalSuccessCheck: { test: beaconReached, args: [beacon-3] }
+    externalSuccessCheck: { test: beaconReached, args: [beacon-3, beacon-4] }
     dependsOn: beacon-2
   - id: beacon-4
     title: CHECKPOINT 4
-    externalSuccessCheck: { test: beaconReached, args: [beacon-4] }
+    externalSuccessCheck: { test: beaconReached, args: [beacon-4, beacon-5] }
+    dependsOn: beacon-2
+  - id: beacon-5
+    title: FINISH LINE
+    externalSuccessCheck: { test: beaconReached, args: [beacon-5] }
     externalFailureCheck:
       test: timeExceeded
-      message: TOO SLOW. YOUR NEED TO COMPLETE THE LAP IN LESS THAN 60 SECONDS.
+      message: TOO SLOW. YOUR NEED TO COMPLETE THE LAP IN LESS THAN ${timeLimit} SECONDS.
     dependsOn: beacon-3
   
