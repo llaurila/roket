@@ -12,7 +12,7 @@ import { Beacon } from "@/Beacon";
 
 const DEFAULT_RAND_SEED = 951337;
 
-type ObjectiveTest = () => boolean;
+type ObjectiveTest = (...args: unknown[]) => boolean;
 
 type FailureCheck = () => string|null;
 
@@ -87,15 +87,25 @@ abstract class DataLevel extends Level {
 
     private createObjective(o: LevelObjective, objectives: Record<string, Objective>) {
         let externalSuccessCheck: ObjectiveTest | undefined;
+        let externalArgs: unknown[] | undefined;
         if (o.externalSuccessCheck) {
-            externalSuccessCheck = this.objectiveTests[o.externalSuccessCheck];
+            if (typeof o.externalSuccessCheck === "string") {
+                externalSuccessCheck = this.objectiveTests[o.externalSuccessCheck];
+            }
+            else {
+                externalSuccessCheck = this.objectiveTests[o.externalSuccessCheck.test];
+                externalArgs = o.externalSuccessCheck.args;
+            }
         }
 
         const checkFunctions: ObjectiveTest[] = this.getCheckFunctions(o);
 
         const combinedChecks = () => {
             if (!checkFunctions.every(f => f())) return false;
-            if (externalSuccessCheck != undefined && !externalSuccessCheck()) return false;
+            if (externalSuccessCheck != undefined &&
+                !externalSuccessCheck(...(externalArgs || []))) {
+                    return false;
+            }
             return true;
         };
 

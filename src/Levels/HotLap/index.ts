@@ -18,35 +18,9 @@ class HotLap extends DataLevel {
     }
 
     protected registerObjectiveChecks(): void {
-        this.registerObjectiveTest(
-            "beacon1Reached",
-            () => this.checkBeacon("beacon-1")
+        this.registerObjectiveTest("beaconReached", (id: string) =>
+            this.getObject<Beacon>(id).canDetectShip(this.ship)
         );
-
-        this.registerObjectiveTest(
-            "beacon2Reached",
-            () => this.checkBeacon("beacon-2")
-        );
-
-        this.registerObjectiveTest(
-            "beacon3Reached",
-            () => this.checkBeacon("beacon-3")
-        );
-
-        this.registerObjectiveTest(
-            "beacon4Reached",
-            () => this.checkBeacon("beacon-4")
-        );
-
-        this.registerObjectiveTest(
-            "timeExceeded",
-            () => this.elapsed > this.timeLimit
-        );
-    }
-
-    private checkBeacon(id: string): boolean {
-        const beacon = this.getObject<Beacon>(id);
-        return beacon && beacon.canDetectShip(this.ship);
     }
 }
 
