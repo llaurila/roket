@@ -1,6 +1,6 @@
 name: "LEVEL 6: HOT LAP"
 description: >
-  REACH ALL FOUR BEACONS AS FAST AS POSSIBLE.
+  REACH ALL FOUR BEACONS IN 60 SECONDS OR LESS.
 
 variables:
   TIME_LIMIT: 60
@@ -12,33 +12,30 @@ ship:
 objects:
   - id: beacon-1
     type: beacon
-    position: [100, 0]
+    position: [0, 100]
   - id: beacon-2
     type: beacon
-    position: [0, 100]
+    position: [150, 100]
   - id: beacon-3
     type: beacon
-    position: [-100, 0]
+    position: [150, -100]
   - id: beacon-4
     type: beacon
     position: [0, -100]
 
 objectives:
   - id: beacon-1
-    title: REACH BEACON 1
+    title: CHECKPOINT 1
     externalSuccessCheck: beacon1Reached
   - id: beacon-2
-    title: REACH BEACON 2
+    title: CHECKPOINT 2
     externalSuccessCheck: beacon2Reached
-    dependsOn: beacon-1
   - id: beacon-3
-    title: REACH BEACON 3
+    title: CHECKPOINT 3
     externalSuccessCheck: beacon3Reached
-    dependsOn: beacon-2
   - id: beacon-4
-    title: REACH BEACON 4
+    title: CHECKPOINT 4
     externalSuccessCheck: beacon4Reached
     externalFailureCheck:
       test: timeExceeded
-      message: TOO SLOW
-    dependsOn: beacon-3
+      message: TOO SLOW (SHOULD BE UNDER 60 SECONDS).
