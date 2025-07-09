@@ -2,7 +2,7 @@ import { Store } from "@/Store";
 
 const PL1_DEFAULT_NAME = "ROKETMAN";
 
-const NAME_PATTERN = /^[A-Z]{1,10}$/;
+const NAME_PATTERN = /^[A-Z0-9]{1,8}$/;
 
 export class Player {
     public static PL1 = new Player(0, PL1_DEFAULT_NAME);

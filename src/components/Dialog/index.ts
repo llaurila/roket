@@ -1,9 +1,11 @@
 import { UIWindow } from "../UIWindow";
 import type { Viewport } from "@/Graphics/Viewport";
 import UIButton from "./Button";
+import UITextInput from "./TextInput";
 
 export default class UIDialog extends UIWindow {
     public buttons: UIButton[] = [];
+    public textInputs: UITextInput[] = [];
 
     public constructor(width: number, height: number) {
         super(width, height);
@@ -13,6 +15,12 @@ export default class UIDialog extends UIWindow {
         const btn = new UIButton(caption, this);
         this.buttons.push(btn);
         return btn;
+    }
+
+    public addTextInput(value = ""): UITextInput {
+        const input = new UITextInput(this, value);
+        this.textInputs.push(input);
+        return input;
     }
 
     public update(time: number, delta: number) {
@@ -30,6 +38,10 @@ export default class UIDialog extends UIWindow {
         super.draw(viewport);
 
         ctx.globalAlpha = this.opacity;
+        for (const input of this.textInputs) {
+            input.update(viewport);
+            input.draw(viewport);
+        }
         for (const btn of this.buttons) {
             btn.update(viewport);
             btn.draw(viewport);
@@ -39,4 +51,4 @@ export default class UIDialog extends UIWindow {
     }
 }
 
-export { UIButton };
+export { UIButton, UITextInput };

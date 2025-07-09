@@ -100,9 +100,17 @@ export function enterMainMenu() {
 
     const menu = new Menu("MAIN MENU");
 
-    menu.addItem("PLAYER: " + Player.PL1.name).addEventListener("click", () => {
+    const dialog = new UIDialog(400, 150);
+    const nameInput = dialog.addTextInput(Player.PL1.name);
+
+    const playerItem = menu.addItem("PLAYER: " + Player.PL1.name);
+    playerItem.addEventListener("click", () => {
+        nameInput.value = Player.PL1.name;
+        dialog.error = false;
+        dialog.title = "ENTER PLAYER NAME";
         menu.hide();
         dialog.show();
+        nameInput.focus();
     });
 
     menu.addItem("SETTINGS").disabled = true;
@@ -116,11 +124,17 @@ export function enterMainMenu() {
 
     graphics.add(menu);
 
-    const dialog = new UIDialog(400, 300);
-    dialog.title = "NOT IMPLEMENTED, SORRY";
     dialog.addButton("OK").addEventListener("click", () => {
-        dialog.hide();
-        menu.show();
+        try {
+            Player.PL1.setName(nameInput.value);
+            playerItem.text = "PLAYER: " + Player.PL1.name;
+            dialog.hide();
+            menu.show();
+        }
+        catch {
+            dialog.error = true;
+            dialog.title = "INVALID NAME";
+        }
     });
     dialog.addButton("CANCEL").addEventListener("click", () => {
         dialog.hide();
