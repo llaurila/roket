@@ -9,6 +9,7 @@ import DeepSpaceMission from "@/Levels/DeepSpaceMission";
 import type Level from "@/Level";
 import type { Viewport } from "@/Graphics/Viewport";
 import GameOfTag from "@/Levels/GameOfTag";
+import HotLap from "@/Levels/HotLap";
 
 const restartButton = () => Keys.wasPressed("Escape");
 const continueButton = () => Keys.wasPressed("Enter");
@@ -21,7 +22,8 @@ const levelTypes = [
     VelocityControl,
     CollectFuel,
     DeepSpaceMission,
-    GameOfTag
+    GameOfTag,
+    HotLap
 ];
 
 let currentLevel = 0;
