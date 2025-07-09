@@ -77,10 +77,6 @@ abstract class DataLevel extends Level {
         return value as T;
     }
 
-    protected getRuntimeVars(): Record<string, string> {
-        return {};
-    }
-
     private getRNG(): RNG {
         return new RNG(this.data.randomSeed || DEFAULT_RAND_SEED);
     }

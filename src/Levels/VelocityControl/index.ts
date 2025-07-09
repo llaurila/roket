@@ -25,6 +25,7 @@ class VelocityControl extends DataLevel {
 
     protected override getRuntimeVars(): Record<string, string> {
         return {
+            ...super.getRuntimeVars(),
             thresholdHigh: this.highSpeedThreshold.toString(),
             thresholdLow: this.lowSpeedThreshold.toString(),
         };

@@ -15,7 +15,7 @@ import { Stats } from "./Stats";
 import { Hud } from "../components/Hud";
 import { Viewport } from "@/Graphics/Viewport";
 import type { Beacon } from "@/Beacon";
-
+import { Player } from "@/Player";
 
 function createViewport(): Viewport {
     const viewport = new Viewport(
@@ -126,6 +126,12 @@ abstract class Level extends EventTarget {
         if (this.failureMessage) throw new Error("Already failed.");
         this.failureMessage = message;
         this.endController.showOutro();
+    }
+
+    protected getRuntimeVars(): Record<string, string> {
+        return {
+            playerName: Player.PL1.name
+        };
     }
 
     protected addOrderedObjectives(objectives: Objective[]) {

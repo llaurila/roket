@@ -19,6 +19,7 @@ class HotLap extends DataLevel {
 
     protected override getRuntimeVars(): Record<string, string> {
         return {
+            ...super.getRuntimeVars(),
             timeLimit: this.timeLimit.toString()
         };
     }
