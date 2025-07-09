@@ -22,6 +22,13 @@ class VelocityControl extends DataLevel {
             "slow", () => this.ship.v.length() < this.lowSpeedThreshold
         );
     }
+
+    protected override getRuntimeVars(): Record<string, string> {
+        return {
+            thresholdHigh: this.highSpeedThreshold.toString(),
+            thresholdLow: this.lowSpeedThreshold.toString(),
+        };
+    }
 }
 
 export default VelocityControl;

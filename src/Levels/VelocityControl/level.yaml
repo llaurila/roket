@@ -12,9 +12,9 @@ ship:
 
 objectives:
   - id: accerelate
-    title: ACCELERATE TO 100 M/S
+    title: ACCELERATE TO ${thresholdHigh} M/S
     externalSuccessCheck: fast
   - id: decelerate
-    title: DECELERATE BACK TO <10 M/S
+    title: DECELERATE BACK TO <${thresholdLow} M/S
     externalSuccessCheck: slow
     dependsOn: accerelate
