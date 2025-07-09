@@ -86,29 +86,52 @@ abstract class DataLevel extends Level {
     }
 
     private createObjective(o: LevelObjective, objectives: Record<string, Objective>) {
+        const objective = new Objective(
+            () => formatString(o.title, this.getRuntimeVars()),
+            this.getSuccessChecks(o),
+            this.getFailureChecks(o)
+        );
+
+        objectives[o.id] = objective;
+
+        this.objectives.push(objective);
+    }
+
+    private getSuccessChecks(o: LevelObjective) {
         let externalSuccessCheck: ObjectiveTest | undefined;
-        let externalArgs: unknown[] | undefined;
+        let externalArgs: unknown[] = [];
+
         if (o.externalSuccessCheck) {
             if (typeof o.externalSuccessCheck === "string") {
                 externalSuccessCheck = this.objectiveTests[o.externalSuccessCheck];
             }
             else {
                 externalSuccessCheck = this.objectiveTests[o.externalSuccessCheck.test];
-                externalArgs = o.externalSuccessCheck.args;
+                externalArgs = o.externalSuccessCheck.args || [];
             }
         }
 
-        const checkFunctions: ObjectiveTest[] = this.getCheckFunctions(o);
+        return this.getCombinedChecks(o, externalSuccessCheck, externalArgs);
+    }
 
-        const combinedChecks = () => {
-            if (!checkFunctions.every(f => f())) return false;
+    private getCombinedChecks(
+        o: LevelObjective,
+        externalSuccessCheck: ObjectiveTest | undefined,
+        externalArgs: unknown[])
+    {
+        return () => {
+            if (!this.getCheckFunctions(o).every(f => f())) return false;
+
             if (externalSuccessCheck != undefined &&
-                !externalSuccessCheck(...(externalArgs || []))) {
-                    return false;
+                !externalSuccessCheck(...externalArgs)) {
+                return false;
             }
+
             return true;
         };
+    }
 
+    private getFailureChecks(o: LevelObjective) {
         let externalFailureCheck: FailureCheck | undefined;
         const test = o.externalFailureCheck?.test;
 
@@ -120,16 +143,7 @@ abstract class DataLevel extends Level {
                 return null;
             };
         }
-
-        const objective = new Objective(
-            () => formatString(o.title, this.getRuntimeVars()),
-            combinedChecks,
-            externalFailureCheck
-        );
-
-        objectives[o.id] = objective;
-
-        this.objectives.push(objective);
+        return externalFailureCheck;
     }
 
     private getCheckFunctions(o: LevelObjective) {
