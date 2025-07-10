@@ -26,6 +26,7 @@ class FuelRush extends DataLevel {
 
     public constructor() {
         super(data as LevelData);
+        
         this.fuelCapsuleCount = this.getEnv<number>("FUEL_CAPSULE_COUNT");
         this.otherShipOffset = Vector.fromComponents(
             this.getEnv<number[]>("OTHER_SHIP_OFFSET")

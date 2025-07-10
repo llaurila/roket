@@ -1,18 +1,21 @@
 name: "LEVEL 7: FUEL RUSH"
 description: >
-  COLLECT MORE FUEL CAPSULES THAN THE OTHER SHIP. COLLIDING WITH IT WILL DESTROY YOUR SHIP.
+  COLLECT MORE FUEL CAPSULES THAN THE OTHER SHIP. THERE ARE ${total} OF THEM.
+  THE GAME WILL END ONCE THEY'VE ALL BEEN COLLECTED.
+   
+  COLLIDING WITH IT WILL DESTROY YOUR SHIP.
 
-randomSeed: 4321
+randomSeed: 43213
 
 variables:
   FUEL_CAPSULE_COUNT: 8
-  FUEL_CAPSULE_DISTANCE_MIN: 45
+  FUEL_CAPSULE_DISTANCE_MIN: 145
   FUEL_CAPSULE_DISTANCE_MAX: 500
   OTHER_SHIP_OFFSET: [-20, 60]
   CORRECT_HEADING_TOLERANCE: 0.15
   MAX_DISTANCE_FROM_PLAYER: 120
   MAX_SPEED: 30
-  ENEMY_COLOR: { R: 1, G: 0, B: 1, A: 1 }
+  ENEMY_COLOR: { R: 1, G: .2, B: .2, A: 1 }
 
 ship:
   fuelTank:
@@ -20,7 +23,7 @@ ship:
 
 objectives:
   - id: fuel-rush
-    title: "COLLECT MORE FUEL THAN THE OTHER SHIP (YOU: ${playerScore} ENEMY: ${enemyScore}/${total})"
+    title: "COLLECT FUEL (YOU: ${playerScore} ENEMY: ${enemyScore})"
     externalSuccessCheck: playerWon
     externalFailureCheck:
       test: playerLost

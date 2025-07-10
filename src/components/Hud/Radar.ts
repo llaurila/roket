@@ -34,6 +34,7 @@ export class Radar implements IDrawable {
         ctx.save();
 
         drawer.drawCircle();
+        
         this.drawBeacons(drawer);
         this.drawNearestFuel(drawer, config.numberOfNearestFuelToDisplay);
         this.drawNearestShip(drawer);
@@ -88,11 +89,11 @@ export class Radar implements IDrawable {
         const nearestShip = this.getNearestAlienShip();
 
         if (nearestShip) {
-            drawer.drawDot(nearestShip.pos, getColorStringFromRGBA(1, 0, 1, 0.5));
+            drawer.drawDot(nearestShip.pos, getColorString(nearestShip.color));
         }
     }
 
-    private getNearestAlienShip(): Body|undefined {
+    private getNearestAlienShip(): Ship|undefined {
         return this.physics.getNearestObject(
             this.ship.pos,
             obj => obj instanceof Ship && obj != this.ship

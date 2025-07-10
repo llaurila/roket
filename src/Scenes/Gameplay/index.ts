@@ -24,8 +24,8 @@ const levelTypes = [
     CollectFuel,
     DeepSpaceMission,
     GameOfTag,
-    FuelRush,
-    HotLap
+    HotLap,
+    FuelRush
 ];
 
 let currentLevel = 0;
