@@ -26,7 +26,7 @@ class FuelRush extends DataLevel {
 
     public constructor() {
         super(data as LevelData);
-        
+
         this.fuelCapsuleCount = this.getEnv<number>("FUEL_CAPSULE_COUNT");
         this.otherShipOffset = Vector.fromComponents(
             this.getEnv<number[]>("OTHER_SHIP_OFFSET")
@@ -48,7 +48,7 @@ class FuelRush extends DataLevel {
         this.graphics.add(this.enemy);
 
         this.enemy.mass = Config.ship.mass;
-        this.enemy.rotation = 2;
+        this.enemy.rotation = this.getEnv<number>("OTHER_SHIP_HEADING");
 
         this.enemy.onCollision(e => {
             if (e.target == this.ship) {
@@ -66,7 +66,7 @@ class FuelRush extends DataLevel {
                 maxSpeed: this.maxSpeed
             },
             () => {
-                const target = this.getNearestFuel();
+                const target = this.getNearestEnemyFuel();
                 return {
                     pos: target ? target.pos : this.ship.pos,
                     v: Vector.Zero
@@ -132,9 +132,10 @@ class FuelRush extends DataLevel {
         }
     }
 
-    private getNearestFuel(): Fuel | undefined {
+    private getNearestEnemyFuel(): Fuel | undefined {
         let nearest: Fuel | undefined;
         let minDist = Infinity;
+
         for (const fuel of this.fuelCapsules) {
             if (!fuel.alive) continue;
             const d = fuel.pos.distanceTo(this.enemy.pos);
@@ -143,6 +144,7 @@ class FuelRush extends DataLevel {
                 nearest = fuel;
             }
         }
+
         return nearest;
     }
 }

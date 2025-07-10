@@ -43,8 +43,11 @@ class NPCAI {
     private accelerateTowardsTarget(turn: number) {
         this.resetThrottle();
 
-        const speed = this.ship.v.length();
-        const canThrustForward = speed < this.cfg.maxSpeed;
+        const speedRelativeToTarget = this.ship.v.dot(
+            this.getVectorToTarget().sub(this.ship.pos).normalize()
+        );
+
+        const canThrustForward = speedRelativeToTarget < this.cfg.maxSpeed;
 
         if (Math.abs(turn) < this.cfg.headingTolerance) {
             if (canThrustForward) {
@@ -74,7 +77,7 @@ class NPCAI {
     }
 
     private isSpinning(): boolean {
-        const SPIN_THRESHOLD = 0.5;
+        const SPIN_THRESHOLD = .8;
         return Math.abs(this.ship.angularVelocity) > SPIN_THRESHOLD;
     }
 
@@ -87,10 +90,10 @@ class NPCAI {
     private getVectorToTarget(): Vector {
         const target = this.getTarget();
 
-        const distance = this.ship.pos.distanceTo(target.pos);
+        /*const distance = this.ship.pos.distanceTo(target.pos);
         if (distance > this.cfg.maxDistanceFromPlayer) {
             return target.pos;
-        }
+        }*/
 
         return target.pos.add(target.v.neg());
     };

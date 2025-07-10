@@ -3,8 +3,7 @@ import Ship from "@/Ship";
 import UniqueIdProvider from "@/UniqueIdProvider";
 import type PhysicsEngine from "@/Physics/PhysicsEngine";
 import Fuel from "@/Fuel";
-import type Body from "@/Physics/Body";
-import { getColorString, getColorStringFromRGBA } from "@/Graphics/Color";
+import { getColorString } from "@/Graphics/Color";
 import { RadarDrawer } from "./RadarDrawer";
 import { Config } from "@/config";
 import type { Viewport } from "@/Graphics/Viewport";
@@ -34,7 +33,7 @@ export class Radar implements IDrawable {
         ctx.save();
 
         drawer.drawCircle();
-        
+
         this.drawBeacons(drawer);
         this.drawNearestFuel(drawer, config.numberOfNearestFuelToDisplay);
         this.drawNearestShip(drawer);
