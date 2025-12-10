@@ -16,7 +16,7 @@ import { Stats } from "../Level/Stats";
 import type { Viewport } from "@/Graphics/Viewport";
 import type { DrawContext } from "@/Graphics/DrawContext";
 import { playShipDestroyedSound } from "@/Sounds";
-import { IShip } from "./types";
+import type { IShip } from "./types";
 
 const { ship } = Config;
 

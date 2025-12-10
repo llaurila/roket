@@ -3,7 +3,7 @@ import { Jukebox } from "./jukebox";
 class GlobalJukebox {
   private _jb: Jukebox | null = null;
 
-  get jb(): Jukebox {
+  public get jb(): Jukebox {
     if (!this._jb) {
       this._jb = new Jukebox({ crossfadeSec: 2.0, fadeOutSec: 0.6 });
       const v = localStorage.getItem("musicVol");
@@ -12,22 +12,22 @@ class GlobalJukebox {
     return this._jb;
   }
 
-  /** call once from a user gesture (click/tap/keydown) */
-  async unlock() {
-    await this.jb.resumeContext();
-  }
-
-  setVolume(v: number) {
-    this.jb.setVolume(v);
-    localStorage.setItem("musicVol", String(Math.max(0, Math.min(1, v))));
-  }
-
-  get loop(): boolean {
+  public get loop(): boolean {
     return this.jb.loop;
   }
 
-  set loop(value: boolean) {
+  public set loop(value: boolean) {
     this.jb.loop = value;
+  }
+
+  /** call once from a user gesture (click/tap/keydown) */
+  public async unlock() {
+    await this.jb.resumeContext();
+  }
+
+  public setVolume(v: number) {
+    this.jb.setVolume(v);
+    localStorage.setItem("musicVol", String(Math.max(0, Math.min(1, v))));
   }
 }
 

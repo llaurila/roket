@@ -82,6 +82,7 @@ abstract class Level extends EventTarget {
         const { jb } = globalJukebox;
         if (this.soundtrack) {
             jb.select(this.soundtrack);
+            /* eslint-disable-next-line @typescript-eslint/no-floating-promises */
             jb.play();
         }
         else {

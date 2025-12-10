@@ -1,4 +1,4 @@
-// Jukebox.ts
+/* eslint-disable no-magic-numbers */
 type TrackId = string;
 
 interface JukeboxOpts {
@@ -28,7 +28,11 @@ export class Jukebox {
   private crossfadeSec: number;
   private fadeOutSec: number;
 
-  constructor(opts: JukeboxOpts = {}) {
+  /* eslint-disable-next-line complexity */
+  public constructor(opts: JukeboxOpts = {}) {
+    /* eslint-disable-next-line
+         @typescript-eslint/no-unsafe-member-access,
+         @typescript-eslint/no-explicit-any */
     this.ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
     this.master = this.ctx.createGain();
     this.master.connect(this.ctx.destination);
@@ -40,21 +44,16 @@ export class Jukebox {
     this.master.gain.value = 1;
   }
 
-  get loop(): boolean {
+  public get loop(): boolean {
     return this.loopEnabled;
   }
 
-  set loop(value: boolean) {
+  public set loop(value: boolean) {
     this.loopEnabled = Boolean(value);
   }
 
-  /** Must be called from a user gesture at least once on Safari/iOS */
-  async resumeContext(): Promise<void> {
-    if (this.ctx.state !== "running") await this.ctx.resume();
-  }
-
   /** Preload and decode an MP3 (or other supported codec). CORS must allow fetch. */
-  async add(id: TrackId, url: string): Promise<void> {
+  public async add(id: TrackId, url: string): Promise<void> {
     const res = await fetch(url, { mode: "cors" });
     const data = await res.arrayBuffer();
     const buffer = await this.ctx.decodeAudioData(data);
@@ -62,64 +61,29 @@ export class Jukebox {
   }
 
   /** Select a track. If another is playing, crossfade into the new one. */
-  select(id: TrackId): void {
+  public select(id: TrackId): void {
     if (!this.tracks.has(id)) throw new Error(`Unknown track: ${id}`);
     const buffer = this.tracks.get(id)!;
 
     this.selectedId = id;
 
-    // If nothing is playing yet and we're paused/stopped: just prep state.
-    if (!this.curSrc && this.isPaused) {
-      // We’ll start this on next play(); pausedOffset already set.
-      return;
-    }
     if (!this.curSrc) {
+      if (this.isPaused) {
+        // We’ll start this on next play(); pausedOffset already set.
+        return;
+      }
+
       // Not playing; start immediately from 0.
       this.startNewSource(buffer, 0, /*fadeIn*/ this.crossfadeSec);
       this.isPaused = false;
       return;
     }
 
-    // Crossfade from current source to the new one
-    const now = this.ctx.currentTime;
-    const fade = this.crossfadeSec;
-
-    const newGain = this.ctx.createGain();
-    newGain.gain.setValueAtTime(0, now);
-
-    const newSrc = this.ctx.createBufferSource();
-    newSrc.buffer = buffer;
-    newSrc.connect(newGain).connect(this.master);
-    newSrc.start(now);
-
-    // Fade in the new, fade out the old
-    newGain.gain.linearRampToValueAtTime(1, now + fade);
-
-    if (this.curGain) {
-      const currentGain = this.curGain.gain;
-      // Ensure we start from current value
-      const currentVal = currentGain.value;
-      currentGain.setValueAtTime(currentVal, now);
-      currentGain.linearRampToValueAtTime(0, now + fade);
-    }
-
-    // Schedule old stop
-    const oldSrc = this.curSrc;
-    oldSrc.stop(now + fade);
-
-    // Swap references
-    this.curSrc = newSrc;
-    this.curGain = newGain;
-    this.curStartedAt = now;
-    this.curStartOffset = 0;
-    this.isPaused = false;
-
-    // Cleanup when new ends
-    this.attachSourceHandlers(newSrc, buffer, id);
+    this.selectInternal(buffer, id);
   }
 
   /** Start or resume the selected track. */
-  async play(): Promise<void> {
+  public async play(): Promise<void> {
     if (!this.selectedId) throw new Error("No track selected.");
     await this.resumeContext();
 
@@ -137,7 +101,7 @@ export class Jukebox {
   }
 
   /** Pause with a short fade and remember position for resume. */
-  pause(): void {
+  public pause(): void {
     if (!this.curSrc || !this.curGain) {
       // Nothing to pause
       return;
@@ -168,7 +132,7 @@ export class Jukebox {
   }
 
   /** Stop with fade and reset position to start. */
-  stop(): void {
+  public stop(): void {
     if (this.curSrc && this.curGain) {
       const now = this.ctx.currentTime;
       const fade = this.fadeOutSec;
@@ -186,13 +150,57 @@ export class Jukebox {
   }
 
   /** Optional: overall volume 0..1 */
-  setVolume(v: number) {
+  public setVolume(v: number) {
     const now = this.ctx.currentTime;
     this.master.gain.setValueAtTime(this.master.gain.value, now);
     this.master.gain.linearRampToValueAtTime(
       Math.min(1, Math.max(0, v)),
       now + 0.05
     );
+  }
+
+  private selectInternal(buffer: AudioBuffer, id: string) {
+    // Crossfade from current source to the new one
+    const now = this.ctx.currentTime;
+    const fade = this.crossfadeSec;
+
+    const newGain = this.ctx.createGain();
+    newGain.gain.setValueAtTime(0, now);
+
+    const newSrc = this.ctx.createBufferSource();
+    newSrc.buffer = buffer;
+    newSrc.connect(newGain).connect(this.master);
+    newSrc.start(now);
+
+    // Fade in the new, fade out the old
+    newGain.gain.linearRampToValueAtTime(1, now + fade);
+
+    if (this.curGain) {
+      const currentGain = this.curGain.gain;
+      // Ensure we start from current value
+      const currentVal = currentGain.value;
+      currentGain.setValueAtTime(currentVal, now);
+      currentGain.linearRampToValueAtTime(0, now + fade);
+    }
+
+    // Schedule old stop
+    const oldSrc = this.curSrc!;
+    oldSrc.stop(now + fade);
+
+    // Swap references
+    this.curSrc = newSrc;
+    this.curGain = newGain;
+    this.curStartedAt = now;
+    this.curStartOffset = 0;
+    this.isPaused = false;
+
+    // Cleanup when new ends
+    this.attachSourceHandlers(newSrc, buffer, id);
+  }
+
+  /** Must be called from a user gesture at least once on Safari/iOS */
+  private async resumeContext(): Promise<void> {
+    if (this.ctx.state !== "running") await this.ctx.resume();
   }
 
   /** Helper to create + start a source with an initial fade-in. */
@@ -234,12 +242,10 @@ export class Jukebox {
     src.onended = () => {
       if (this.curSrc !== src) return;
 
-      if (
-        this.loopEnabled &&
-        !this.isPaused &&
-        trackId &&
-        this.selectedId === trackId
-      ) {
+      const isSameTrack = () => trackId && this.selectedId === trackId;
+      const shouldLoop = () => this.loopEnabled && !this.isPaused && isSameTrack();
+
+      if (shouldLoop()) {
         this.startNewSource(buffer, 0, 0, trackId);
         return;
       }

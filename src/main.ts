@@ -1,4 +1,6 @@
-import { enterMainMenu } from "./Scenes/MainMenu";
+/* eslint-disable @typescript-eslint/no-misused-promises */
+
+import { enterMainMenu, MainMenuMode, setMainMenuMode } from "./Scenes/MainMenu";
 import { globalJukebox } from "./Sounds/global-jukebox";
 import menuThemeUrl from "./assets/menu.mp3";
 import ambientThemeUrl from "./assets/ambient.mp3";
@@ -15,6 +17,9 @@ function unlockOnFirstGesture() {
       window.removeEventListener("pointerdown", handler);
       window.removeEventListener("keydown", handler);
       window.removeEventListener("touchstart", handler);
+      setTimeout(() => {
+        setMainMenuMode(MainMenuMode.Ready);
+      }, 100);
     }
   };
 
@@ -35,9 +40,10 @@ async function preloadMusic() {
     jb.add("focus", focusThemeUrl),
   ]);
 }
-    
-preloadMusic().then(() => {
-    unlockOnFirstGesture();
-});
 
 enterMainMenu();
+
+await preloadMusic();
+
+setMainMenuMode(MainMenuMode.WaitingForGesture);
+unlockOnFirstGesture();

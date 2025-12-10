@@ -3,6 +3,8 @@ description: >
   ACCELERATE TO HIGH VELOCITY TO COLLECT THE FAR AWAY FUEL CAPSULE AS FAST
   AS POSSIBLE. THEN RETURN BACK TO THE BEACON.
 
+soundtrack: ambient
+
 ship:
   fuelTank:
     currentAmount: 500

@@ -28,6 +28,7 @@ export default tseslint.config(
             'no-trailing-spaces': 'error',
             
             // TypeScript
+            '@typescript-eslint/no-non-null-assertion': 'off',
             '@typescript-eslint/no-unused-vars': ['error', { 'argsIgnorePattern': '^_' }],
             '@typescript-eslint/no-explicit-any': 'error',
             '@typescript-eslint/adjacent-overload-signatures': 'error',

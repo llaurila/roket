@@ -121,12 +121,12 @@ class FuelRush extends DataLevel {
                 this.enemyTarget = undefined;
 
                 if (fuel.collected) return;
-                
+
                 if (e.target == this.ship) {
                     this.playerScore++;
                 } else if (e.target == this.enemy) {
                     this.enemyScore++;
-                    fuel.collect(this.enemy);                    
+                    fuel.collect(this.enemy);
                 }
             });
 

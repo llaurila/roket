@@ -1,5 +1,5 @@
 import Vector from "@/Physics/Vector";
-import { IShip } from "@/Ship/types";
+import type { IShip } from "@/Ship/types";
 
 //const DefaultMaxSpeed = 10;
 
@@ -7,7 +7,7 @@ class AutoPilot {
     private target = Vector.Zero;
     //private maxSpeed: number = DefaultMaxSpeed;
 
-    constructor(private ship: IShip) {
+    public constructor(private ship: IShip) {
     }
 
     public control(): void {

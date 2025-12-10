@@ -40,6 +40,7 @@ class NPCAI {
         this.ship.engineRight.setThrottle(0);
     }
 
+    /* eslint-disable-next-line complexity */
     private accelerateTowardsTarget(turn: number) {
         if (this.goingToTarget()) {
             return;
@@ -86,11 +87,12 @@ class NPCAI {
     }
 
     private goingToTarget(): boolean {
+        const SPEED_LIMIT = 10;
         const target = this.getTarget();
         const toTarget = target.pos.sub(this.ship.pos).normalize();
         const speed = this.ship.v.normalize();
         return Math.abs(speed.cross(toTarget)) < this.cfg.headingTolerance / 2 &&
-            this.ship.v.length() > 10;
+            this.ship.v.length() > SPEED_LIMIT;
     }
 
     private getTurnTowardsTarget(): number {
@@ -106,7 +108,7 @@ class NPCAI {
     private getAimVector(): Vector {
         const V_PREDICTION = 0.4;
         const target = this.getTarget();
-        const targetPos = target.pos.add(target.v.mul(V_PREDICTION)); // small prediction based on velocity
+        const targetPos = target.pos.add(target.v.mul(V_PREDICTION));
         return targetPos.sub(this.ship.pos);
     };
 }

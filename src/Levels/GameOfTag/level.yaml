@@ -2,6 +2,8 @@ name: "LEVEL 5: GAME OF TAG"
 description: >
   CATCH THE OTHER SHIP.
 
+soundtrack: chase
+
 randomSeed: 89321
 
 variables:

@@ -13,6 +13,13 @@ import { Player } from "@/Player";
 import { loadLevel } from "../Gameplay";
 import { getQueryStringValue } from "@/Utils";
 import UIDialog from "@/components/Dialog";
+import { Config } from "@/config";
+
+export enum MainMenuMode {
+    Loading = "loading",
+    WaitingForGesture = "waiting",
+    Ready = "ready",
+}
 
 const ZOOM = 3;
 const PARALLAX_SPEED = 10;
@@ -35,6 +42,41 @@ const creatorLogoImage = ImageLoader.get(creatorLogoUrl);
 let viewport: Viewport;
 let graphics: Graphics;
 let game: Game;
+let menu: Menu | null = null;
+let menuMode: MainMenuMode = MainMenuMode.Loading;
+
+function applyMenuMode() {
+    if (!menu) return;
+
+    if (menuMode !== MainMenuMode.Ready) {
+        menu.hide();
+    }
+    else {
+        menu.show();
+    }
+}
+
+function drawModeOverlay(ctx: CanvasRenderingContext2D) {
+    if (menuMode === MainMenuMode.Ready) return;
+
+    const message = menuMode === MainMenuMode.Loading ? "LOADING..." : "CLICK TO START";
+
+    ctx.save();
+    ctx.fillStyle = "#ffffff";
+    ctx.strokeStyle = "rgba(0, 0, 0, 0.65)";
+    ctx.lineWidth = 4;
+    ctx.font = `50px ${Config.typography.fontFamily}`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.strokeText(message, ctx.canvas.width / 2, ctx.canvas.height / 2);
+    ctx.fillText(message, ctx.canvas.width / 2, ctx.canvas.height / 2);
+    ctx.restore();
+}
+
+export function setMainMenuMode(nextMode: MainMenuMode) {
+    menuMode = nextMode;
+    applyMenuMode();
+}
 
 function update(time: number, _delta: number) {
     viewport.camera.pos.y = time * PARALLAX_SPEED;
@@ -59,6 +101,8 @@ function draw(viewport: Viewport): void {
     graphics.draw(viewport);
 
     ctx.restore();
+
+    drawModeOverlay(ctx);
 }
 
 function drawLogo(ctx: CanvasRenderingContext2D) {
@@ -98,7 +142,9 @@ export function enterMainMenu() {
 
     graphics.add(new Cosmos());
 
-    const menu = new Menu("MAIN MENU");
+    menu = new Menu("MAIN MENU");
+    const mainMenu = menu;
+    applyMenuMode();
 
     const dialog = new UIDialog(400, 150);
 
@@ -107,7 +153,7 @@ export function enterMainMenu() {
             Player.PL1.setName(nameInput.value);
             playerItem.text = "PLAYER: " + Player.PL1.name;
             dialog.hide();
-            menu.show();
+            mainMenu.show();
         }
         catch {
             dialog.error = true;
@@ -117,7 +163,7 @@ export function enterMainMenu() {
 
     const cancelHandler = () => {
         dialog.hide();
-        menu.show();
+        mainMenu.show();
     };
 
     const nameInput = dialog.addTextInput(Player.PL1.name);
@@ -125,29 +171,29 @@ export function enterMainMenu() {
     nameInput.addEventListener("enter", okHandler);
     nameInput.addEventListener("escape", cancelHandler);
 
-    const playerItem = menu.addItem("PLAYER: " + Player.PL1.name);
+    const playerItem = mainMenu.addItem("PLAYER: " + Player.PL1.name);
 
     playerItem.addEventListener("click", () => {
         nameInput.value = Player.PL1.name;
         dialog.error = false;
         dialog.title = "ENTER PLAYER NAME";
 
-        menu.hide();
+        mainMenu.hide();
         dialog.show();
 
         setTimeout(() => { nameInput.focus(); }, 0);
     });
 
-    menu.addItem("SETTINGS").disabled = true;
+    mainMenu.addItem("SETTINGS").disabled = true;
 
-    menu.addItem("START GAME").addEventListener("click", () => {
+    mainMenu.addItem("START GAME").addEventListener("click", () => {
         exitMainMenu();
         loadLevel(
             getQueryStringValue<number>("level", 1) - 1
         );
     });
 
-    graphics.add(menu);
+    graphics.add(mainMenu);
 
     dialog.addButton("OK").addEventListener("click", okHandler);
     dialog.addButton("CANCEL").addEventListener("click", cancelHandler);
