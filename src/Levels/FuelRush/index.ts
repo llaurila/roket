@@ -15,6 +15,7 @@ class FuelRush extends DataLevel {
 
     private playerScore = 0;
     private enemyScore = 0;
+    private enemyTarget?: Vector;
 
     private readonly fuelCapsuleCount: number;
     private readonly otherShipOffset: Vector;
@@ -66,9 +67,8 @@ class FuelRush extends DataLevel {
                 maxSpeed: this.maxSpeed
             },
             () => {
-                const target = this.getNearestEnemyFuel();
                 return {
-                    pos: target ? target.pos : this.ship.pos,
+                    pos: this.getEnemyTarget(),
                     v: Vector.Zero
                 };
             }
@@ -118,18 +118,35 @@ class FuelRush extends DataLevel {
             fuel.angularVelocity = rng.next(-1, 1);
 
             fuel.onCollision(e => {
+                this.enemyTarget = undefined;
+
                 if (fuel.collected) return;
+                
                 if (e.target == this.ship) {
                     this.playerScore++;
                 } else if (e.target == this.enemy) {
                     this.enemyScore++;
-                    fuel.collect(this.enemy);
+                    fuel.collect(this.enemy);                    
                 }
             });
 
             this.addFuelCapsule(fuel);
             this.fuelCapsules.push(fuel);
         }
+    }
+
+    private getEnemyTarget(): Vector {
+        if (this.enemyTarget) {
+            return this.enemyTarget;
+        }
+
+        const nearestFuel = this.getNearestEnemyFuel();
+        if (nearestFuel) {
+            this.enemyTarget = nearestFuel.pos;
+            return this.enemyTarget;
+        }
+
+        return Vector.Zero;
     }
 
     private getNearestEnemyFuel(): Fuel | undefined {

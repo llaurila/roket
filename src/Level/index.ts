@@ -16,6 +16,7 @@ import { Hud } from "../components/Hud";
 import { Viewport } from "@/Graphics/Viewport";
 import type { Beacon } from "@/Beacon";
 import { Player } from "@/Player";
+import { globalJukebox } from "@/Sounds/global-jukebox";
 
 function createViewport(): Viewport {
     const viewport = new Viewport(
@@ -55,6 +56,8 @@ abstract class Level extends EventTarget {
 
     public abstract get description(): string;
 
+    public abstract get soundtrack(): string | null;
+
     public init(viewport: Viewport, number: number) {
         this.viewport = viewport;
         this.number = number;
@@ -75,6 +78,15 @@ abstract class Level extends EventTarget {
         const intro = new LevelIntro(this);
         this.graphics.add(intro);
         this.physics.add(intro);
+
+        const { jb } = globalJukebox;
+        if (this.soundtrack) {
+            jb.select(this.soundtrack);
+            jb.play();
+        }
+        else {
+            jb.stop();
+        }
     }
 
     public getGraphics = () => this.graphics;

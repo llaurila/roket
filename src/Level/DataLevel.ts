@@ -37,6 +37,10 @@ abstract class DataLevel extends Level {
         return formatString(this.data.description, this.getRuntimeVars());
     }
 
+    public get soundtrack(): string | null {
+        return this.data.soundtrack || null;
+    }
+
     public createObjects(): void {
         this.setCosmos();
         this.setShipProperties();

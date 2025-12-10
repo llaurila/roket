@@ -8,6 +8,8 @@ description: >
   <LEFT> AND <RIGHT> KEYS FIRE THE THRUSTERS SEPARATELY AND <SHIFT> KEY
   REDUCES THRUST POWER FOR FINER CONTROL.
 
+soundtrack: ambient
+
 ship:
   fuelTank:
     currentAmount: 150

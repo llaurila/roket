@@ -4,13 +4,13 @@ const LOW_VOLUME = 0.33;
 const SHORT_DURATION = 0.05;
 const LONG_DURATION = 0.4;
 
-const audioCtx = new AudioContext();
-
-const halfVolume = audioCtx.createGain();
-halfVolume.gain.value = LOW_VOLUME;
-halfVolume.connect(audioCtx.destination);
-
 export const playOscillatorSound = (frequency: number, duration: number, quiet = false) => {
+    const audioCtx = new AudioContext();
+
+    const halfVolume = audioCtx.createGain();
+    halfVolume.gain.value = LOW_VOLUME;
+    halfVolume.connect(audioCtx.destination);
+
     const oscillator = audioCtx.createOscillator();
 
     if (quiet) {
@@ -41,6 +41,8 @@ export const playMissionSuccessSound = () => {
 };
 
 export const playExplosionSound = (duration: number) => {
+    const audioCtx = new AudioContext();
+
     const bufferSize = audioCtx.sampleRate * duration;
     const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
     const data = buffer.getChannelData(0);

@@ -48,7 +48,7 @@ class Body extends EventTarget implements IUpdatable {
         }
     }
 
-    public getHeading() {
+    public getHeading(): Vector {
         return Vector.Up.rotate(this.rotation);
     }
 

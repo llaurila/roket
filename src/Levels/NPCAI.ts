@@ -41,10 +41,14 @@ class NPCAI {
     }
 
     private accelerateTowardsTarget(turn: number) {
+        if (this.goingToTarget()) {
+            return;
+        }
+
         this.resetThrottle();
 
         const speedRelativeToTarget = this.ship.v.dot(
-            this.getVectorToTarget().sub(this.ship.pos).normalize()
+            this.getAimVector().sub(this.ship.pos).normalize()
         );
 
         const canThrustForward = speedRelativeToTarget < this.cfg.maxSpeed;
@@ -77,25 +81,33 @@ class NPCAI {
     }
 
     private isSpinning(): boolean {
-        const SPIN_THRESHOLD = .8;
+        const SPIN_THRESHOLD = .7;
         return Math.abs(this.ship.angularVelocity) > SPIN_THRESHOLD;
     }
 
-    private getTurnTowardsTarget(): number {
-        const target = this.getVectorToTarget();
-        const headingToTarget = target.sub(this.ship.pos).normalize();
-        return this.ship.getHeading().cross(headingToTarget);
+    private goingToTarget(): boolean {
+        const target = this.getTarget();
+        const toTarget = target.pos.sub(this.ship.pos).normalize();
+        const speed = this.ship.v.normalize();
+        return Math.abs(speed.cross(toTarget)) < this.cfg.headingTolerance / 2 &&
+            this.ship.v.length() > 10;
     }
 
-    private getVectorToTarget(): Vector {
+    private getTurnTowardsTarget(): number {
+        return this.getAngleTowardsTarget() * 2;
+    }
+
+    private getAngleTowardsTarget(): number {
+        const target = this.getAimVector();
+        const toTarget = target.sub(this.ship.pos).normalize();
+        return this.ship.getHeading().cross(toTarget);
+    }
+
+    private getAimVector(): Vector {
+        const V_PREDICTION = 0.4;
         const target = this.getTarget();
-
-        /*const distance = this.ship.pos.distanceTo(target.pos);
-        if (distance > this.cfg.maxDistanceFromPlayer) {
-            return target.pos;
-        }*/
-
-        return target.pos.add(target.v.neg());
+        const targetPos = target.pos.add(target.v.mul(V_PREDICTION)); // small prediction based on velocity
+        return targetPos.sub(this.ship.pos);
     };
 }
 

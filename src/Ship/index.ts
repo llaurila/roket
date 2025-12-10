@@ -16,10 +16,11 @@ import { Stats } from "../Level/Stats";
 import type { Viewport } from "@/Graphics/Viewport";
 import type { DrawContext } from "@/Graphics/DrawContext";
 import { playShipDestroyedSound } from "@/Sounds";
+import { IShip } from "./types";
 
 const { ship } = Config;
 
-class Ship extends Body implements IDrawable {
+class Ship extends Body implements IShip, IDrawable {
     public static Shape: Polygon = Shapes.Ship.mul(ship.length / ShipConfig.SHAPE_LENGTH);
 
     public engineLeft: Engine;

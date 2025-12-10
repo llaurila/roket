@@ -3,6 +3,8 @@ description: >
   COLLECT ALL THE FUEL CAPSULES REVEALED BY THE RADAR (${total} IN TOTAL). THE
   RADAR WILL SHOW YOU THE THREE CLOSEST CAPSULES AT ALL TIMES.
 
+soundtrack: focus
+
 randomSeed: 3287
 
 variables:

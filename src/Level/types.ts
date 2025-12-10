@@ -29,6 +29,8 @@ export interface LevelData {
     name: string;
     description: string;
 
+    soundtrack?: string;
+
     randomSeed?: number;
 
     variables: Record<string, unknown>
