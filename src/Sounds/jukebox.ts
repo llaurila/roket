@@ -159,6 +159,11 @@ export class Jukebox {
     );
   }
 
+  /** Must be called from a user gesture at least once on Safari/iOS */
+  public async resumeContext(): Promise<void> {
+    if (this.ctx.state !== "running") await this.ctx.resume();
+  }
+
   private selectInternal(buffer: AudioBuffer, id: string) {
     // Crossfade from current source to the new one
     const now = this.ctx.currentTime;
@@ -196,11 +201,6 @@ export class Jukebox {
 
     // Cleanup when new ends
     this.attachSourceHandlers(newSrc, buffer, id);
-  }
-
-  /** Must be called from a user gesture at least once on Safari/iOS */
-  private async resumeContext(): Promise<void> {
-    if (this.ctx.state !== "running") await this.ctx.resume();
   }
 
   /** Helper to create + start a source with an initial fade-in. */

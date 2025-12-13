@@ -137,6 +137,7 @@ abstract class Level extends EventTarget {
 
     public failure(message: string): void {
         if (this.failureMessage) throw new Error("Already failed.");
+        globalJukebox.jb.select("fail");
         this.failureMessage = message;
         this.endController.showOutro();
     }

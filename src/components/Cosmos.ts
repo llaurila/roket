@@ -81,7 +81,7 @@ class Cosmos implements IDrawable {
     }
 }
 
-function generateStars(x: number, y: number) {
+function generateStars(x: number, y: number): IStar[] {
     const stars: IStar[] = [];
 
     const origin = new Vector(x, y).mul(SEGMENT_SIZE);

@@ -2,7 +2,7 @@ name: "LEVEL 6: HOT LAP"
 description: >
   FLY THROUGH ALL BEACONS TO COMPLETE A LAP IN LESS THAN ${timeLimit} SECONDS.
 
-soundtrack: chase
+soundtrack: cruising
 
 variables:
    TIME_LIMIT: 60

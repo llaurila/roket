@@ -146,27 +146,27 @@ export function enterMainMenu() {
     const mainMenu = menu;
     applyMenuMode();
 
-    const dialog = new UIDialog(400, 150);
+    const playerNameDialog = new UIDialog(400, 150);
 
     const okHandler = () => {
         try {
             Player.PL1.setName(nameInput.value);
             playerItem.text = "PLAYER: " + Player.PL1.name;
-            dialog.hide();
+            playerNameDialog.hide();
             mainMenu.show();
         }
         catch {
-            dialog.error = true;
-            dialog.title = "INVALID NAME";
+            playerNameDialog.error = true;
+            playerNameDialog.title = "INVALID NAME";
         }
     };
 
     const cancelHandler = () => {
-        dialog.hide();
+        playerNameDialog.hide();
         mainMenu.show();
     };
 
-    const nameInput = dialog.addTextInput(Player.PL1.name);
+    const nameInput = playerNameDialog.addTextInput(Player.PL1.name);
     nameInput.maxLength = 8;
     nameInput.addEventListener("enter", okHandler);
     nameInput.addEventListener("escape", cancelHandler);
@@ -175,11 +175,11 @@ export function enterMainMenu() {
 
     playerItem.addEventListener("click", () => {
         nameInput.value = Player.PL1.name;
-        dialog.error = false;
-        dialog.title = "ENTER PLAYER NAME";
+        playerNameDialog.error = false;
+        playerNameDialog.title = "ENTER PLAYER NAME";
 
         mainMenu.hide();
-        dialog.show();
+        playerNameDialog.show();
 
         setTimeout(() => { nameInput.focus(); }, 0);
     });
@@ -195,10 +195,10 @@ export function enterMainMenu() {
 
     graphics.add(mainMenu);
 
-    dialog.addButton("OK").addEventListener("click", okHandler);
-    dialog.addButton("CANCEL").addEventListener("click", cancelHandler);
-    dialog.visible = false;
-    graphics.add(dialog);
+    playerNameDialog.addButton("OK").addEventListener("click", okHandler);
+    playerNameDialog.addButton("CANCEL").addEventListener("click", cancelHandler);
+    playerNameDialog.visible = false;
+    graphics.add(playerNameDialog);
 
     game = new Game(update, draw, viewport);
 

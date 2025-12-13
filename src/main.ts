@@ -3,9 +3,12 @@
 import { enterMainMenu, MainMenuMode, setMainMenuMode } from "./Scenes/MainMenu";
 import { globalJukebox } from "./Sounds/global-jukebox";
 import menuThemeUrl from "./assets/menu.mp3";
+import failThemeUrl from "./assets/fail.mp3";0
 import ambientThemeUrl from "./assets/ambient.mp3";
+import learningThemeUrl from "./assets/learning.mp3";
 import chaseThemeUrl from "./assets/chase.mp3";
 import focusThemeUrl from "./assets/focus.mp3";
+import cruisingThemeUrl from "./assets/cruising.mp3";
 
 function unlockOnFirstGesture() {
   const handler = async () => {
@@ -35,9 +38,12 @@ async function preloadMusic() {
 
   await Promise.all([
     jb.add("menu", menuThemeUrl),
+    jb.add("fail", failThemeUrl),
     jb.add("ambient", ambientThemeUrl),
+    jb.add("learning", learningThemeUrl),
     jb.add("chase", chaseThemeUrl),
     jb.add("focus", focusThemeUrl),
+    jb.add("cruising", cruisingThemeUrl)
   ]);
 }
 

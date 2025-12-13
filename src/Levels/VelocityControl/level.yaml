@@ -2,7 +2,7 @@ name: "LEVEL 2: VELOCITY CONTROL"
 description: >
   ACCELERATE TO GREAT SPEEDS, TURN AROUND AND DECELERATE BACK TO FULL STOP.
 
-soundtrack: chase
+soundtrack: learning
 
 variables:
   LOW_SPEED_THRESHOLD: 10
