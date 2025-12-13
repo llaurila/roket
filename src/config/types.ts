@@ -26,6 +26,7 @@ export interface IConfig {
         defaultLineHeight: number;
         errorColor: IColor;
         emphasisColor: IColor;
+        inputColor: IColor;
     },
 
     ui: {

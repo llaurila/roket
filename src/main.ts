@@ -9,11 +9,20 @@ import learningThemeUrl from "./assets/learning.mp3";
 import chaseThemeUrl from "./assets/chase.mp3";
 import focusThemeUrl from "./assets/focus.mp3";
 import cruisingThemeUrl from "./assets/cruising.mp3";
+import { Store } from "./Store";
 
 function unlockOnFirstGesture() {
   const handler = async () => {
     try {
       await globalJukebox.unlock();
+
+      if (Store.retrieve("playMusic") === "false") {
+        globalJukebox.mute();
+      }
+      else {
+        globalJukebox.restoreVolume();
+      }
+
       globalJukebox.jb.select("menu");
       await globalJukebox.jb.play();
     } finally {

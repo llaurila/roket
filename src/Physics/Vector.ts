@@ -116,6 +116,10 @@ class Vector {
         );
     }
 
+    public clone(): Vector {
+        return new Vector(this.x, this.y);
+    }
+
     public toString(decimals = 1): string {
         return `[${this.x.toFixed(decimals)}, ${this.y.toFixed(decimals)}]`;
     }

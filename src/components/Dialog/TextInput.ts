@@ -1,32 +1,26 @@
-import UniqueIdProvider from "@/UniqueIdProvider";
 import Pointer from "@/Controls/Pointer";
 import { getColorString } from "@/Graphics/Color";
 import { Config } from "@/config";
-import Rectangle from "@/Graphics/Rectangle";
-import Vector from "@/Physics/Vector";
 import { makeBgGradient } from "../UIWindow/utils";
 import type { Viewport } from "@/Graphics/Viewport";
 import type UIDialog from "./index";
+import UIInputBase from "./InputBase";
 
 const HEIGHT = 30;
-const MARGIN = 8;
 const PADDING_X = 10;
 const PADDING_Y = 5;
 const FONT_SIZE = Config.typography.messageFontSize;
 const DEFAULT_MAX_LENGTH = 255;
 
-export default class UITextInput extends EventTarget {
-    public id: number = UniqueIdProvider.next();
-    public alive = true;
-
+export default class UITextInput extends UIInputBase {
     public maxLength = DEFAULT_MAX_LENGTH;
 
     private mouseWasDown = false;
     private focused = false;
     private _value: string;
 
-    public constructor(private dialog: UIDialog, value = "") {
-        super();
+    public constructor(dialog: UIDialog, value = "") {
+        super(dialog);
         this._value = value;
         window.addEventListener("keydown", this.keyHandler);
     }
@@ -36,6 +30,8 @@ export default class UITextInput extends EventTarget {
 
     public focus() { this.focused = true; }
     public blur() { this.focused = false; }
+
+    public height(): number { return HEIGHT; }
 
     public draw(viewport: Viewport) {
         const { ctx } = viewport;
@@ -52,7 +48,7 @@ export default class UITextInput extends EventTarget {
         ctx.font = `${FONT_SIZE}px ${Config.typography.fontFamily}`;
         ctx.textBaseline = "middle";
         ctx.textAlign = "left";
-        ctx.fillStyle = getColorString(Config.typography.defaultColor);
+        ctx.fillStyle = getColorString(Config.typography.inputColor);
         ctx.fillText(this._value, rect.topLeft.x + PADDING_X, rect.topLeft.y + rect.size.y / 2);
 
         if (this.focused) {
@@ -66,8 +62,6 @@ export default class UITextInput extends EventTarget {
         }
 
         ctx.restore();
-
-        this.update(viewport);
     }
 
     public update(viewport: Viewport) {
@@ -116,22 +110,5 @@ export default class UITextInput extends EventTarget {
                 this._value += ch;
             }
         }
-    }
-
-    private getRect(viewport: Viewport): Rectangle {
-        const parentRect = this.dialog.getContentRect(viewport);
-        const width = parentRect.size.x - MARGIN * 2;
-        const pos = new Vector(
-            parentRect.topLeft.x + MARGIN,
-            parentRect.topLeft.y + MARGIN + this.dialog.textInputs.indexOf(this) * (HEIGHT + MARGIN)
-        );
-        return new Rectangle(pos, new Vector(width, HEIGHT));
-    }
-
-    private isMouseOver(viewport: Viewport): boolean {
-        if (!this.dialog.visible) return false;
-        const mouse = Pointer.getPosition();
-        const rect = this.getRect(viewport);
-        return rect.contains(mouse);
     }
 }

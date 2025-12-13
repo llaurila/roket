@@ -13,6 +13,7 @@ import { loadLevel } from "../Gameplay";
 import { getQueryStringValue } from "@/Utils";
 import { Config } from "@/config";
 import { PlayerNameDialog } from "./PlayerNameDialog";
+import { SettingsDialog } from "./SettingsDialog";
 
 export enum MainMenuMode {
     Loading = "loading",
@@ -142,8 +143,28 @@ export function enterMainMenu() {
     graphics.add(new Cosmos());
 
     menu = new Menu("MAIN MENU");
+
     const mainMenu = menu;
-    applyMenuMode();
+
+    const playerItem = mainMenu.addItem("PLAYER: " + Player.PL1.name);
+
+    const settingsDialog = new SettingsDialog();
+
+    settingsDialog.closeHandler = () => {
+        mainMenu.show();
+    };
+
+    mainMenu.addItem("SETTINGS").addEventListener("click", () => {
+        mainMenu.hide();
+        settingsDialog.uiDialog.show();
+    });
+
+    mainMenu.addItem("START GAME").addEventListener("click", () => {
+        exitMainMenu();
+        loadLevel(
+            getQueryStringValue<number>("level", 1) - 1
+        );
+    });
 
     const playerNameDialog = new PlayerNameDialog(Player.PL1);
 
@@ -156,8 +177,6 @@ export function enterMainMenu() {
         mainMenu.show();
     };
 
-    const playerItem = mainMenu.addItem("PLAYER: " + Player.PL1.name);
-
     playerItem.addEventListener("click", () => {
         playerNameDialog.nameInput.value = Player.PL1.name;
         playerNameDialog.uiDialog.error = false;
@@ -168,17 +187,11 @@ export function enterMainMenu() {
         setTimeout(() => { playerNameDialog.nameInput.focus(); }, 0);
     });
 
-    mainMenu.addItem("SETTINGS").disabled = true;
-
-    mainMenu.addItem("START GAME").addEventListener("click", () => {
-        exitMainMenu();
-        loadLevel(
-            getQueryStringValue<number>("level", 1) - 1
-        );
-    });
+    applyMenuMode();
 
     graphics.add(mainMenu);
     graphics.add(playerNameDialog.uiDialog);
+    graphics.add(settingsDialog.uiDialog);
 
     game = new Game(update, draw, viewport);
 

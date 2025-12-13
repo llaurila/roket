@@ -149,7 +149,10 @@ export class Jukebox {
     this.isPaused = false;
   }
 
-  /** Optional: overall volume 0..1 */
+  public getVolume(): number {
+    return this.master.gain.value;
+  }
+
   public setVolume(v: number) {
     const now = this.ctx.currentTime;
     this.master.gain.setValueAtTime(this.master.gain.value, now);

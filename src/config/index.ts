@@ -29,7 +29,8 @@ export const Config: IConfig = {
         messageFontSize: 18,
         defaultLineHeight: 10,
         errorColor: { R: 0.55, G: 0.12, B: 0.16, A: 1 },
-        emphasisColor: { R: 0.90, G: 0.50, B: 0.17, A: 1 }
+        emphasisColor: { R: 0.90, G: 0.50, B: 0.17, A: 1 },
+        inputColor: getGray(1)
     },
 
     ui: {

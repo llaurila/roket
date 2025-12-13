@@ -36,4 +36,8 @@ export default class Rectangle {
     public stroke(ctx: CanvasRenderingContext2D) {
         ctx.strokeRect(this.topLeft.x, this.topLeft.y, this.size.x, this.size.y);
     }
+
+    public clone(): Rectangle {
+        return new Rectangle(this.topLeft.clone(), this.size.clone());
+    }
 }
