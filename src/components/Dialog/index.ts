@@ -25,8 +25,8 @@ export default class UIDialog extends UIWindow {
         return input;
     }
 
-    public addCheckBox(checked = false): UICheckBox {
-        const input = new UICheckBox(this, checked);
+    public addCheckBox(label: string, checked = false): UICheckBox {
+        const input = new UICheckBox(this, label,checked);
         this.inputs.push(input);
         return input;
     }

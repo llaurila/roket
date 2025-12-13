@@ -27,6 +27,7 @@ export class SettingsDialog {
 
     private createPlayMusicCheckbox(): UICheckBox {
         const cb = this.uiDialog.addCheckBox(
+            "PLAY MUSIC",
             Store.retrieve(PLAY_MUSIC_KEY) !== "false"
         );
 
