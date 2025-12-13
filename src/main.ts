@@ -3,7 +3,7 @@
 import { enterMainMenu, MainMenuMode, setMainMenuMode } from "./Scenes/MainMenu";
 import { globalJukebox } from "./Sounds/global-jukebox";
 import menuThemeUrl from "./assets/menu.mp3";
-import failThemeUrl from "./assets/fail.mp3";0
+import failThemeUrl from "./assets/fail.mp3";
 import ambientThemeUrl from "./assets/ambient.mp3";
 import learningThemeUrl from "./assets/learning.mp3";
 import chaseThemeUrl from "./assets/chase.mp3";

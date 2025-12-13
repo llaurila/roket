@@ -1,4 +1,3 @@
-/* eslint-disable no-magic-numbers */
 import Cosmos from "@/components/Cosmos";
 import { Menu } from "@/components/Menu";
 import Game from "@/Game";
@@ -12,8 +11,8 @@ import { Viewport } from "@/Graphics/Viewport";
 import { Player } from "@/Player";
 import { loadLevel } from "../Gameplay";
 import { getQueryStringValue } from "@/Utils";
-import UIDialog from "@/components/Dialog";
 import { Config } from "@/config";
+import { PlayerNameDialog } from "./PlayerNameDialog";
 
 export enum MainMenuMode {
     Loading = "loading",
@@ -146,42 +145,27 @@ export function enterMainMenu() {
     const mainMenu = menu;
     applyMenuMode();
 
-    const playerNameDialog = new UIDialog(400, 150);
+    const playerNameDialog = new PlayerNameDialog(Player.PL1);
 
-    const okHandler = () => {
-        try {
-            Player.PL1.setName(nameInput.value);
-            playerItem.text = "PLAYER: " + Player.PL1.name;
-            playerNameDialog.hide();
-            mainMenu.show();
-        }
-        catch {
-            playerNameDialog.error = true;
-            playerNameDialog.title = "INVALID NAME";
-        }
+    playerNameDialog.setNameHandler = (name) => {
+        Player.PL1.setName(name);
+        playerItem.text = "PLAYER: " + Player.PL1.name;
     };
 
-    const cancelHandler = () => {
-        playerNameDialog.hide();
+    playerNameDialog.closeHandler = () => {
         mainMenu.show();
     };
-
-    const nameInput = playerNameDialog.addTextInput(Player.PL1.name);
-    nameInput.maxLength = 8;
-    nameInput.addEventListener("enter", okHandler);
-    nameInput.addEventListener("escape", cancelHandler);
 
     const playerItem = mainMenu.addItem("PLAYER: " + Player.PL1.name);
 
     playerItem.addEventListener("click", () => {
-        nameInput.value = Player.PL1.name;
-        playerNameDialog.error = false;
-        playerNameDialog.title = "ENTER PLAYER NAME";
+        playerNameDialog.nameInput.value = Player.PL1.name;
+        playerNameDialog.uiDialog.error = false;
 
         mainMenu.hide();
-        playerNameDialog.show();
+        playerNameDialog.uiDialog.show();
 
-        setTimeout(() => { nameInput.focus(); }, 0);
+        setTimeout(() => { playerNameDialog.nameInput.focus(); }, 0);
     });
 
     mainMenu.addItem("SETTINGS").disabled = true;
@@ -194,11 +178,7 @@ export function enterMainMenu() {
     });
 
     graphics.add(mainMenu);
-
-    playerNameDialog.addButton("OK").addEventListener("click", okHandler);
-    playerNameDialog.addButton("CANCEL").addEventListener("click", cancelHandler);
-    playerNameDialog.visible = false;
-    graphics.add(playerNameDialog);
+    graphics.add(playerNameDialog.uiDialog);
 
     game = new Game(update, draw, viewport);
 
