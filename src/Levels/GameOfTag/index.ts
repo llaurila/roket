@@ -5,14 +5,15 @@ import type { LevelData } from "@/Level/types";
 import Ship from "@/Ship";
 import { Config } from "@/config";
 import { generateFuelCapsule } from "./fuel";
-import NPCAI from "../NPCAI";
+import NPCAIController, { type NPCAIControllerConfig } from "../NPCAIController";
 import Vector from "@/Physics/Vector";
 import type Fuel from "@/Fuel";
 import type { IColor } from "@/Graphics/Color";
+import { degToRad } from "@/Utils";
 
 class GameOfTag extends DataLevel {
     public enemy: Ship;
-    public ai?: NPCAI;
+    public ai?: NPCAIController;
 
     public started = false;
     public caught = false;
@@ -22,9 +23,7 @@ class GameOfTag extends DataLevel {
     private readonly otherShipOffset: Vector;
     private readonly fuelCapsuleDistanceMin: number;
     private readonly fuelCapsuleDistanceMax: number;
-    private readonly headingTolerance: number;
-    private readonly maxDistanceFromPlayer: number;
-    private readonly maxSpeed: number;
+    private readonly aiConfig: NPCAIControllerConfig;
 
     public constructor() {
         super(data as LevelData);
@@ -35,9 +34,20 @@ class GameOfTag extends DataLevel {
 
         this.fuelCapsuleDistanceMin = this.getEnv<number>("FUEL_CAPSULE_DISTANCE_MIN");
         this.fuelCapsuleDistanceMax = this.getEnv<number>("FUEL_CAPSULE_DISTANCE_MAX");
-        this.headingTolerance = this.getEnv<number>("CORRECT_HEADING_TOLERANCE");
-        this.maxDistanceFromPlayer = this.getEnv<number>("MAX_DISTANCE_FROM_PLAYER");
-        this.maxSpeed = this.getEnv<number>("MAX_SPEED");
+        this.aiConfig = {
+            arriveRadius: this.getEnv<number>("AI_ARRIVE_RADIUS"),
+            arriveSpeed: this.getEnv<number>("AI_ARRIVE_SPEED"),
+            maxClosingSpeed: this.getEnv<number>("AI_MAX_CLOSING_SPEED"),
+            positionGain: this.getEnv<number>("AI_POSITION_GAIN"),
+            velocityGain: this.getEnv<number>("AI_VELOCITY_GAIN"),
+            stopVelocityGain: this.getEnv<number>("AI_STOP_VELOCITY_GAIN"),
+            maxPositionAcceleration: this.getEnv<number>("AI_MAX_POSITION_ACCELERATION"),
+            headingGain: this.getEnv<number>("AI_HEADING_GAIN"),
+            angularDamping: this.getEnv<number>("AI_ANGULAR_DAMPING"),
+            maxThrustAngle: degToRad(this.getEnv<number>("AI_MAX_THRUST_ANGLE_DEG")),
+            alignmentExponent: this.getEnv<number>("AI_ALIGNMENT_EXPONENT"),
+            turnThrottlePenalty: this.getEnv<number>("AI_TURN_THROTTLE_PENALTY"),
+        };
 
         this.enemy = new Ship(this.otherShipOffset);
         this.enemy.color = this.getEnv<IColor>("ENEMY_COLOR");
@@ -59,18 +69,7 @@ class GameOfTag extends DataLevel {
             }
         });
 
-        this.ai = new NPCAI(
-            this.enemy,
-            {
-                headingTolerance: this.headingTolerance,
-                maxDistanceFromPlayer: this.maxDistanceFromPlayer,
-                maxSpeed: this.maxSpeed
-            },
-            () => ({
-                pos: this.ship.pos.add(this.fuel?.pos || Vector.Zero).mul(0.5),
-                v: this.ship.v
-            })
-        );
+        this.ai = new NPCAIController(this.enemy, this.aiConfig);
 
         this.generateNewFuelCapsule();
     }
@@ -98,7 +97,12 @@ class GameOfTag extends DataLevel {
         super.update(time, delta);
 
         if (this.started) {
-            this.ai?.think();
+            const interceptTarget = this.ship.pos.add(this.fuel?.pos || Vector.Zero).mul(0.5);
+            this.ai?.setTarget({
+                pos: interceptTarget,
+                v: this.ship.v
+            });
+            this.ai?.control();
         }
         else {
             this.startNpcWhenPlayerMoves();

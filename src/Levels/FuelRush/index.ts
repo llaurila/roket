@@ -3,15 +3,17 @@ import DataLevel from "@/Level/DataLevel";
 import type { LevelData } from "@/Level/types";
 import Ship from "@/Ship";
 import Vector from "@/Physics/Vector";
-import NPCAI from "../NPCAI";
+import NPCAIController, { type NPCAIControllerConfig } from "../NPCAIController";
 import Fuel from "@/Fuel";
 import { Config } from "@/config";
 import type { IColor } from "@/Graphics/Color";
+import { degToRad } from "@/Utils";
 
 class FuelRush extends DataLevel {
     public enemy: Ship;
-    public ai?: NPCAI;
+    public ai?: NPCAIController;
     public fuelCapsules: Fuel[] = [];
+    public started = false;
 
     private playerScore = 0;
     private enemyScore = 0;
@@ -21,9 +23,7 @@ class FuelRush extends DataLevel {
     private readonly otherShipOffset: Vector;
     private readonly fuelCapsuleDistanceMin: number;
     private readonly fuelCapsuleDistanceMax: number;
-    private readonly headingTolerance: number;
-    private readonly maxDistanceFromPlayer: number;
-    private readonly maxSpeed: number;
+    private readonly aiConfig: NPCAIControllerConfig;
 
     public constructor() {
         super(data as LevelData);
@@ -34,9 +34,21 @@ class FuelRush extends DataLevel {
         );
         this.fuelCapsuleDistanceMin = this.getEnv<number>("FUEL_CAPSULE_DISTANCE_MIN");
         this.fuelCapsuleDistanceMax = this.getEnv<number>("FUEL_CAPSULE_DISTANCE_MAX");
-        this.headingTolerance = this.getEnv<number>("CORRECT_HEADING_TOLERANCE");
-        this.maxDistanceFromPlayer = this.getEnv<number>("MAX_DISTANCE_FROM_PLAYER");
-        this.maxSpeed = this.getEnv<number>("MAX_SPEED");
+
+        this.aiConfig = {
+            arriveRadius: this.getEnv<number>("AI_ARRIVE_RADIUS"),
+            arriveSpeed: this.getEnv<number>("AI_ARRIVE_SPEED"),
+            maxClosingSpeed: this.getEnv<number>("AI_MAX_CLOSING_SPEED"),
+            positionGain: this.getEnv<number>("AI_POSITION_GAIN"),
+            velocityGain: this.getEnv<number>("AI_VELOCITY_GAIN"),
+            stopVelocityGain: this.getEnv<number>("AI_STOP_VELOCITY_GAIN"),
+            maxPositionAcceleration: this.getEnv<number>("AI_MAX_POSITION_ACCELERATION"),
+            headingGain: this.getEnv<number>("AI_HEADING_GAIN"),
+            angularDamping: this.getEnv<number>("AI_ANGULAR_DAMPING"),
+            maxThrustAngle: degToRad(this.getEnv<number>("AI_MAX_THRUST_ANGLE_DEG")),
+            alignmentExponent: this.getEnv<number>("AI_ALIGNMENT_EXPONENT"),
+            turnThrottlePenalty: this.getEnv<number>("AI_TURN_THROTTLE_PENALTY"),
+        };
 
         this.enemy = new Ship(this.otherShipOffset);
         this.enemy.color = this.getEnv<IColor>("ENEMY_COLOR");
@@ -59,25 +71,20 @@ class FuelRush extends DataLevel {
 
         this.generateFuelCapsules(this.fuelCapsuleCount);
 
-        this.ai = new NPCAI(
-            this.enemy,
-            {
-                headingTolerance: this.headingTolerance,
-                maxDistanceFromPlayer: this.maxDistanceFromPlayer,
-                maxSpeed: this.maxSpeed
-            },
-            () => {
-                return {
-                    pos: this.getEnemyTarget(),
-                    v: Vector.Zero
-                };
-            }
-        );
+        this.ai = new NPCAIController(this.enemy, this.aiConfig);
     }
 
     public update(time: number, delta: number) {
         super.update(time, delta);
-        this.ai?.think();
+
+        if (this.started) {
+            const target = this.getEnemyTarget();
+            this.ai?.setTarget({ pos: target, v: Vector.Zero });
+            this.ai?.control();
+        }
+        else {
+            this.startNpcWhenPlayerMoves();
+        }
     }
 
     protected override getRuntimeVars(): Record<string, string> {
@@ -90,16 +97,16 @@ class FuelRush extends DataLevel {
     }
 
     protected registerObjectiveChecks(): void {
-        const allCollected = () => this.fuelCapsules.every(f => !f.alive);
+        const half = this.fuelCapsuleCount / 2;
 
         this.registerObjectiveTest(
             "playerWon",
-            () => allCollected() && this.playerScore > this.enemyScore
+            () => this.playerScore > half
         );
 
         this.registerObjectiveTest(
             "playerLost",
-            () => allCollected() && this.playerScore <= this.enemyScore
+            () => this.enemyScore >= half
         );
     }
 
@@ -163,6 +170,15 @@ class FuelRush extends DataLevel {
         }
 
         return nearest;
+    }
+
+    private startNpcWhenPlayerMoves() {
+        const INITIAL_SPEED = 10;
+
+        if (this.ship.v.length() > 0) {
+            this.enemy.v = this.enemy.getHeading().mul(INITIAL_SPEED);
+            this.started = true;
+        }
     }
 }
 

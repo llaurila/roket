@@ -1,7 +1,7 @@
 import Game from "@/Game";
 import Keys from "../../Controls/Keys";
 import { panTowardsShip } from "../../cinematics";
-import { drawFps } from "../../debug";
+import { drawFps, drawNpcAiDebug } from "../../debug";
 import Introduction from "@/Levels/Introduction";
 import VelocityControl from "@/Levels/VelocityControl";
 import CollectFuel from "@/Levels/CollectFuel";
@@ -96,6 +96,7 @@ export function loadLevel(number: number) {
         ctx.restore();
 
         drawFps(ctx, game.fpsTracker.currentFps);
+        drawNpcAiDebug(ctx, level);
     }
 }
 
