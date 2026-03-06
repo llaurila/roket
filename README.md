@@ -3,6 +3,8 @@
 2D spaceship game with Newtonian physics.
 © Vincent Laurila 2019-2026
 
+If you just want to play, go to <https://roket.laurila.net/>
+
 ## Overview
 
 Roket is a pure TypeScript project built from scratch without a game engine. Rendering is done directly with the HTML canvas API, and the game loop, physics, scene flow, UI, and drawing primitives are all implemented in this repository.
