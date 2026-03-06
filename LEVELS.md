@@ -1,5 +1,7 @@
 # Level Authoring
 
+For NPC controller behavior and level-specific AI tuning, see [AI.md](AI.md).
+
 This project uses a hybrid level system:
 
 - `level.yaml` holds static data such as metadata, variables, ship fuel, objects, and objective wiring.
