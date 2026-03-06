@@ -3,7 +3,7 @@ import type Level from ".";
 import type Objective from "./Objective";
 import { LevelOutro } from "../LevelOutro";
 import { ObjectiveState } from "./Objective";
-import { playMissionSuccessSound, playObjectiveClearedSound } from "../Sounds";
+import { globalSoundEffects } from "@/Sounds/global-sound-effects";
 
 export interface MissionStatus {
     totalObjectives: number;
@@ -79,9 +79,9 @@ export class LevelEndController {
 
 function playSounds(status: MissionStatus, objectives: Objective[], oneCleared: boolean) {
     if (status.clearedObjectives == objectives.length) {
-        playMissionSuccessSound();
+        globalSoundEffects.playMissionSuccessSound();
     } else if (oneCleared) {
-        playObjectiveClearedSound();
+        globalSoundEffects.playObjectiveClearedSound();
     }
 }
 

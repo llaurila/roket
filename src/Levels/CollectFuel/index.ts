@@ -1,9 +1,9 @@
 import data from "./level.yaml";
 import Vector from "../../Physics/Vector";
 import Fuel from "../../Fuel";
-import { playNotificationSound } from "../../Sounds";
 import DataLevel from "@/Level/DataLevel";
 import type { LevelData } from "@/Level/types";
+import { globalSoundEffects } from "@/Sounds/global-sound-effects";
 
 class CollectFuel extends DataLevel {
     public fuelCapsules: Fuel[] = [];
@@ -34,7 +34,7 @@ class CollectFuel extends DataLevel {
             );
 
             capsule.addEventListener("collect", () => {
-                playNotificationSound();
+                globalSoundEffects.playNotificationSound();
             });
 
             capsule.angularVelocity = rng.next(-1, +1);

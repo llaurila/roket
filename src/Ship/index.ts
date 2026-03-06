@@ -15,8 +15,8 @@ import ShipConfig from "./config";
 import { Stats } from "../Level/Stats";
 import type { Viewport } from "@/Graphics/Viewport";
 import type { DrawContext } from "@/Graphics/DrawContext";
-import { playShipDestroyedSound } from "@/Sounds";
 import type { IShip } from "./types";
+import { globalSoundEffects } from "@/Sounds/global-sound-effects";
 
 const { ship } = Config;
 
@@ -65,7 +65,7 @@ class Ship extends Body implements IShip, IDrawable {
         this._alive = false;
         this.hullIntegrity = 0;
 
-        playShipDestroyedSound();
+        globalSoundEffects.playShipDestroyedSound();
 
         if (this.physics && this.graphics) {
             const explosion = new ExplosionParticleEngine(this.pos, {
