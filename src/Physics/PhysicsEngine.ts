@@ -33,8 +33,10 @@ class PhysicsEngine {
         return undefined;
     }
 
+    public filter<T extends IUpdatable>(criteria: (obj: IUpdatable) => obj is T): T[];
+    public filter(criteria: (obj: IUpdatable) => boolean): IUpdatable[];
     public filter(criteria: (obj: IUpdatable) => boolean): IUpdatable[] {
-        const filtered = [];
+        const filtered: IUpdatable[] = [];
         for (const obj of this.objects.values()) {
             if (criteria(obj)) {
                 filtered.push(obj);
@@ -49,7 +51,7 @@ class PhysicsEngine {
     }
 
     public getForceFields(): IForceField[] {
-        return this.filter(isForceField) as IForceField[];
+        return this.filter(isForceField);
     }
 
     public remove(obj: IUpdatable): void {
@@ -83,7 +85,7 @@ class PhysicsEngine {
     }
 }
 
-function isForceField(obj: IUpdatable): boolean {
+function isForceField(obj: IUpdatable): obj is IUpdatable & IForceField {
     return "getForceFor" in obj && typeof obj.getForceFor === "function";
 }
 
