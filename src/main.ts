@@ -2,6 +2,7 @@
 
 import { enterMainMenu, MainMenuMode, setMainMenuMode } from "./Scenes/MainMenu";
 import { globalJukebox } from "./Sounds/global-jukebox";
+import { globalSoundEffects } from "./Sounds/global-sound-effects";
 import menuThemeUrl from "./assets/menu.mp3";
 import failThemeUrl from "./assets/fail.mp3";
 import ambientThemeUrl from "./assets/ambient.mp3";
@@ -14,13 +15,23 @@ import { Store } from "./Store";
 function unlockOnFirstGesture() {
   const handler = async () => {
     try {
-      await globalJukebox.unlock();
+      await Promise.all([
+        globalJukebox.unlock(),
+        globalSoundEffects.unlock()
+      ]);
 
       if (Store.retrieve("playMusic") === "false") {
         globalJukebox.mute();
       }
       else {
         globalJukebox.restoreVolume();
+      }
+
+      if (Store.retrieve("playSoundEffects") === "false") {
+        globalSoundEffects.mute();
+      }
+      else {
+        globalSoundEffects.restoreVolume();
       }
 
       globalJukebox.jb.select("menu");

@@ -31,9 +31,10 @@ export default abstract class UIInputBase extends EventTarget {
         const width = parentRect.size.x - UIInputBase.MARGIN * 2;
 
         let offsetY = 0;
-        let index = this.dialog.inputs.indexOf(this);
-        while (--index > 0) {
-            const curInput = this.dialog.inputs[index - 1];
+        const index = this.dialog.inputs.indexOf(this);
+
+        for (let i = 0; i < index; i++) {
+            const curInput = this.dialog.inputs[i];
             offsetY += curInput.height() + UIInputBase.MARGIN;
         }
 
