@@ -61,8 +61,12 @@ test("control rotates for braking when the ship is inside the stopping envelope"
     const debugState = controller.getLastDebugState();
 
     expect(debugState).toBeDefined();
-    expect(debugState?.desiredAcceleration.dot(ship.getHeading())).toBeLessThan(0);
-    expect(debugState?.forwardThrottle).toBe(0);
-    expect(Math.abs(debugState?.turnCommand ?? 0)).toBeGreaterThan(0);
+    if (!debugState) {
+        throw new Error("Expected debug state to be defined.");
+    }
+
+    expect(debugState.desiredAcceleration.dot(ship.getHeading())).toBeLessThan(0);
+    expect(debugState.forwardThrottle).toBe(0);
+    expect(Math.abs(debugState.turnCommand)).toBeGreaterThan(0);
     expect(command.leftThrottle).not.toBe(command.rightThrottle);
 });

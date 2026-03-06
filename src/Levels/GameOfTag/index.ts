@@ -97,16 +97,11 @@ class GameOfTag extends DataLevel {
         super.update(time, delta);
 
         if (this.started) {
-            const interceptTarget = this.ship.pos.add(this.fuel?.pos || Vector.Zero).mul(0.5);
-            this.ai?.setTarget({
-                pos: interceptTarget,
-                v: this.ship.v
-            });
-            this.ai?.control();
+            this.updateNpcPursuit();
+            return;
         }
-        else {
-            this.startNpcWhenPlayerMoves();
-        }
+
+        this.startNpcWhenPlayerMoves();
     }
 
     protected registerObjectiveChecks(): void {
@@ -120,6 +115,21 @@ class GameOfTag extends DataLevel {
             this.enemy.v = this.enemy.getHeading().mul(INITIAL_SPEED);
             this.started = true;
         }
+    }
+
+    private updateNpcPursuit(): void {
+        if (!this.ai) {
+            return;
+        }
+
+        const fuelPosition = this.fuel ? this.fuel.pos : Vector.Zero;
+        const interceptTarget = this.ship.pos.add(fuelPosition).mul(0.5);
+
+        this.ai.setTarget({
+            pos: interceptTarget,
+            v: this.ship.v
+        });
+        this.ai.control();
     }
 }
 

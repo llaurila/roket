@@ -64,8 +64,7 @@ export class Radar implements IDrawable {
 
     private drawBeacons(drawer: RadarDrawer) {
         const beacons = this.physics
-            .filter(obj => obj instanceof Beacon)
-            .map(obj => obj as Beacon)
+            .filter((obj): obj is Beacon => obj instanceof Beacon)
             .filter(beacon => beacon.active);
 
         for (const beacon of beacons) {
@@ -75,8 +74,7 @@ export class Radar implements IDrawable {
 
     private drawNearestFuel(drawer: RadarDrawer, count = 1) {
         const fuels = this.physics
-            .filter(obj => obj instanceof Fuel)
-            .map(obj => obj as Fuel)
+            .filter((obj): obj is Fuel => obj instanceof Fuel)
             .sort((a, b) => a.pos.sub(this.ship.pos).length() - b.pos.sub(this.ship.pos).length());
 
         for (const fuel of fuels.slice(0, count)) {

@@ -36,3 +36,5 @@ If you are new to the codebase, start at `src/main.ts`.
 - Enable Corepack if needed: `corepack enable`
 - `pnpm install`
 - `pnpm run dev`
+
+Many people find the linter a bit sadistic, especially the _complexity_ rule. Sorry (not sorry).

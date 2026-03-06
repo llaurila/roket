@@ -3,21 +3,20 @@ import Cosmos from "@/components/Cosmos";
 import type { GameObject, LevelData, LevelObjective } from "./types";
 import Objective from "./Objective";
 import type Body from "@/Physics/Body";
-import Fuel from "@/Fuel";
-import Vector from "@/Physics/Vector";
 import ShipController from "@/ShipController";
 import RNG from "@/RNG";
 import { formatString } from "@/Utils";
-import { Beacon } from "@/Beacon";
-import { GravityWell } from "@/GravityWell";
+import {
+    createBeaconFromObject,
+    createFuelFromObject,
+    createGravityWellFromObject
+} from "./objectFactories";
 
 const DEFAULT_RAND_SEED = 951337;
 
 type ObjectiveTest = (...args: unknown[]) => boolean;
 
 type FailureCheck = () => string|null;
-
-const FUEL_DEFAULT_ANGULAR_VELOCITY = .21;
 
 abstract class DataLevel extends Level {
     protected rng: RNG;
@@ -213,42 +212,19 @@ abstract class DataLevel extends Level {
     }
 
     private createFuel(o: GameObject) {
-        const fuel = new Fuel(Vector.fromComponents(o.position));
-
-        if (o.props?.amount) {
-            fuel.amount = o.props.amount as number;
-        }
-
-        fuel.angularVelocity = o.angularVelocity || FUEL_DEFAULT_ANGULAR_VELOCITY;
+        const fuel = createFuelFromObject(o);
         this.objects[o.id] = fuel;
         this.addFuelCapsule(fuel);
     }
 
     private createBeacon(o: GameObject) {
-        const beacon = new Beacon(Vector.fromComponents(o.position));
-
-        if (o.props?.active !== undefined) {
-            beacon.active = o.props.active as boolean;
-        }
-
+        const beacon = createBeaconFromObject(o);
         this.objects[o.id] = beacon;
         this.addBeacon(beacon);
     }
 
     private createGravityWell(o: GameObject) {
-        const range = o.props?.range as number | undefined;
-        const strength = o.props?.strength as number | undefined;
-
-        if (range == undefined || strength == undefined) {
-            throw new Error(`Gravity well '${o.id}' requires props.range and props.strength.`);
-        }
-
-        const gravityWell = new GravityWell(
-            Vector.fromComponents(o.position),
-            range,
-            strength
-        );
-
+        const gravityWell = createGravityWellFromObject(o);
         this.objects[o.id] = gravityWell;
         this.addGravityWell(gravityWell);
     }

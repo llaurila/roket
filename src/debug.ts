@@ -5,6 +5,9 @@ import type Level from "@/Level";
 import NPCAIController from "@/Levels/NPCAIController";
 import { radToDeg } from "@/Utils";
 
+const DEBUG_PANEL_BORDER_GRAY = 0.8;
+const DEBUG_PANEL_BACKGROUND_ALPHA = 0.6;
+
 export function drawFps(ctx: CanvasRenderingContext2D, fps: number) {
     const MARGIN = 20;
 
@@ -47,16 +50,18 @@ export function drawNpcAiDebug(ctx: CanvasRenderingContext2D, level: Level) {
         `REL VEL: ${debugState.relativeVelocity.toString()}`,
         `MAX FWD A: ${fmt(debugState.capabilities.maxForwardAcceleration)}`,
         `MAX ANG A: ${fmt(debugState.capabilities.maxAngularAcceleration)}`,
-        `L/R THR: ${fmt(debugState.ship.engines.left.throttle)} / ${fmt(debugState.ship.engines.right.throttle)}`,
+        "L/R THR: " +
+        `${fmt(debugState.ship.engines.left.throttle)} / ` +
+        `${fmt(debugState.ship.engines.right.throttle)}`,
     ];
 
     const height = PADDING * 2 + rows.length * lineHeight;
 
     ctx.save();
-    ctx.fillStyle = getColorString({ R: 0, G: 0, B: 0, A: 0.6 });
+    ctx.fillStyle = getColorString({ R: 0, G: 0, B: 0, A: DEBUG_PANEL_BACKGROUND_ALPHA });
     ctx.fillRect(POS_X, POS_Y, WIDTH, height);
 
-    ctx.strokeStyle = getColorString(getGray(0.8));
+    ctx.strokeStyle = getColorString(getGray(DEBUG_PANEL_BORDER_GRAY));
     ctx.lineWidth = 1;
     ctx.strokeRect(POS_X, POS_Y, WIDTH, height);
 
