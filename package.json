@@ -2,6 +2,7 @@
   "name": "roket",
   "private": true,
   "version": "0.0.0",
+  "packageManager": "pnpm@10.29.3",
   "type": "module",
   "scripts": {
     "clean": "rimraf dist",
@@ -21,7 +22,7 @@
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.51.0",
     "vite": "^7.3.0",
-    "vitest": "^3.2.4",
+    "vitest": "^4.0.18",
     "yaml": "^2.8.2"
   }
 }

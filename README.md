@@ -8,8 +8,9 @@
 ### Option 1: Node
 
 - Install NodeJS 22 (other versions might very well work)
-- `npm install`
-- `npm run dev`
+- Enable Corepack if needed: `corepack enable`
+- `pnpm install`
+- `pnpm run dev`
 
 ### Option 2: Docker
 
@@ -22,5 +23,5 @@
 Run the unit tests with:
 
 ```bash
-npm test
+pnpm test
 ```

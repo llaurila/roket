@@ -1,14 +1,14 @@
 export class FPSTracker {
     private frames = 0;
     private lastUpdate = 0;
-    private _fps = 0;
+    private fps = 0;
 
     public constructor(private updateInterval: number) {
         this.lastUpdate = (new Date()).getTime() / 1000;
     }
 
     public get currentFps() {
-        return this._fps;
+        return this.fps;
     }
 
     public registerFrame(): void {
@@ -18,7 +18,7 @@ export class FPSTracker {
         const delta = time - this.lastUpdate;
 
         if (delta >= this.updateInterval) {
-            this._fps = this.frames / delta;
+            this.fps = this.frames / delta;
             this.frames = 0;
             this.lastUpdate = time;
         }
