@@ -5,8 +5,6 @@
 
 ## How to Develop
 
-### Option 1: Node
-
 - Install NodeJS 24 (other versions might very well work)
 - Enable Corepack if needed: `corepack enable`
 - `pnpm install`
