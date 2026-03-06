@@ -15,6 +15,7 @@ import { Stats } from "./Stats";
 import { Hud } from "../components/Hud";
 import { Viewport } from "@/Graphics/Viewport";
 import type { Beacon } from "@/Beacon";
+import type { GravityWell } from "@/GravityWell";
 import { Player } from "@/Player";
 import { globalJukebox } from "@/Sounds/global-jukebox";
 
@@ -108,6 +109,11 @@ abstract class Level extends EventTarget {
     public addBeacon(beacon: Beacon): void {
         this.physics.add(beacon);
         this.graphics.add(beacon);
+    }
+
+    public addGravityWell(gravityWell: GravityWell): void {
+        this.physics.add(gravityWell);
+        this.graphics.add(gravityWell);
     }
 
     public update(time: number, delta: number) {

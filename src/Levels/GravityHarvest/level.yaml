@@ -1,0 +1,35 @@
+name: "LEVEL 8: GRAVITY HARVEST"
+description: >
+  COLLECT THE THREE FUEL CAPSULES WITHOUT GETTING DRAGGED OFF YOUR LINE.
+  THE MAGENTA RINGS SHOW THE GRAVITY WELL'S RANGE.
+
+soundtrack: focus
+
+ship:
+  fuelTank:
+    currentAmount: 180
+
+objects:
+  - id: well
+    type: gravity-well
+    position: [20, 200]
+    props:
+      range: 110
+      strength: 14000
+  - id: fuel-1
+    type: fuel
+    position: [30, 288]
+    angularVelocity: 0.3
+  - id: fuel-2
+    type: fuel
+    position: [96, 172]
+    angularVelocity: -0.5
+  - id: fuel-3
+    type: fuel
+    position: [-62, 160]
+    angularVelocity: 0.6
+
+objectives:
+  - id: collect-fuel
+    title: COLLECT FUEL CAPSULES (${collected}/${total})
+    externalSuccessCheck: allCollected

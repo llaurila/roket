@@ -9,6 +9,7 @@ import ShipController from "@/ShipController";
 import RNG from "@/RNG";
 import { formatString } from "@/Utils";
 import { Beacon } from "@/Beacon";
+import { GravityWell } from "@/GravityWell";
 
 const DEFAULT_RAND_SEED = 951337;
 
@@ -198,7 +199,9 @@ abstract class DataLevel extends Level {
 
         const factories: Record<string, ObjectFactory> = {
             fuel: this.createFuel.bind(this),
-            beacon: this.createBeacon.bind(this)
+            beacon: this.createBeacon.bind(this),
+            gravityWell: this.createGravityWell.bind(this),
+            "gravity-well": this.createGravityWell.bind(this)
         };
 
         for (const o of this.data.objects) {
@@ -230,6 +233,24 @@ abstract class DataLevel extends Level {
 
         this.objects[o.id] = beacon;
         this.addBeacon(beacon);
+    }
+
+    private createGravityWell(o: GameObject) {
+        const range = o.props?.range as number | undefined;
+        const strength = o.props?.strength as number | undefined;
+
+        if (range == undefined || strength == undefined) {
+            throw new Error(`Gravity well '${o.id}' requires props.range and props.strength.`);
+        }
+
+        const gravityWell = new GravityWell(
+            Vector.fromComponents(o.position),
+            range,
+            strength
+        );
+
+        this.objects[o.id] = gravityWell;
+        this.addGravityWell(gravityWell);
     }
 
     private setCosmos(): void {

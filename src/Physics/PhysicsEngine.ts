@@ -2,6 +2,7 @@ import type IUpdatable from "./IUpdatable";
 import type { IEnvironment } from "./Environment";
 import { PhysicsEngineUpdater } from "./PhysicsEngineUpdater";
 import Body from "./Body";
+import type IForceField from "./IForceField";
 import type Vector from "./Vector";
 
 class PhysicsEngine {
@@ -47,6 +48,10 @@ class PhysicsEngine {
         this.objects.add(obj);
     }
 
+    public getForceFields(): IForceField[] {
+        return this.filter(isForceField) as IForceField[];
+    }
+
     public remove(obj: IUpdatable): void {
         if (!this.objects.delete(obj)) {
             throw new Error("Object not part of this world.");
@@ -76,6 +81,10 @@ class PhysicsEngine {
             this.remove(obj);
         }
     }
+}
+
+function isForceField(obj: IUpdatable): boolean {
+    return "getForceFor" in obj && typeof obj.getForceFor === "function";
 }
 
 export default PhysicsEngine;

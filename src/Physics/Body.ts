@@ -97,6 +97,13 @@ class Body extends EventTarget implements IUpdatable {
         let forces = this.forces;
 
         if (this.physics) {
+            for (const forceField of this.physics.getForceFields()) {
+                forces = forces.add(new Forces(
+                    forceField.getForceFor(this),
+                    0
+                ));
+            }
+
             forces = forces.add(new Forces(
                 this.physics.environment.G.mul(this.getMass()),
                 0

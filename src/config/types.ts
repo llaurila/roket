@@ -148,6 +148,18 @@ export interface IConfig {
         fadeDuration: number;
         detectionRadius: number;
     }
+
+    gravityWell: {
+        ringCount: number;
+        lineWidth: number;
+        animationHz: number;
+        minVisualRadiusRelative: number;
+        opacityMin: number;
+        opacityRange: number;
+        opacityMax: number;
+        activeOpacityBoost: number;
+        color: IColor;
+    }
 }
 
 export interface IEngineConfig {

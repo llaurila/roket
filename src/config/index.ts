@@ -165,5 +165,17 @@ export const Config: IConfig = {
         blinkInterval: 2,
         fadeDuration: 1,
         detectionRadius: 20
+    },
+
+    gravityWell: {
+        ringCount: 3,
+        lineWidth: 0.5,
+        animationHz: 0.4,
+        minVisualRadiusRelative: 0.22,
+        opacityMin: 0.08,
+        opacityRange: 0.12,
+        opacityMax: 0.45,
+        activeOpacityBoost: 0.18,
+        color: { R: 1.0, G: 0.1, B: 0.95, A: 1 }
     }
 };

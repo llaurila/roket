@@ -239,6 +239,7 @@ An objective only succeeds after all of its dependencies are already complete.
 
 - `fuel`
 - `beacon`
+- `gravity-well`
 
 Defined in [src/Level/DataLevel.ts](src/Level/DataLevel.ts).
 
@@ -262,6 +263,18 @@ Supported fields:
 - `props.active?`
 
 Beacon behavior is defined in [src/Beacon.ts](src/Beacon.ts). Detection uses the configured beacon radius from [src/config/index.ts](src/config/index.ts).
+
+### Gravity Well Object
+
+Supported fields:
+
+- `id`
+- `type: gravity-well`
+- `position: [x, y]`
+- `props.range`
+- `props.strength`
+
+Gravity well behavior is defined in [src/GravityWell.ts](src/GravityWell.ts). `range` controls how far the pull reaches and `strength` controls the pull magnitude at the center, with linear falloff to zero at the edge of the range.
 
 ## Variables And Dynamic Text
 
