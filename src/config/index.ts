@@ -177,5 +177,16 @@ export const Config: IConfig = {
         opacityMax: 0.45,
         activeOpacityBoost: 0.18,
         color: { R: 1.0, G: 0.1, B: 0.95, A: 1 }
+    },
+
+    meteor: {
+        cornerCountMin: 9,
+        cornerCountMax: 15,
+        lineWidth: 1,
+        vertexRadiusMinRelative: 0.82,
+        vertexRadiusMaxRelative: 1,
+        collisionRestitution: 0.9,
+        color: getGray(0.75)
     }
 };
+

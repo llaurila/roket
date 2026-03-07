@@ -4,6 +4,7 @@ export interface GameObject {
     id: string;
     type: string;
     position: Pos;
+    velocity?: Pos;
     angularVelocity?: number;
     props?: Record<string, unknown>;
 }
@@ -47,3 +48,4 @@ export interface LevelData {
 
     objectives: LevelObjective[];
 }
+

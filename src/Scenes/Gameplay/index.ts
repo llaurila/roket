@@ -12,6 +12,7 @@ import GameOfTag from "@/Levels/GameOfTag";
 import FuelRush from "@/Levels/FuelRush";
 import HotLap from "@/Levels/HotLap";
 import GravityHarvest from "@/Levels/GravityHarvest";
+import MeteorField from "@/Levels/MeteorField";
 
 const restartButton = () => Keys.wasPressed("Escape");
 const continueButton = () => Keys.wasPressed("Enter");
@@ -27,7 +28,8 @@ const levelTypes = [
     GameOfTag,
     HotLap,
     FuelRush,
-    GravityHarvest
+    GravityHarvest,
+    MeteorField
 ];
 
 let currentLevel = 0;

@@ -9,7 +9,8 @@ import { formatString } from "@/Utils";
 import {
     createBeaconFromObject,
     createFuelFromObject,
-    createGravityWellFromObject
+    createGravityWellFromObject,
+    createMeteorFromObject
 } from "./objectFactories";
 
 const DEFAULT_RAND_SEED = 951337;
@@ -20,12 +21,14 @@ type FailureCheck = () => string|null;
 
 abstract class DataLevel extends Level {
     protected rng: RNG;
+    protected randomSeed: number;
 
     private objects: Record<string, Body> = {};
     private objectiveTests: Record<string, ObjectiveTest> = {};
 
     public constructor(private data: LevelData) {
         super();
+        this.randomSeed = this.data.randomSeed ?? DEFAULT_RAND_SEED;
         this.rng = this.getRNG();
     }
 
@@ -82,7 +85,7 @@ abstract class DataLevel extends Level {
     }
 
     private getRNG(): RNG {
-        return new RNG(this.data.randomSeed || DEFAULT_RAND_SEED);
+        return new RNG(this.randomSeed);
     }
 
     private createObjective(o: LevelObjective, objectives: Record<string, Objective>) {
@@ -199,6 +202,7 @@ abstract class DataLevel extends Level {
         const factories: Record<string, ObjectFactory> = {
             fuel: this.createFuel.bind(this),
             beacon: this.createBeacon.bind(this),
+            meteor: this.createMeteor.bind(this),
             gravityWell: this.createGravityWell.bind(this),
             "gravity-well": this.createGravityWell.bind(this)
         };
@@ -229,6 +233,16 @@ abstract class DataLevel extends Level {
         this.addGravityWell(gravityWell);
     }
 
+    private createMeteor(o: GameObject) {
+        const meteor = createMeteorFromObject(
+            o,
+            new RNG(RNG.deriveSeed(this.randomSeed, o.id))
+        );
+
+        this.objects[o.id] = meteor;
+        this.addMeteor(meteor);
+    }
+
     private setCosmos(): void {
         if (this.hasCosmos()) {
             this.graphics.add(new Cosmos());
@@ -243,3 +257,4 @@ abstract class DataLevel extends Level {
 }
 
 export default DataLevel;
+

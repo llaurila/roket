@@ -242,6 +242,7 @@ An objective only succeeds after all of its dependencies are already complete.
 - `fuel`
 - `beacon`
 - `gravity-well`
+- `meteor`
 
 Defined in [src/Level/DataLevel.ts](src/Level/DataLevel.ts).
 
@@ -277,6 +278,21 @@ Supported fields:
 - `props.strength`
 
 Gravity well behavior is defined in [src/GravityWell.ts](src/GravityWell.ts). `range` controls how far the pull reaches and `strength` controls the pull magnitude at the center, with linear falloff to zero at the edge of the range.
+
+### Meteor Object
+
+Supported fields:
+
+- `id`
+- `type: meteor`
+- `position: [x, y]`
+- `velocity?: [vx, vy]`
+- `angularVelocity?`
+- `props.diameter`
+- `props.mass`
+- `props.cornerCount?`
+
+Meteor behavior is defined in [src/Meteor.ts](src/Meteor.ts). Meteors render as deterministic, roundish polygon outlines seeded from the level `randomSeed` plus object `id`. They collide with ships and other meteors using a circle collider based on `props.diameter`.
 
 ## Variables And Dynamic Text
 
@@ -355,3 +371,4 @@ Until you do that, the level cannot be loaded by the game flow.
 - optionally override `getRuntimeVars()` for dynamic text
 - register the level in [src/Scenes/Gameplay/index.ts](src/Scenes/Gameplay/index.ts)
 - run the game and verify the objectives can be completed and failed as intended
+

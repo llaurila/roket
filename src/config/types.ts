@@ -160,6 +160,16 @@ export interface IConfig {
         activeOpacityBoost: number;
         color: IColor;
     }
+
+    meteor: {
+        cornerCountMin: number;
+        cornerCountMax: number;
+        lineWidth: number;
+        vertexRadiusMinRelative: number;
+        vertexRadiusMaxRelative: number;
+        collisionRestitution: number;
+        color: IColor;
+    }
 }
 
 export interface IEngineConfig {
@@ -182,3 +192,4 @@ export interface ICameraConfig {
     maxLookAhead: number;
     panSmoothing: number;
 }
+

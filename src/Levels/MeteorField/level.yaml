@@ -1,0 +1,25 @@
+name: "LEVEL 9: METEOR FIELD"
+description: >
+  COLLECT ALL THE FUEL CAPSULES REVEALED BY THE RADAR (${total} IN TOTAL).
+  THIS TIME, YOU'LL ALSO HAVE TO DODGE METEORS.
+
+soundtrack: focus
+
+randomSeed: 70978
+
+variables:
+   FUEL_CAPSULE_COUNT: 3
+   FUEL_CAPSULE_DISTANCE_MIN: 100
+   FUEL_CAPSULE_DISTANCE_MAX: 150
+   METEOR_COUNT: 5
+   METEOR_DISTANCE_MIN: 40
+   METEOR_DISTANCE_MAX: 90
+
+ship:
+  fuelTank:
+    currentAmount: 150
+
+objectives:
+  - id: collect-fuel
+    title: COLLECT ALL FUEL CAPSULES (${collected}/${total})
+    externalSuccessCheck: allCollected

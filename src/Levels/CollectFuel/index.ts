@@ -10,8 +10,8 @@ class CollectFuel extends DataLevel {
 
     private readonly fuelCapsuleCount: number;
 
-    public constructor() {
-        super(data as LevelData);
+    public constructor(levelData: LevelData = data as LevelData) {
+        super(levelData);
         this.fuelCapsuleCount = this.getEnv<number>("FUEL_CAPSULE_COUNT");
     }
 
@@ -27,11 +27,10 @@ class CollectFuel extends DataLevel {
         const { rng } = this;
 
         for (let i = 0; i < count; i++) {
-            const capsule = new Fuel(
-                Vector.Up.rotate(rng.next(-Math.PI, +Math.PI))
-                    .mul(rng.next(
-                        FUEL_CAPSULE_DISTANCE_MIN, FUEL_CAPSULE_DISTANCE_MAX))
-            );
+            const capsule = new Fuel(this.getRandomPosition(
+                FUEL_CAPSULE_DISTANCE_MIN,
+                FUEL_CAPSULE_DISTANCE_MAX
+            ));
 
             capsule.addEventListener("collect", () => {
                 globalSoundEffects.playNotificationSound();
@@ -49,6 +48,11 @@ class CollectFuel extends DataLevel {
             collected: this.getCollectedFuelCapsuleCount().toString(),
             total: this.fuelCapsuleCount.toString()
         };
+    }
+
+    protected getRandomPosition(distanceMin: number, distanceMax: number): Vector {
+        return Vector.Up.rotate(this.rng.next(-Math.PI, +Math.PI))
+            .mul(this.rng.next(distanceMin, distanceMax));
     }
 
     protected registerObjectiveChecks(): void {
