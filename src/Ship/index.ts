@@ -17,6 +17,7 @@ import type { Viewport } from "@/Graphics/Viewport";
 import type { DrawContext } from "@/Graphics/DrawContext";
 import type { IShip } from "./types";
 import { globalSoundEffects } from "@/Sounds/global-sound-effects";
+import type { IWeapon } from "@/Weapons/IWeapon";
 
 const { ship } = Config;
 
@@ -30,6 +31,7 @@ class Ship extends Body implements IShip, IDrawable {
     public graphics?: Graphics;
     public circleCollider = new CircleCollider(ship.length / 2 * ship.colliderRelativeSize);
     public color = ship.color;
+    public weapons: IWeapon[] = [];
 
     public stats: Stats = new Stats();
 
@@ -51,6 +53,9 @@ class Ship extends Body implements IShip, IDrawable {
             }
 
             updateEngines([this.engineLeft, this.engineRight], time, delta);
+            this.weapons.forEach(weapon => {
+                weapon.update(time, delta);
+            });
 
             this.updateStats(delta);
         }
@@ -84,6 +89,10 @@ class Ship extends Body implements IShip, IDrawable {
         return super.getMass() + this.fuelTank.getMass();
     }
 
+    public getNosePosition(): Vector {
+        return this.pos.add(Ship.Shape.first.rotate(this.rotation));
+    }
+
     public draw(viewport: Viewport) {
         if (this.alive) {
             const drawContext: DrawContext = {
@@ -105,6 +114,10 @@ class Ship extends Body implements IShip, IDrawable {
 
             this.engineLeft.draw(viewport);
             this.engineRight.draw(viewport);
+
+            this.weapons.forEach(weapon => {
+                weapon.draw(viewport);
+            });
         }
     }
 

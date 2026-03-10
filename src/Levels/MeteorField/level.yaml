@@ -18,6 +18,7 @@ variables:
 ship:
   fuelTank:
     currentAmount: 150
+  weapons: [laser]
 
 objectives:
   - id: collect-fuel

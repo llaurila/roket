@@ -6,6 +6,7 @@ import type Body from "@/Physics/Body";
 import ShipController from "@/ShipController";
 import RNG from "@/RNG";
 import { formatString } from "@/Utils";
+import { createShipWeapons } from "./shipWeapons";
 import {
     createBeaconFromObject,
     createFuelFromObject,
@@ -68,8 +69,7 @@ abstract class DataLevel extends Level {
     }
 
     protected hasCosmos(): boolean {
-        if (this.data.cosmos == undefined) return true;
-        return this.data.cosmos;
+        return this.data.cosmos ?? true;
     }
 
     protected getObject<T>(id: string): T {
@@ -251,6 +251,7 @@ abstract class DataLevel extends Level {
 
     private setShipProperties(): void {
         this.ship.fuelTank.currentAmount = this.data.ship.fuelTank.currentAmount;
+        this.ship.weapons = createShipWeapons(this.ship, this.data.ship.weapons ?? []);
     }
 
     protected abstract registerObjectiveChecks(): void;
