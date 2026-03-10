@@ -1,6 +1,7 @@
 /* eslint-disable no-magic-numbers */
 
 import type { IConfig } from "./types";
+import { COSMOS_CONFIG } from "./cosmos";
 import { COLOR_WHITE, getGray } from "@/Graphics/Color";
 import Vector from "@/Physics/Vector";
 
@@ -108,11 +109,7 @@ export const Config: IConfig = {
         minVectorMarkerVelocity: 1
     },
 
-    cosmos: {
-        starDensity: 400,
-        starBrightnessMin: 0.25,
-        starBrightnessMax: 1.00
-    },
+    cosmos: COSMOS_CONFIG,
 
     camera: {
         defaultZoom: 5,

@@ -108,6 +108,19 @@ export interface IConfig {
         starDensity: number; // stars/km²
         starBrightnessMax: number;
         starBrightnessMin: number;
+        starTints: {
+            weight: number;
+            rMin: number;
+            gMin: number;
+            bMin: number;
+        }[];
+        twinkle: {
+            amountMin: number;
+            amountMax: number;
+            speedMinHz: number;
+            speedMaxHz: number;
+            rareAmountMultiplier: number;
+        };
     }
 
     camera: ICameraConfig;
