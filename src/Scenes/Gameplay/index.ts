@@ -13,6 +13,13 @@ import FuelRush from "@/Levels/FuelRush";
 import HotLap from "@/Levels/HotLap";
 import GravityHarvest from "@/Levels/GravityHarvest";
 import MeteorField from "@/Levels/MeteorField";
+import BlockadeRun from "@/Levels/BlockadeRun";
+import {
+    getNextLevelIndex,
+    getPreviousLevelIndex,
+    hasNextLevel,
+    hasPreviousLevel,
+} from "./levelNavigation";
 
 const restartButton = () => Keys.wasPressed("Escape");
 const continueButton = () => Keys.wasPressed("Enter");
@@ -29,7 +36,8 @@ const levelTypes = [
     HotLap,
     FuelRush,
     GravityHarvest,
-    MeteorField
+    MeteorField,
+    BlockadeRun
 ];
 
 let currentLevel = 0;
@@ -39,6 +47,8 @@ export function loadLevel(number: number) {
         window.document.body.innerHTML = "<h1>Invalid level number</h1>";
         throw new Error(`Invalid level number: ${number}`);
     }
+
+    currentLevel = number;
 
     const level: Level = new levelTypes[number];
 
@@ -69,10 +79,7 @@ export function loadLevel(number: number) {
 
     function handleNextLevel() {
         if (shouldContinueToNextLevel()) {
-            if (++currentLevel < levelTypes.length) {
-                game.stop();
-                loadLevel(currentLevel);
-            }
+            loadNextLevel(game);
         }
     }
 
@@ -115,21 +122,34 @@ function handleDebugLevelChange(game: Game) {
 
 function handleDebugLevelChangeNext(game: Game) {
     if (nextLevelButton()) {
-        if (++currentLevel < levelTypes.length) {
-            game.stop();
-            loadLevel(currentLevel);
-        }
+        loadNextLevel(game);
     }
 }
 
 function handleDebugLevelChangePrevious(game: Game) {
     if (previousLevelButton()) {
-        if (currentLevel > 0) {
-            currentLevel--;
-            game.stop();
-            loadLevel(currentLevel);
-        }
+        loadPreviousLevel(game);
     }
+}
+
+function loadNextLevel(game: Game) {
+    if (!hasNextLevel(currentLevel, levelTypes.length)) {
+        return;
+    }
+
+    currentLevel = getNextLevelIndex(currentLevel, levelTypes.length);
+    game.stop();
+    loadLevel(currentLevel);
+}
+
+function loadPreviousLevel(game: Game) {
+    if (!hasPreviousLevel(currentLevel)) {
+        return;
+    }
+
+    currentLevel = getPreviousLevelIndex(currentLevel);
+    game.stop();
+    loadLevel(currentLevel);
 }
 
 function checkForDebugMode(): boolean {
