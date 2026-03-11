@@ -102,6 +102,7 @@ export interface IConfig {
         range: number;
         lineWidth: number;
         color: IColor;
+        soundVolume: number;
     }
 
     barGauge: {

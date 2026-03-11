@@ -9,6 +9,7 @@ import CircleCollider from "./Physics/CircleCollider";
 import Vector from "./Physics/Vector";
 import RNG from "./RNG";
 import Ship from "./Ship";
+import { globalSoundEffects } from "./Sounds/global-sound-effects";
 import { Config } from "./config";
 
 const config = Config.meteor;
@@ -92,6 +93,7 @@ class Meteor extends Body implements IDrawable {
     }
 
     private explodeFromHeat(): void {
+        globalSoundEffects.playShipDestroyedSound();
         this.spawnExplosion();
         this.spawnFragments();
         this._alive = false;

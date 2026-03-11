@@ -1,5 +1,7 @@
 /* eslint-disable no-magic-numbers */
 
+import { Config } from "@/config";
+
 const LOW_VOLUME = 0.33;
 const SHORT_DURATION = 0.05;
 const LONG_DURATION = 0.4;
@@ -12,9 +14,18 @@ export class SoundEffects {
     private master: GainNode | null = null;
     private volume = 1;
     private muted = false;
+    private laserBuzzOscillator: OscillatorNode | null = null;
+    private laserBuzzNoise: AudioBufferSourceNode | null = null;
+    private laserBuzzGain: GainNode | null = null;
 
     public async resumeContext(): Promise<void> {
-        const { ctx } = this.ensureAudioGraph();
+        const graph = this.ensureAudioGraph();
+
+        if (!graph) {
+            return;
+        }
+
+        const { ctx } = graph;
 
         if (ctx.state !== "running") {
             await ctx.resume();
@@ -56,7 +67,13 @@ export class SoundEffects {
     }
 
     public playExplosionSound(duration: number): void {
-        const { ctx, master } = this.ensureAudioGraph();
+        const graph = this.ensureAudioGraph();
+
+        if (!graph) {
+            return;
+        }
+
+        const { ctx, master } = graph;
 
         const bufferSize = ctx.sampleRate * duration;
         const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
@@ -91,8 +108,104 @@ export class SoundEffects {
         this.playExplosionSound(DURATION);
     }
 
+    public startLaserBuzzSound(): void {
+        if (this.laserBuzzGain) {
+            return;
+        }
+
+        const graph = this.ensureAudioGraph();
+
+        if (!graph) {
+            return;
+        }
+
+        const { ctx, master } = graph;
+        const now = ctx.currentTime;
+
+        const buzzGain = ctx.createGain();
+        buzzGain.gain.setValueAtTime(0, now);
+        buzzGain.gain.linearRampToValueAtTime(Config.laser.soundVolume, now + 0.03);
+
+        const oscillator = ctx.createOscillator();
+        oscillator.type = "sawtooth";
+        oscillator.frequency.setValueAtTime(120, now);
+
+        const oscillatorGain = ctx.createGain();
+        oscillatorGain.gain.value = 0.65;
+
+        const noiseBuffer = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.2), ctx.sampleRate);
+        const data = noiseBuffer.getChannelData(0);
+
+        for (let i = 0; i < data.length; i++) {
+            data[i] = Math.random() * 2 - 1;
+        }
+
+        const noise = ctx.createBufferSource();
+        noise.buffer = noiseBuffer;
+        noise.loop = true;
+
+        const noiseFilter = ctx.createBiquadFilter();
+        noiseFilter.type = "bandpass";
+        noiseFilter.frequency.setValueAtTime(1600, now);
+        noiseFilter.Q.setValueAtTime(2, now);
+
+        const noiseGain = ctx.createGain();
+        noiseGain.gain.value = 0.35;
+
+        oscillator.connect(oscillatorGain);
+        oscillatorGain.connect(buzzGain);
+
+        noise.connect(noiseFilter);
+        noiseFilter.connect(noiseGain);
+        noiseGain.connect(buzzGain);
+
+        buzzGain.connect(master);
+
+        oscillator.start(now);
+        noise.start(now);
+
+        this.laserBuzzOscillator = oscillator;
+        this.laserBuzzNoise = noise;
+        this.laserBuzzGain = buzzGain;
+    }
+
+    public stopLaserBuzzSound(): void {
+        if (!this.laserBuzzGain) {
+            return;
+        }
+
+        const graph = this.ensureAudioGraph();
+
+        if (!graph) {
+            this.laserBuzzGain = null;
+            this.laserBuzzOscillator = null;
+            this.laserBuzzNoise = null;
+            return;
+        }
+
+        const { ctx } = graph;
+        const now = ctx.currentTime;
+
+        this.laserBuzzGain.gain.cancelScheduledValues(now);
+        this.laserBuzzGain.gain.setValueAtTime(this.laserBuzzGain.gain.value, now);
+        this.laserBuzzGain.gain.linearRampToValueAtTime(0, now + 0.06);
+
+        this.laserBuzzOscillator?.stop(now + 0.07);
+        this.laserBuzzNoise?.stop(now + 0.07);
+
+        this.laserBuzzOscillator = null;
+        this.laserBuzzNoise = null;
+        this.laserBuzzGain = null;
+    }
+
     public playOscillatorSound(frequency: number, duration: number, quiet = false): void {
-        const { ctx, master } = this.ensureAudioGraph();
+        const graph = this.ensureAudioGraph();
+
+        if (!graph) {
+            return;
+        }
+
+        const { ctx, master } = graph;
         const oscillator = ctx.createOscillator();
         const gain = ctx.createGain();
 
@@ -106,12 +219,22 @@ export class SoundEffects {
         oscillator.stop(ctx.currentTime + duration);
     }
 
-    private ensureAudioGraph(): { ctx: AudioContext; master: GainNode } {
+    private ensureAudioGraph(): { ctx: AudioContext; master: GainNode } | null {
+        if (typeof window === "undefined") {
+            return null;
+        }
+
+        /* eslint-disable-next-line
+            @typescript-eslint/no-unsafe-member-access,
+            @typescript-eslint/no-explicit-any */
+        const AudioContextImpl = window.AudioContext || (window as any).webkitAudioContext;
+
+        if (!AudioContextImpl) {
+            return null;
+        }
+
         if (!this.ctx || !this.master) {
-            /* eslint-disable-next-line
-                @typescript-eslint/no-unsafe-member-access,
-                @typescript-eslint/no-explicit-any */
-            this.ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+            this.ctx = new AudioContextImpl();
             this.master = this.ctx.createGain();
             this.master.connect(this.ctx.destination);
             this.master.gain.value = 1;

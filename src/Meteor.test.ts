@@ -1,5 +1,5 @@
 /* eslint-disable no-magic-numbers */
-import { expect, test } from "vitest";
+import { beforeEach, expect, test, vi } from "vitest";
 import Meteor from "@/Meteor";
 import ExplosionParticleEngine from "@/Graphics/ExplosionParticleEngine";
 import { Graphics } from "@/Graphics/Graphics";
@@ -7,8 +7,13 @@ import { VacuumOfSpace } from "@/Physics/Environment";
 import PhysicsEngine from "@/Physics/PhysicsEngine";
 import Vector from "@/Physics/Vector";
 import RNG from "@/RNG";
+import { globalSoundEffects } from "@/Sounds/global-sound-effects";
 import { createMeteorFromObject } from "@/Level/objectFactories";
 import type { GameObject } from "@/Level/types";
+
+beforeEach(() => {
+    vi.restoreAllMocks();
+});
 
 function serializeShape(meteor: Meteor): [number, number][] {
     return meteor.shape.pts.map(pt => [
@@ -100,6 +105,7 @@ test("meteor factory validates props and applies kinematics", () => {
 });
 
 test("heated meteor explodes into two non-overlapping fragments that drift apart", () => {
+    const shipDestroyedSound = vi.spyOn(globalSoundEffects, "playShipDestroyedSound");
     const { physics, meteor } = setupMeteor(new Meteor(Vector.Zero, {
         diameter: 12,
         mass: 20,
@@ -131,9 +137,11 @@ test("heated meteor explodes into two non-overlapping fragments that drift apart
         (obj): obj is ExplosionParticleEngine => obj instanceof ExplosionParticleEngine
     );
     expect(explosions).toHaveLength(1);
+    expect(shipDestroyedSound).toHaveBeenCalledTimes(1);
 });
 
 test("meteor below split size threshold disappears after explosion", () => {
+    const shipDestroyedSound = vi.spyOn(globalSoundEffects, "playShipDestroyedSound");
     const { physics, meteor } = setupMeteor(new Meteor(Vector.Zero, {
         diameter: 8,
         mass: 20,
@@ -153,5 +161,6 @@ test("meteor below split size threshold disappears after explosion", () => {
         (obj): obj is ExplosionParticleEngine => obj instanceof ExplosionParticleEngine
     );
     expect(explosions).toHaveLength(1);
+    expect(shipDestroyedSound).toHaveBeenCalledTimes(1);
 });
 

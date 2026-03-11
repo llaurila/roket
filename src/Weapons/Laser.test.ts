@@ -1,13 +1,18 @@
 /* eslint-disable no-magic-numbers */
-import { expect, test } from "vitest";
+import { beforeEach, expect, test, vi } from "vitest";
 import Meteor from "@/Meteor";
 import { VacuumOfSpace } from "@/Physics/Environment";
 import PhysicsEngine from "@/Physics/PhysicsEngine";
 import Vector from "@/Physics/Vector";
 import RNG from "@/RNG";
 import Ship from "@/Ship";
+import { globalSoundEffects } from "@/Sounds/global-sound-effects";
 import { Config } from "@/config";
 import { Laser } from "./Laser";
+
+beforeEach(() => {
+    vi.restoreAllMocks();
+});
 
 function createShip(position = Vector.Zero): Ship {
     const ship = new Ship(position);
@@ -60,4 +65,21 @@ test("laser ray is cut at the first meteor hit", () => {
     expect(hit?.body).toBe(meteor);
     expect(hit?.point.x).toBeCloseTo(17, 1);
     expect(hit?.point.y).toBeCloseTo(0, 1);
+});
+
+test("laser buzz starts and stops with firing state", () => {
+    const ship = createShip();
+    const laser = new Laser(ship);
+    const startBuzz = vi.spyOn(globalSoundEffects, "startLaserBuzzSound");
+    const stopBuzz = vi.spyOn(globalSoundEffects, "stopLaserBuzzSound");
+
+    laser.setTriggerDown(true);
+    laser.update(0, 0.1);
+    laser.update(1, 0.1);
+    expect(startBuzz).toHaveBeenCalledTimes(1);
+
+    laser.setTriggerDown(false);
+    laser.update(2, 0.1);
+    laser.update(3, 0.1);
+    expect(stopBuzz).toHaveBeenCalledTimes(1);
 });

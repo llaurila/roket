@@ -1,5 +1,6 @@
 import { getColorString } from "@/Graphics/Color";
 import type Ship from "@/Ship";
+import { globalSoundEffects } from "@/Sounds/global-sound-effects";
 import { Config } from "@/config";
 import type { IWeapon, IWeaponHudGauge } from "./IWeapon";
 import { raycastMeteors, type ICircleRaycastHit } from "./raycast";
@@ -24,6 +25,10 @@ export class Laser implements IWeapon {
 
     public setTriggerDown(down: boolean): void {
         this.triggerDown = down;
+
+        if (!down) {
+            this.stopFiring();
+        }
     }
 
     public update(_time: number, delta: number): void {
@@ -74,6 +79,10 @@ export class Laser implements IWeapon {
     }
 
     private fire(delta: number): void {
+        if (!this.firing) {
+            globalSoundEffects.startLaserBuzzSound();
+        }
+
         const direction = this.ship.getHeading().normalize();
         const origin = this.ship.getNosePosition();
 
@@ -112,6 +121,10 @@ export class Laser implements IWeapon {
     }
 
     private stopFiring(): void {
+        if (this.firing) {
+            globalSoundEffects.stopLaserBuzzSound();
+        }
+
         this.firing = false;
         this.lastHit = null;
     }

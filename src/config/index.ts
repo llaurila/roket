@@ -116,7 +116,8 @@ export const Config: IConfig = {
         rechargeDelay: 0.35,
         range: 100000,
         lineWidth: 2,
-        color: { R: 1, G: 0.1, B: 0.1, A: 1 }
+        color: { R: 1, G: 0.1, B: 0.1, A: 1 },
+        soundVolume: 0.14
     },
 
     cosmos: COSMOS_CONFIG,

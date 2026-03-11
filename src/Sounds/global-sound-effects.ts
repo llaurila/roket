@@ -69,6 +69,14 @@ class GlobalSoundEffects {
     public playShipDestroyedSound(): void {
         this.effects.playShipDestroyedSound();
     }
+
+    public startLaserBuzzSound(): void {
+        this.effects.startLaserBuzzSound();
+    }
+
+    public stopLaserBuzzSound(): void {
+        this.effects.stopLaserBuzzSound();
+    }
 }
 
 export const globalSoundEffects = new GlobalSoundEffects();
