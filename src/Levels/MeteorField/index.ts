@@ -1,3 +1,4 @@
+/* eslint-disable no-magic-numbers */
 import data from "./level.yaml";
 import CollectFuel from "@/Levels/CollectFuel";
 import Meteor from "@/Meteor";

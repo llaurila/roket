@@ -6,6 +6,7 @@ import type IUpdatable from "./IUpdatable";
 import Vector from "./Vector";
 
 const EPSILON = 0.000001;
+const MAX_ALLOWED_OVERLAP = 0.25;
 
 export class PhysicsEngineUpdater {
     private time: number;
@@ -37,27 +38,35 @@ export class PhysicsEngineUpdater {
         );
 
         for (let i = 0; i < bodies.length; i++) {
-            const obj = bodies[i];
-
-            if (!obj.alive) {
-                continue;
-            }
-
-            for (let j = i + 1; j < bodies.length; j++) {
-                if (!obj.alive) {
-                    break;
-                }
-
-                const b = bodies[j];
-
-                if (!b.alive) {
-                    continue;
-                }
-
-                checkBodyForCollision(obj, b);
-            }
+            this.checkBodyCollisions(bodies, i);
         }
     }
+
+    private checkBodyCollisions(bodies: Body[], index: number): void {
+        const obj = bodies[index];
+
+        if (shouldStopCollisionChecks(obj)) {
+            return;
+        }
+
+        const remainingBodies = bodies.slice(index + 1).filter(isCollidableBody);
+
+        for (const b of remainingBodies) {
+            if (shouldStopCollisionChecks(obj)) {
+                break;
+            }
+
+            checkBodyForCollision(obj, b);
+        }
+    }
+}
+
+function isCollidableBody(body: Body): boolean {
+    return body.alive;
+}
+
+function shouldStopCollisionChecks(body: Body): boolean {
+    return !isCollidableBody(body);
 }
 
 function checkBodyForCollision(obj: Body, b: Body) {
@@ -78,19 +87,13 @@ function resolveCollision(a: Body, b: Body): void {
 }
 
 function resolveMeteorCollision(a: Meteor, b: Meteor): void {
-    const radiusA = a.circleCollider?.radius;
-    const radiusB = b.circleCollider?.radius;
-
-    if (radiusA == undefined || radiusB == undefined) {
-        return;
-    }
-
+    const collisionRadii = getCollisionRadii(a, b);
     const delta = b.pos.sub(a.pos);
     const distance = delta.length();
-    const minDistance = radiusA + radiusB;
+    const minDistance = collisionRadii.radiusA + collisionRadii.radiusB;
     const overlap = minDistance - distance;
 
-    if (overlap > 0.25) {
+    if (!isResolvableOverlap(overlap)) {
         return;
     }
 
@@ -105,6 +108,17 @@ function resolveMeteorCollision(a: Meteor, b: Meteor): void {
 
     correctOverlap(a, b, normal, overlap, invMassA, invMassB, invMassTotal);
     applyImpulse(a, b, normal, invMassA, invMassB, invMassTotal);
+}
+
+function getCollisionRadii(a: Meteor, b: Meteor): { radiusA: number; radiusB: number } {
+    return {
+        radiusA: a.circleCollider.radius,
+        radiusB: b.circleCollider.radius
+    };
+}
+
+function isResolvableOverlap(overlap: number): boolean {
+    return overlap > 0 && overlap <= MAX_ALLOWED_OVERLAP;
 }
 
 function correctOverlap(
@@ -159,4 +173,3 @@ function getCollisionNormal(delta: Vector, distance: number, relativeVelocity: V
 
     return Vector.UnitX;
 }
-

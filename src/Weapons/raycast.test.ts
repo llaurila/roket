@@ -25,10 +25,15 @@ test("raycast returns the closest meteor hit", () => {
     const hit = raycastMeteors(physics, Vector.Zero, Vector.UnitX, 100);
 
     expect(hit).not.toBeNull();
-    expect(hit?.body).toBe(nearMeteor);
-    expect(hit?.distance).toBeCloseTo(8, 6);
-    expect(hit?.point.x).toBeCloseTo(8, 6);
-    expect(hit?.point.y).toBeCloseTo(0, 6);
+
+    if (!hit) {
+        throw new Error("Expected a raycast hit.");
+    }
+
+    expect(hit.body).toBe(nearMeteor);
+    expect(hit.distance).toBeCloseTo(8, 6);
+    expect(hit.point.x).toBeCloseTo(8, 6);
+    expect(hit.point.y).toBeCloseTo(0, 6);
 });
 
 test("raycast returns null when no meteor intersects the ray", () => {

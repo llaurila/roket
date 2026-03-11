@@ -44,7 +44,7 @@ class Meteor extends Body implements IDrawable {
 
         this.diameter = options.diameter;
         this.mass = options.mass;
-        this.strength = options.strength ?? config.strength;
+        this.strength = getMeteorStrength(options.strength);
         this.v = options.velocity ?? Vector.Zero;
         this.angularVelocity = options.angularVelocity ?? 0;
         this.cornerCount = options.cornerCount ??
@@ -52,15 +52,7 @@ class Meteor extends Body implements IDrawable {
         this.circleCollider = new CircleCollider(this.diameter / 2);
         this.shape = createShape(this.diameter, this.cornerCount, rng);
 
-        if (this.strength <= 0) {
-            throw new Error("Meteor strength must be > 0.");
-        }
-
-        this.onCollision(e => {
-            if (e.target instanceof Ship && e.target.alive) {
-                e.target.die();
-            }
-        });
+        this.registerShipCollisionHandler();
     }
 
     public applyLaserHeat(delta: number): void {
@@ -181,6 +173,24 @@ class Meteor extends Body implements IDrawable {
     private getSplitRng(key: string): RNG {
         return new RNG(RNG.deriveSeed(this.id, key));
     }
+
+    private registerShipCollisionHandler(): void {
+        this.onCollision(e => {
+            if (e.target instanceof Ship && e.target.alive) {
+                e.target.die();
+            }
+        });
+    }
+}
+
+function getMeteorStrength(strength: number | undefined): number {
+    const resolvedStrength = strength ?? config.strength;
+
+    if (resolvedStrength <= 0) {
+        throw new Error("Meteor strength must be > 0.");
+    }
+
+    return resolvedStrength;
 }
 
 function createShape(diameter: number, cornerCount: number, rng: RNG): Polygon {

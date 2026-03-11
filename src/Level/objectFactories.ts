@@ -4,7 +4,7 @@ import { GravityWell } from "@/GravityWell";
 import Meteor from "@/Meteor";
 import type Body from "@/Physics/Body";
 import Vector from "@/Physics/Vector";
-import RNG from "@/RNG";
+import type RNG from "@/RNG";
 import type { GameObject } from "./types";
 
 export const FUEL_DEFAULT_ANGULAR_VELOCITY = 0.21;
@@ -13,7 +13,10 @@ export function createFuelFromObject(o: GameObject): Fuel {
     const fuel = new Fuel(Vector.fromComponents(o.position));
 
     if (o.props?.amount != undefined) {
-        fuel.amount = getNumericValue(o.props.amount, `Fuel '${o.id}' requires props.amount to be a number.`);
+        fuel.amount = getNumericValue(
+            o.props.amount,
+            `Fuel '${o.id}' requires props.amount to be a number.`
+        );
     }
 
     applyBodyKinematics(fuel, o);
@@ -111,18 +114,30 @@ function getNumericValue(value: unknown, message: string): number {
 function getOptionalCornerCount(o: GameObject): number | undefined {
     const value = o.props?.cornerCount;
 
-    if (value == undefined) {
-        return undefined;
-    }
+    if (value == undefined) return undefined;
 
-    if (typeof value !== "number" || !Number.isInteger(value) || value < 3) {
-        throw new Error(`Meteor '${o.id}' requires props.cornerCount to be an integer >= 3.`);
+    const minCornerCount = 3;
+
+    if (!isValidCornerCount(value, minCornerCount)) {
+        throw new Error(
+            `Meteor '${o.id}' requires props.cornerCount to be an integer >= ${minCornerCount}.`
+        );
     }
 
     return value;
 }
 
-function getOptionalPositiveNumber(o: GameObject, key: string, message: string): number | undefined {
+function isValidCornerCount(value: unknown, minCornerCount: number): value is number {
+    return typeof value === "number"
+        && Number.isInteger(value)
+        && value >= minCornerCount;
+}
+
+function getOptionalPositiveNumber(
+    o: GameObject,
+    key: string,
+    message: string
+): number | undefined {
     const value = o.props?.[key];
 
     if (value == undefined) {

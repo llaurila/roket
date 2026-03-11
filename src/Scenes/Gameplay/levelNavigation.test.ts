@@ -1,3 +1,4 @@
+/* eslint-disable no-magic-numbers */
 import { describe, expect, test } from "vitest";
 
 import {
