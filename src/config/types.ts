@@ -94,6 +94,16 @@ export interface IConfig {
         minVectorMarkerVelocity: number;
     }
 
+    laser: {
+        maxEnergy: number;
+        energyDrainPerSecond: number;
+        rechargePerSecond: number;
+        rechargeDelay: number;
+        range: number;
+        lineWidth: number;
+        color: IColor;
+    }
+
     barGauge: {
         width: number;
         height: number;
@@ -181,6 +191,12 @@ export interface IConfig {
         vertexRadiusMinRelative: number;
         vertexRadiusMaxRelative: number;
         collisionRestitution: number;
+        minDiameter: number;
+        strength: number;
+        splitDriftSpeed: number;
+        splitGap: number;
+        explosionParticleCount: number;
+        explosionVelocityMax: number;
         color: IColor;
     }
 }

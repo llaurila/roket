@@ -109,6 +109,16 @@ export const Config: IConfig = {
         minVectorMarkerVelocity: 1
     },
 
+    laser: {
+        maxEnergy: 10,
+        energyDrainPerSecond: 0.65,
+        rechargePerSecond: 0.35,
+        rechargeDelay: 0.35,
+        range: 100000,
+        lineWidth: 2,
+        color: { R: 1, G: 0.1, B: 0.1, A: 1 }
+    },
+
     cosmos: COSMOS_CONFIG,
 
     camera: {
@@ -183,6 +193,12 @@ export const Config: IConfig = {
         vertexRadiusMinRelative: 0.82,
         vertexRadiusMaxRelative: 1,
         collisionRestitution: 0.9,
+        minDiameter: 5,
+        strength: 1.25,
+        splitDriftSpeed: 1.5,
+        splitGap: 0.01,
+        explosionParticleCount: 120,
+        explosionVelocityMax: 20,
         color: getGray(0.75)
     }
 };

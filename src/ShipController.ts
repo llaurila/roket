@@ -31,12 +31,21 @@ class ShipController {
         const chokeValue = choke() ? Config.ship.engineChokeModeMultiplier : 1;
         this.ship.engineLeft.setChoke(chokeValue);
         this.ship.engineRight.setChoke(chokeValue);
+
+        this.handleWeapons();
     }
 
     private handleLeft = () => { if (cw()) this.ship.engineLeft.burning = true; };
     private handleRight = () => { if (ccw()) this.ship.engineRight.burning = true; };
 
     private bothOff = () => !this.ship.engineLeft.burning && !this.ship.engineRight.burning;
+
+    private handleWeapons() {
+        const triggerDown = fire();
+        for (const weapon of this.ship.weapons) {
+            weapon.setTriggerDown(triggerDown);
+        }
+    }
 
     private handleAnalog() {
         if (GameController.controllerAvailable()) {
@@ -58,5 +67,6 @@ const choke = () => Keys.isDown("Shift");
 const both = () => Keys.isDown("ArrowUp");
 const ccw: ThrustPowerFunc = () => Keys.isDown("ArrowLeft") ? 1 : 0;
 const cw: ThrustPowerFunc = () => Keys.isDown("ArrowRight") ? 1 : 0;
+const fire = () => Keys.isDown(" ") || Keys.isDown("Space") || Keys.isDown("Spacebar");
 
 export default ShipController;

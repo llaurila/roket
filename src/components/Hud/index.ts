@@ -5,7 +5,6 @@ import { ThrustControl } from "./ThrustControl";
 import type IDrawable from "../../Graphics/IDrawable";
 import UniqueIdProvider from "../../UniqueIdProvider";
 import type Level from "../../Level";
-import Game from "@/Game";
 import type { Viewport } from "@/Graphics/Viewport";
 
 export class Hud implements IDrawable {
@@ -14,15 +13,16 @@ export class Hud implements IDrawable {
 
     public alive = true;
 
+    private readonly ship: Level["ship"];
     private readonly radar: Radar;
     private readonly gauges: BarGauge[] = [];
+    private readonly weaponGauges: BarGauge[] = [];
     private readonly thrustControl: ThrustControl;
 
     public constructor(level: Level) {
         const { ship, physics } = level;
+        this.ship = ship;
         this.radar = new Radar(ship, physics);
-
-        this.addFakeGauges();
 
         this.gauges.push(new BarGauge(
             () => `FUEL (${Math.round(ship.fuelTank.getMass())} KG)`,
@@ -49,7 +49,11 @@ export class Hud implements IDrawable {
         ctx.save();
         ctx.resetTransform();
 
+        this.addWeaponGauges();
+
         this.radar.draw(viewport);
+
+        this.weaponGauges.forEach(gauge => { gauge.draw(viewport); });
 
         this.gauges.forEach(gauge => { gauge.draw(viewport); });
 
@@ -60,35 +64,26 @@ export class Hud implements IDrawable {
         ctx.restore();
     }
 
-    private addFakeGauges() {
-        if (!Game.debugMode) return;
+    private addWeaponGauges() {
+        if (this.weaponGauges.length > 0 || this.ship.weapons.length == 0) {
+            return;
+        }
 
-        const shieldsMax = Math.random() * .5 + .5;
-        const weaponsMax = .5 + (1 - shieldsMax) * Math.random();
-        const enginesMax = .5 + (1 - weaponsMax) * Math.random();
+        const weaponsWithGauge = this.ship.weapons
+            .map(weapon => ({
+                weapon,
+                getGauge: () => weapon.getHudGauge()
+            }))
+            .filter(({ getGauge }) => getGauge() != null);
 
-        this.gauges.push(new BarGauge(
-            "SHIELDS",
-            () => shieldsMax,
-            () => 1,
-            BarGaugeAnchor.Top,
-            0
-        ));
-
-        this.gauges.push(new BarGauge(
-            "WEAPONS",
-            () => weaponsMax,
-            () => 1,
-            BarGaugeAnchor.Top,
-            1
-        ));
-
-        this.gauges.push(new BarGauge(
-            "ENGINES",
-            () => enginesMax,
-            () => 1,
-            BarGaugeAnchor.Top,
-            2
-        ));
+        weaponsWithGauge.forEach(({ weapon, getGauge }, index) => {
+            this.weaponGauges.push(new BarGauge(
+                () => getGauge()?.caption ?? weapon.type.toUpperCase(),
+                () => getGauge()?.current ?? 0,
+                () => Math.max(getGauge()?.max ?? 0, 1),
+                BarGaugeAnchor.Top,
+                index
+            ));
+        });
     }
 }

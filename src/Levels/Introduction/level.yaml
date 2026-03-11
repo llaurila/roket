@@ -13,6 +13,7 @@ soundtrack: ambient
 ship:
   fuelTank:
     currentAmount: 150
+  weapons: [laser]
 
 objects:
   - id: fuel

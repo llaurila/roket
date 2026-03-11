@@ -1,8 +1,27 @@
 /* eslint-disable no-magic-numbers */
 import { expect, test } from "vitest";
-import MeteorField from "@/Levels/MeteorField";
 
-test("MeteorField spawns fuel capsules and meteors within configured ranges", () => {
+function installCanvasDomMock() {
+    const ctx = {
+        canvas: {
+            width: 1024,
+            height: 768
+        }
+    } as CanvasRenderingContext2D;
+
+    const canvas = {
+        getContext: () => ctx
+    };
+
+    globalThis.document = {
+        getElementById: () => canvas
+    } as unknown as Document;
+}
+
+test("MeteorField spawns fuel capsules and meteors within configured ranges", async () => {
+    installCanvasDomMock();
+
+    const { default: MeteorField } = await import("@/Levels/MeteorField");
     const level = new MeteorField();
 
     level.createObjects();

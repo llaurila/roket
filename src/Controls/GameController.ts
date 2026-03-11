@@ -1,14 +1,16 @@
 let gamepadIndex = -1;
 const pressedButtons: boolean[] = [];
 
-window.addEventListener("gamepadconnected", e => {
-    // eslint-disable-next-line no-console
-    console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
-        e.gamepad.index, e.gamepad.id,
-        e.gamepad.buttons.length, e.gamepad.axes.length);
+if (typeof window !== "undefined") {
+    window.addEventListener("gamepadconnected", e => {
+        // eslint-disable-next-line no-console
+        console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
+            e.gamepad.index, e.gamepad.id,
+            e.gamepad.buttons.length, e.gamepad.axes.length);
 
-    gamepadIndex = e.gamepad.index;
-});
+        gamepadIndex = e.gamepad.index;
+    });
+}
 
 export default {
     controllerAvailable: () => {

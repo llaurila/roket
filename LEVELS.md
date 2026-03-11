@@ -58,6 +58,7 @@ Supported top-level fields:
 - `variables: Record<string, unknown>`
 - `cosmos?: boolean`
 - `ship.fuelTank.currentAmount: number`
+- `ship.weapons?: ShipWeaponType[]` (`laser` supported today)
 - `objects: GameObject[]`
 - `objectives: LevelObjective[]`
 
@@ -76,6 +77,7 @@ variables:
 ship:
   fuelTank:
     currentAmount: 120
+  weapons: [laser]
 
 objects:
   - id: home

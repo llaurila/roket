@@ -1,5 +1,7 @@
 export type Pos = number[];
 
+export type ShipWeaponType = "laser";
+
 export interface GameObject {
     id: string;
     type: string;
@@ -42,6 +44,8 @@ export interface LevelData {
         fuelTank: {
             currentAmount: number;
         };
+
+        weapons?: ShipWeaponType[];
     };
 
     objects: GameObject[];
