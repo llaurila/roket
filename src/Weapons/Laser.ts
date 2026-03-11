@@ -79,27 +79,45 @@ export class Laser implements IWeapon {
     }
 
     private fire(delta: number): void {
-        if (!this.firing) {
-            globalSoundEffects.startLaserBuzzSound();
-        }
-
         const direction = this.ship.getHeading().normalize();
         const origin = this.ship.getNosePosition();
 
+        this.startFiringIfNeeded();
+
         this.firing = true;
         this.rechargeLock = config.rechargeDelay;
+        this.lastHit = this.resolveLastHit(origin, direction);
+        this.setBeam(origin, direction);
+        this.applyHitHeat(delta);
+        this.drainEnergy(delta);
+    }
 
-        this.lastHit = this.ship.physics
-            ? raycastMeteors(this.ship.physics, origin, direction, config.range)
-            : null;
+    private startFiringIfNeeded(): void {
+        if (!this.firing) {
+            globalSoundEffects.startLaserBuzzSound();
+        }
+    }
 
+    private resolveLastHit(origin: Vector, direction: Vector): ICircleRaycastHit | null {
+        if (!this.ship.physics) {
+            return null;
+        }
+
+        return raycastMeteors(this.ship.physics, origin, direction, config.range);
+    }
+
+    private setBeam(origin: Vector, direction: Vector): void {
         this.beamStart = origin;
         this.beamEnd = this.lastHit
             ? this.lastHit.point
             : origin.add(direction.mul(config.range));
+    }
 
+    private applyHitHeat(delta: number): void {
         this.lastHit?.body.applyLaserHeat(delta);
+    }
 
+    private drainEnergy(delta: number): void {
         this.energy = Math.max(0, this.energy - config.energyDrainPerSecond * delta);
     }
 
