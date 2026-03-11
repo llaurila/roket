@@ -29,6 +29,7 @@ If you are new to the codebase, start at `src/main.ts`.
 
 - [LEVELS.md](LEVELS.md): level authoring guide
 - [AI.md](AI.md): high-level guide to the NPC AI controller and tuning
+- [CODING_CONVENTIONS.md](CODING_CONVENTIONS.md): coding and linting conventions
 
 ## How to Develop
 
