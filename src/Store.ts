@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class Store {
     public static persist(key: string, value: string) {
-        localStorage.setItem(key, value);
+        this.getStorage()?.setItem(key, value);
     }
 
     public static persistObject<T>(key: string, value: T) {
@@ -10,7 +10,7 @@ export class Store {
     }
 
     public static retrieve(key: string): string | null {
-        return localStorage.getItem(key);
+        return this.getStorage()?.getItem(key) ?? null;
     }
 
     public static retrieveObject<T>(key: string): T | null {
@@ -24,6 +24,14 @@ export class Store {
     }
 
     public static delete(key: string) {
-        localStorage.removeItem(key);
+        this.getStorage()?.removeItem(key);
+    }
+
+    private static getStorage(): Storage | undefined {
+        if (typeof localStorage === "undefined") {
+            return undefined;
+        }
+
+        return localStorage;
     }
 }

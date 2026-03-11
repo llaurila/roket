@@ -31,7 +31,7 @@ test("meteor collisions bounce based on mass and resolve overlap", () => {
     physics.add(left);
     physics.add(right);
 
-    physics.update(0, 1);
+    physics.update(0, 0.75);
 
     expect(left.v.x).toBeLessThan(0);
     expect(right.v.x).toBeGreaterThan(0);

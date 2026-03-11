@@ -3,13 +3,15 @@ type KeyMap = Record<string, boolean>;
 const keysDown: KeyMap = {};
 const wasDown: KeyMap = {};
 
-window.addEventListener("keydown", (e: KeyboardEvent) => {
-    keysDown[e.key] = true;
-});
+if (typeof window !== "undefined") {
+    window.addEventListener("keydown", (e: KeyboardEvent) => {
+        keysDown[e.key] = true;
+    });
 
-window.addEventListener("keyup", (e: KeyboardEvent) => {
-    keysDown[e.key] = false;
-});
+    window.addEventListener("keyup", (e: KeyboardEvent) => {
+        keysDown[e.key] = false;
+    });
+}
 
 const isDown = (key: string) => keysDown[key];
 
