@@ -126,6 +126,15 @@ export class SoundEffects {
         buzzGain.gain.setValueAtTime(0, now);
         buzzGain.gain.linearRampToValueAtTime(Config.laser.soundVolume, now + 0.03);
 
+        const reverb = ctx.createConvolver();
+        reverb.buffer = this.createReverbImpulse(ctx, 0.28, 1.5);
+
+        const dryGain = ctx.createGain();
+        dryGain.gain.value = 0.78;
+
+        const wetGain = ctx.createGain();
+        wetGain.gain.value = 0.22;
+
         const oscillator = ctx.createOscillator();
         oscillator.type = "sawtooth";
         oscillator.frequency.setValueAtTime(120, now);
@@ -159,7 +168,12 @@ export class SoundEffects {
         noiseFilter.connect(noiseGain);
         noiseGain.connect(buzzGain);
 
-        buzzGain.connect(master);
+        buzzGain.connect(dryGain);
+        buzzGain.connect(reverb);
+        reverb.connect(wetGain);
+
+        dryGain.connect(master);
+        wetGain.connect(master);
 
         oscillator.start(now);
         noise.start(now);
@@ -242,6 +256,23 @@ export class SoundEffects {
         }
 
         return { ctx: this.ctx, master: this.master };
+    }
+
+    private createReverbImpulse(ctx: AudioContext, duration: number, decay: number): AudioBuffer {
+        const length = Math.floor(ctx.sampleRate * duration);
+        const impulse = ctx.createBuffer(2, length, ctx.sampleRate);
+
+        for (let channel = 0; channel < impulse.numberOfChannels; channel++) {
+            const channelData = impulse.getChannelData(channel);
+
+            for (let i = 0; i < length; i++) {
+                const progress = i / Math.max(1, length - 1);
+                const envelope = Math.pow(1 - progress, decay);
+                channelData[i] = (Math.random() * 2 - 1) * envelope;
+            }
+        }
+
+        return impulse;
     }
 
     private syncMasterVolume(): void {
