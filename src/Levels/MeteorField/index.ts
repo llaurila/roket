@@ -8,10 +8,14 @@ class MeteorField extends CollectFuel {
     public meteors: Meteor[] = [];
 
     private readonly meteorCount: number;
+    private readonly meteorMassMin: number;
+    private readonly meteorMassMax: number;
 
     public constructor() {
         super(data as LevelData);
         this.meteorCount = this.getEnv<number>("METEOR_COUNT");
+        this.meteorMassMin = this.getEnv<number>("METEOR_MASS_MIN");
+        this.meteorMassMax = this.getEnv<number>("METEOR_MASS_MAX");
     }
 
     public override createObjects(): void {
@@ -29,7 +33,7 @@ class MeteorField extends CollectFuel {
                 meteorDistanceMax
             ), {
                 diameter: this.rng.next(12, 20),
-                mass: this.rng.next(14, 24),
+                mass: this.rng.next(this.meteorMassMin, this.meteorMassMax),
                 angularVelocity: this.rng.next(-0.35, 0.35)
             }, this.rng);
 

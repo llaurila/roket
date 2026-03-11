@@ -46,6 +46,11 @@ export interface LevelData {
         };
 
         weapons?: ShipWeaponType[];
+
+        shield?: {
+            enabled?: boolean;
+            currentIntegrity?: number;
+        };
     };
 
     objects: GameObject[];

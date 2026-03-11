@@ -9,7 +9,7 @@ import Shapes from "../Graphics/Shapes";
 import type { Graphics } from "../Graphics/Graphics";
 import CircleCollider from "../Physics/CircleCollider";
 import { Config } from "../config";
-import { getColorString } from "../Graphics/Color";
+import { COLOR_WHITE, getColorString, getInterpolatedColor } from "../Graphics/Color";
 import { initLeftEngine, initRightEngine, updateEngines } from "./utils";
 import ShipConfig from "./config";
 import { Stats } from "../Level/Stats";
@@ -21,19 +21,29 @@ import type { IWeapon } from "@/Weapons/IWeapon";
 
 const { ship } = Config;
 
+const FULL_CIRCLE = Math.PI * 2;
+const SHIELD_FLASH_MAX = 1;
+const SHIELD_LINE_WIDTH = 0.2;
+const MIN_SHIELD_LINE_WIDTH = 1;
+
 class Ship extends Body implements IShip, IDrawable {
     public static Shape: Polygon = Shapes.Ship.mul(ship.length / ShipConfig.SHAPE_LENGTH);
 
     public engineLeft: Engine;
     public engineRight: Engine;
     public fuelTank: FuelTank;
-    public hullIntegrity = 1;
     public graphics?: Graphics;
     public circleCollider = new CircleCollider(ship.length / 2 * ship.colliderRelativeSize);
+    public shieldCollider = new CircleCollider(ship.length / 2 * ship.shield.radiusRelativeSize);
     public color = ship.color;
     public weapons: IWeapon[] = [];
 
     public stats: Stats = new Stats();
+
+    private shieldEnabled = false;
+    private shieldIntegrity = 0;
+    private shieldRechargeLock = 0;
+    private shieldFlashIntensity = 0;
 
     public constructor(position: Vector) {
         super(position);
@@ -42,33 +52,75 @@ class Ship extends Body implements IShip, IDrawable {
         this.engineRight = initRightEngine(this);
     }
 
-    public update(time: number, delta: number) {
+    public update(time: number, delta: number): void {
         super.update(time, delta);
 
-        if (this.alive) {
-            const excessSpin = Math.abs(this.angularVelocity) - ship.maxSafeAngularVelocity;
-            if (excessSpin > 0) {
-                const DAMAGE_SEVERITY = 0.1;
-                this.inflictHullDamage(excessSpin * DAMAGE_SEVERITY * delta);
-            }
+        if (!this.alive) {
+            return;
+        }
 
-            updateEngines([this.engineLeft, this.engineRight], time, delta);
-            this.weapons.forEach(weapon => {
-                weapon.update(time, delta);
-            });
+        this.updateShield(delta);
+        this.updateSystems(time, delta);
+        this.updateStats(delta);
+    }
 
-            this.updateStats(delta);
+    public hasShield(): boolean {
+        return this.shieldEnabled;
+    }
+
+    public enableShield(initialIntegrity = ship.shield.maxIntegrity): void {
+        this.shieldEnabled = true;
+        this.shieldIntegrity = this.clampShieldIntegrity(initialIntegrity);
+        this.shieldRechargeLock = 0;
+        this.shieldFlashIntensity = 0;
+    }
+
+    public disableShield(): void {
+        this.shieldEnabled = false;
+        this.shieldIntegrity = 0;
+        this.shieldRechargeLock = 0;
+        this.shieldFlashIntensity = 0;
+    }
+
+    public getShieldIntegrity(): number {
+        return this.shieldIntegrity;
+    }
+
+    public getShieldMaxIntegrity(): number {
+        return ship.shield.maxIntegrity;
+    }
+
+    public getShieldCollisionRadius(): number {
+        return this.shieldCollider.radius;
+    }
+
+    public absorbShieldImpact(relativeSpeed: number): void {
+        if (!this.alive || !this.shieldEnabled) {
+            return;
+        }
+
+        this.shieldFlashIntensity = SHIELD_FLASH_MAX;
+        this.shieldRechargeLock = ship.shield.rechargeDelay;
+
+        const damage = this.getShieldDamage(relativeSpeed);
+        if (damage <= 0) {
+            return;
+        }
+
+        this.shieldIntegrity = this.clampShieldIntegrity(this.shieldIntegrity - damage);
+
+        if (this.shieldIntegrity === 0) {
+            this.die();
         }
     }
 
-    public inflictHullDamage(damage: number): void {
-        this.hullIntegrity = Math.max(0, this.hullIntegrity - damage);
-        if (this.hullIntegrity === 0) this.die();
-    }
-
     public die(): void {
+        if (!this.alive) {
+            return;
+        }
+
         this._alive = false;
-        this.hullIntegrity = 0;
+        this.shieldIntegrity = 0;
 
         globalSoundEffects.playShipDestroyedSound();
 
@@ -93,35 +145,130 @@ class Ship extends Body implements IShip, IDrawable {
         return this.pos.add(Ship.Shape.first.rotate(this.rotation));
     }
 
-    public draw(viewport: Viewport) {
-        if (this.alive) {
-            const drawContext: DrawContext = {
-                viewport,
-                pos: this.pos,
-                rotation: this.rotation
-            };
-
-            const { ctx } = viewport;
-
-            ctx.save();
-            ctx.lineWidth = 1;
-            ctx.strokeStyle = getColorString(this.color);
-
-            Ship.Shape.toScreenCoordinates(drawContext).makeClosedPath(ctx);
-
-            ctx.stroke();
-            ctx.restore();
-
-            this.engineLeft.draw(viewport);
-            this.engineRight.draw(viewport);
-
-            this.weapons.forEach(weapon => {
-                weapon.draw(viewport);
-            });
+    public draw(viewport: Viewport): void {
+        if (!this.alive) {
+            return;
         }
+
+        this.drawShield(viewport);
+        this.drawHull(viewport);
+        this.engineLeft.draw(viewport);
+        this.engineRight.draw(viewport);
+
+        this.weapons.forEach(weapon => {
+            weapon.draw(viewport);
+        });
     }
 
-    private updateStats(delta: number) {
+    private updateSystems(time: number, delta: number): void {
+        updateEngines([this.engineLeft, this.engineRight], time, delta);
+        this.weapons.forEach(weapon => {
+            weapon.update(time, delta);
+        });
+    }
+
+    private updateShield(delta: number): void {
+        if (!this.shieldEnabled) {
+            return;
+        }
+
+        this.shieldFlashIntensity = Math.max(
+            0,
+            this.shieldFlashIntensity - ship.shield.flashFadePerSecond * delta
+        );
+
+        this.shieldRechargeLock = Math.max(0, this.shieldRechargeLock - delta);
+
+        if (this.shieldRechargeLock > 0 || this.shieldIntegrity >= ship.shield.maxIntegrity) {
+            return;
+        }
+
+        this.shieldIntegrity = this.clampShieldIntegrity(
+            this.shieldIntegrity + ship.shield.rechargePerSecond * delta
+        );
+    }
+
+    private getShieldDamage(relativeSpeed: number): number {
+        const effectiveSpeed = Math.max(0, relativeSpeed - ship.shield.minImpactSpeed);
+
+        return effectiveSpeed * effectiveSpeed * ship.shield.impactDamageScale;
+    }
+
+    private clampShieldIntegrity(value: number): number {
+        return Math.max(0, Math.min(value, ship.shield.maxIntegrity));
+    }
+
+    private drawShield(viewport: Viewport): void {
+        if (!this.shieldEnabled) {
+            return;
+        }
+
+        const opacity = this.getShieldOpacity();
+        const color = this.getShieldColor(opacity);
+        const screenPosition = viewport.toScreenCoordinates(this.pos);
+        const radius = viewport.toScreenScale(this.getShieldCollisionRadius());
+        const lineWidth = Math.max(
+            MIN_SHIELD_LINE_WIDTH,
+            viewport.toScreenScale(SHIELD_LINE_WIDTH)
+        );
+
+        const { ctx } = viewport;
+
+        ctx.save();
+        ctx.lineWidth = lineWidth;
+        ctx.strokeStyle = getColorString(color);
+        ctx.beginPath();
+        ctx.arc(screenPosition.x, screenPosition.y, radius, 0, FULL_CIRCLE);
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    private getShieldOpacity(): number {
+        return Math.min(
+            1,
+            ship.shield.idleOpacity + this.shieldFlashIntensity * ship.shield.flashOpacityBoost
+        );
+    }
+
+    private getShieldColor(opacity: number) {
+        return getInterpolatedColor([
+            {
+                Color: {
+                    ...ship.shield.color,
+                    A: opacity
+                },
+                Pos: 0
+            },
+            {
+                Color: {
+                    ...COLOR_WHITE,
+                    A: opacity
+                },
+                Pos: 1
+            }
+        ], this.shieldFlashIntensity);
+    }
+
+    private drawHull(viewport: Viewport): void {
+        const drawContext: DrawContext = {
+            viewport,
+            pos: this.pos,
+            rotation: this.rotation
+        };
+
+        const { ctx } = viewport;
+
+        ctx.save();
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = getColorString(this.color);
+
+        Ship.Shape.toScreenCoordinates(drawContext).makeClosedPath(ctx);
+
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    private updateStats(delta: number): void {
         this.stats = new Stats();
 
         const { stats, engineLeft, engineRight, angularVelocity } = this;

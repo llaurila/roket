@@ -1,12 +1,28 @@
 import { Config } from "@/config";
 import Meteor from "@/Meteor";
+import Ship from "@/Ship";
 import Body from "./Body";
-import CircleCollider from "./CircleCollider";
 import type IUpdatable from "./IUpdatable";
 import Vector from "./Vector";
 
 const EPSILON = 0.000001;
 const MAX_ALLOWED_OVERLAP = 0.25;
+
+interface ICollisionState {
+    a: Body;
+    b: Body;
+    relativeVelocity: Vector;
+    normal: Vector;
+    overlap: number;
+    closingSpeed: number;
+}
+
+interface IShipCollisionContext {
+    shipA: Ship;
+    shipB: Ship;
+    shipAHasShield: boolean;
+    shipBHasShield: boolean;
+}
 
 export class PhysicsEngineUpdater {
     private time: number;
@@ -19,12 +35,12 @@ export class PhysicsEngineUpdater {
         this.objects = objects;
     }
 
-    public update() {
+    public update(): void {
         this.updateObjects();
         this.checkForCollisions();
     }
 
-    private updateObjects() {
+    private updateObjects(): void {
         for (const obj of this.objects) {
             if (obj.alive) {
                 obj.update(this.time, this.delta);
@@ -32,7 +48,7 @@ export class PhysicsEngineUpdater {
         }
     }
 
-    private checkForCollisions() {
+    private checkForCollisions(): void {
         const bodies = this.objects.filter(
             (obj): obj is Body => obj instanceof Body && obj.alive
         );
@@ -69,52 +85,180 @@ function shouldStopCollisionChecks(body: Body): boolean {
     return !isCollidableBody(body);
 }
 
-function checkBodyForCollision(obj: Body, b: Body) {
-    if (!CircleCollider.check(obj, b)) {
+function checkBodyForCollision(a: Body, b: Body): void {
+    const collision = getCollisionState(a, b);
+    if (!collision) {
         return;
     }
 
-    resolveCollision(obj, b);
+    resolveCollision(collision);
 
-    obj.signalCollision(b);
-    b.signalCollision(obj);
+    a.signalCollision(b);
+    b.signalCollision(a);
 }
 
-function resolveCollision(a: Body, b: Body): void {
-    if (a instanceof Meteor && b instanceof Meteor) {
-        resolveMeteorCollision(a, b);
+function getCollisionState(a: Body, b: Body): ICollisionState | null {
+    const radiusA = getCollisionRadius(a, b);
+    const radiusB = getCollisionRadius(b, a);
+
+    if (!isCollisionOverlap(a, b, radiusA, radiusB)) {
+        return null;
     }
-}
 
-function resolveMeteorCollision(a: Meteor, b: Meteor): void {
-    const collisionRadii = getCollisionRadii(a, b);
     const delta = b.pos.sub(a.pos);
     const distance = delta.length();
-    const minDistance = collisionRadii.radiusA + collisionRadii.radiusB;
-    const overlap = minDistance - distance;
+    const relativeVelocity = b.v.sub(a.v);
+    const normal = getCollisionNormal(delta, distance, relativeVelocity);
 
-    if (!isResolvableOverlap(overlap)) {
+    return {
+        a,
+        b,
+        relativeVelocity,
+        normal,
+        overlap: radiusA + radiusB - distance,
+        closingSpeed: getClosingSpeed(relativeVelocity, normal)
+    };
+}
+
+function getCollisionRadius(body: Body, other: Body): number {
+    if (isShieldImpactBody(body, other)) {
+        return (body as Ship).getShieldCollisionRadius();
+    }
+
+    return body.circleCollider?.radius ?? 0;
+}
+
+function isShieldImpactBody(body: Body, other: Body): boolean {
+    if (!(body instanceof Ship) || !body.hasShield()) {
+        return false;
+    }
+
+    return other instanceof Ship || other instanceof Meteor;
+}
+
+function isCollisionOverlap(a: Body, b: Body, radiusA: number, radiusB: number): boolean {
+    if (radiusA <= 0 || radiusB <= 0) {
+        return false;
+    }
+
+    return a.pos.sub(b.pos).length() < radiusA + radiusB;
+}
+
+function getClosingSpeed(relativeVelocity: Vector, normal: Vector): number {
+    return Math.max(0, -relativeVelocity.dot(normal));
+}
+
+function resolveCollision(collision: ICollisionState): void {
+    if (isMeteorMeteorCollision(collision)) {
+        resolveBounceCollision(collision, Config.meteor.collisionRestitution);
         return;
     }
 
-    const normal = getCollisionNormal(delta, distance, b.v.sub(a.v));
-    const invMassA = 1 / a.getMass();
-    const invMassB = 1 / b.getMass();
+    if (isShipMeteorCollision(collision)) {
+        resolveShipMeteorCollision(collision);
+        return;
+    }
+
+    if (isShipShipCollision(collision)) {
+        resolveShipShipCollision(collision);
+    }
+}
+
+function resolveShipMeteorCollision(collision: ICollisionState): void {
+    const ship = getShipFromCollision(collision);
+    if (!ship) {
+        return;
+    }
+
+    if (!ship.hasShield()) {
+        ship.die();
+        return;
+    }
+
+    resolveBounceCollision(collision, Config.ship.shield.collisionRestitution);
+    ship.absorbShieldImpact(collision.closingSpeed);
+}
+
+function resolveShipShipCollision(collision: ICollisionState): void {
+    const context = getShipCollisionContext(collision);
+    if (!context) {
+        return;
+    }
+
+    if (!shouldResolveShipShipImpact(context)) {
+        return;
+    }
+
+    resolveBounceCollision(collision, Config.ship.shield.collisionRestitution);
+    absorbShipShieldImpact(context, collision.closingSpeed);
+    destroyUnshieldedShip(context);
+}
+
+function getShipCollisionContext(collision: ICollisionState): IShipCollisionContext | null {
+    const ships = getShipsFromCollision(collision);
+    if (!ships) {
+        return null;
+    }
+
+    const [shipA, shipB] = ships;
+
+    return {
+        shipA,
+        shipB,
+        shipAHasShield: shipA.hasShield(),
+        shipBHasShield: shipB.hasShield()
+    };
+}
+
+function shouldResolveShipShipImpact(context: IShipCollisionContext): boolean {
+    return context.shipAHasShield || context.shipBHasShield;
+}
+
+function absorbShipShieldImpact(context: IShipCollisionContext, closingSpeed: number): void {
+    if (context.shipAHasShield) {
+        context.shipA.absorbShieldImpact(closingSpeed);
+    }
+
+    if (context.shipBHasShield) {
+        context.shipB.absorbShieldImpact(closingSpeed);
+    }
+}
+
+function destroyUnshieldedShip(context: IShipCollisionContext): void {
+    if (context.shipAHasShield && !context.shipBHasShield) {
+        context.shipB.die();
+    }
+
+    if (context.shipBHasShield && !context.shipAHasShield) {
+        context.shipA.die();
+    }
+}
+
+function resolveBounceCollision(collision: ICollisionState, restitution: number): void {
+    if (!isResolvableOverlap(collision.overlap)) {
+        return;
+    }
+
+    const invMassA = getInverseMass(collision.a);
+    const invMassB = getInverseMass(collision.b);
     const invMassTotal = invMassA + invMassB;
 
     if (invMassTotal <= 0) {
         return;
     }
 
-    correctOverlap(a, b, normal, overlap, invMassA, invMassB, invMassTotal);
-    applyImpulse(a, b, normal, invMassA, invMassB, invMassTotal);
+    correctOverlap(collision, invMassA, invMassB, invMassTotal);
+    applyImpulse(collision, restitution, invMassA, invMassB, invMassTotal);
 }
 
-function getCollisionRadii(a: Meteor, b: Meteor): { radiusA: number; radiusB: number } {
-    return {
-        radiusA: a.circleCollider.radius,
-        radiusB: b.circleCollider.radius
-    };
+function getInverseMass(body: Body): number {
+    const mass = body.getMass();
+
+    if (mass <= EPSILON) {
+        return 0;
+    }
+
+    return 1 / mass;
 }
 
 function isResolvableOverlap(overlap: number): boolean {
@@ -122,42 +266,87 @@ function isResolvableOverlap(overlap: number): boolean {
 }
 
 function correctOverlap(
-    a: Meteor,
-    b: Meteor,
-    normal: Vector,
-    overlap: number,
+    collision: ICollisionState,
     invMassA: number,
     invMassB: number,
     invMassTotal: number
 ): void {
-    const correction = normal.mul(overlap / invMassTotal);
+    const correction = collision.normal.mul(collision.overlap / invMassTotal);
 
-    a.pos = a.pos.sub(correction.mul(invMassA));
-    b.pos = b.pos.add(correction.mul(invMassB));
+    collision.a.pos = collision.a.pos.sub(correction.mul(invMassA));
+    collision.b.pos = collision.b.pos.add(correction.mul(invMassB));
 }
 
 function applyImpulse(
-    a: Meteor,
-    b: Meteor,
-    normal: Vector,
+    collision: ICollisionState,
+    restitution: number,
     invMassA: number,
     invMassB: number,
     invMassTotal: number
 ): void {
-    const relativeVelocity = b.v.sub(a.v);
-    const velocityAlongNormal = relativeVelocity.dot(normal);
+    const velocityAlongNormal = collision.relativeVelocity.dot(collision.normal);
 
     if (velocityAlongNormal > 0) {
         return;
     }
 
     const impulseMagnitude =
-        -(1 + Config.meteor.collisionRestitution) * velocityAlongNormal /
+        -(1 + restitution) * velocityAlongNormal /
         invMassTotal;
-    const impulse = normal.mul(impulseMagnitude);
+    const impulse = collision.normal.mul(impulseMagnitude);
 
-    a.v = a.v.sub(impulse.mul(invMassA));
-    b.v = b.v.add(impulse.mul(invMassB));
+    collision.a.v = collision.a.v.sub(impulse.mul(invMassA));
+    collision.b.v = collision.b.v.add(impulse.mul(invMassB));
+}
+
+function isMeteorMeteorCollision(collision: ICollisionState): boolean {
+    return collision.a instanceof Meteor && collision.b instanceof Meteor;
+}
+
+function isShipMeteorCollision(collision: ICollisionState): boolean {
+    return isBodyPair(collision, Ship, Meteor);
+}
+
+function isShipShipCollision(collision: ICollisionState): boolean {
+    return collision.a instanceof Ship && collision.b instanceof Ship;
+}
+
+function getShipFromCollision(collision: ICollisionState): Ship | null {
+    if (collision.a instanceof Ship) {
+        return collision.a;
+    }
+
+    if (collision.b instanceof Ship) {
+        return collision.b;
+    }
+
+    return null;
+}
+
+function getShipsFromCollision(collision: ICollisionState): [Ship, Ship] | null {
+    if (collision.a instanceof Ship && collision.b instanceof Ship) {
+        return [collision.a, collision.b];
+    }
+
+    return null;
+}
+
+function isBodyPair<TA extends Body, TB extends Body>(
+    collision: ICollisionState,
+    aType: new (...args: never[]) => TA,
+    bType: new (...args: never[]) => TB
+): boolean {
+    return isBodyPairByInstance(collision.a, collision.b, aType, bType);
+}
+
+function isBodyPairByInstance<TA extends Body, TB extends Body>(
+    a: Body,
+    b: Body,
+    aType: new (...args: never[]) => TA,
+    bType: new (...args: never[]) => TB
+): boolean {
+    return (a instanceof aType && b instanceof bType) ||
+        (a instanceof bType && b instanceof aType);
 }
 
 function getCollisionNormal(delta: Vector, distance: number, relativeVelocity: Vector): Vector {

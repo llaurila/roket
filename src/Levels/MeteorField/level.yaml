@@ -14,11 +14,15 @@ variables:
    METEOR_COUNT: 5
    METEOR_DISTANCE_MIN: 40
    METEOR_DISTANCE_MAX: 90
+   METEOR_MASS_MIN: 800
+   METEOR_MASS_MAX: 1400
 
 ship:
   fuelTank:
     currentAmount: 150
   weapons: [laser]
+  shield:
+    enabled: true
 
 objectives:
   - id: collect-fuel

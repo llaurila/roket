@@ -252,6 +252,11 @@ abstract class DataLevel extends Level {
     private setShipProperties(): void {
         this.ship.fuelTank.currentAmount = this.data.ship.fuelTank.currentAmount;
         this.ship.weapons = createShipWeapons(this.ship, this.data.ship.weapons ?? []);
+
+        const shield = this.data.ship.shield;
+        if (shield?.enabled) {
+            this.ship.enableShield(shield.currentIntegrity);
+        }
     }
 
     protected abstract registerObjectiveChecks(): void;

@@ -18,27 +18,12 @@ export class Hud implements IDrawable {
     private readonly gauges: BarGauge[] = [];
     private readonly weaponGauges: BarGauge[] = [];
     private readonly thrustControl: ThrustControl;
+    private gaugesBuiltForShield = false;
 
     public constructor(level: Level) {
         const { ship, physics } = level;
         this.ship = ship;
         this.radar = new Radar(ship, physics);
-
-        this.gauges.push(new BarGauge(
-            () => `FUEL (${Math.round(ship.fuelTank.getMass())} KG)`,
-            () => ship.fuelTank.currentAmount,
-            () => ship.fuelTank.capacity,
-            BarGaugeAnchor.Bottom,
-            1
-        ));
-
-        this.gauges.push(new BarGauge(
-            "HULL INTEGRITY",
-            () => ship.hullIntegrity,
-            () => 1,
-            BarGaugeAnchor.Bottom,
-            0
-        ));
 
         this.thrustControl = new ThrustControl(ship);
     }
@@ -49,6 +34,7 @@ export class Hud implements IDrawable {
         ctx.save();
         ctx.resetTransform();
 
+        this.ensureGauges();
         this.addWeaponGauges();
 
         this.radar.draw(viewport);
@@ -62,6 +48,37 @@ export class Hud implements IDrawable {
         this.texts.draw(viewport);
 
         ctx.restore();
+    }
+
+    private ensureGauges(): void {
+        const hasShield = this.ship.hasShield();
+
+        if (this.gauges.length > 0 && this.gaugesBuiltForShield === hasShield) {
+            return;
+        }
+
+        this.gaugesBuiltForShield = hasShield;
+        this.gauges.length = 0;
+
+        this.gauges.push(new BarGauge(
+            () => `FUEL (${Math.round(this.ship.fuelTank.getMass())} KG)`,
+            () => this.ship.fuelTank.currentAmount,
+            () => this.ship.fuelTank.capacity,
+            BarGaugeAnchor.Bottom,
+            1
+        ));
+
+        if (!hasShield) {
+            return;
+        }
+
+        this.gauges.push(new BarGauge(
+            "SHIELD INTEGRITY",
+            () => this.ship.getShieldIntegrity(),
+            () => this.ship.getShieldMaxIntegrity(),
+            BarGaugeAnchor.Bottom,
+            0
+        ));
     }
 
     private addWeaponGauges() {

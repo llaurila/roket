@@ -147,9 +147,21 @@ export const Config: IConfig = {
             position: new Vector(+0.5, -4),
             angle: +12
         },
-        maxSafeAngularVelocity: 10,
         engineChokeModeMultiplier: 0.25,
-        color: getGray(0.65)
+        color: getGray(0.65),
+        shield: {
+            radiusRelativeSize: 1.9,
+            maxIntegrity: 1,
+            rechargePerSecond: 0.02,
+            rechargeDelay: 1.25,
+            collisionRestitution: 0.9,
+            impactDamageScale: 0.002,
+            minImpactSpeed: 0.5,
+            color: getGray(0.95),
+            idleOpacity: 0.07,
+            flashOpacityBoost: 0.75,
+            flashFadePerSecond: 2.5
+        }
     },
 
     fuel: {

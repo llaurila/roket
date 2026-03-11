@@ -57,7 +57,9 @@ class BlockadeRun extends CollectFuel {
 
         this.enemy.onCollision(e => {
             if (e.target == this.ship) {
-                this.ship.die();
+                if (!this.ship.hasShield()) {
+                    this.ship.die();
+                }
             }
         });
 

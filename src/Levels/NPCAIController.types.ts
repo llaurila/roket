@@ -34,7 +34,6 @@ export interface NPCAIControllerShipState {
     angularVelocity: number;
     heading: Vector;
     mass: number;
-    hullIntegrity: number;
     fuel: {
         capacity: number;
         currentAmount: number;

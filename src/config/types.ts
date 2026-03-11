@@ -144,10 +144,23 @@ export interface IConfig {
         engineLeft: IEngineConfig;
         engineRight: IEngineConfig;
 
-        maxSafeAngularVelocity: number;
         engineChokeModeMultiplier: number;
 
         color: IColor;
+
+        shield: {
+            radiusRelativeSize: number;
+            maxIntegrity: number;
+            rechargePerSecond: number;
+            rechargeDelay: number;
+            collisionRestitution: number;
+            impactDamageScale: number;
+            minImpactSpeed: number;
+            color: IColor;
+            idleOpacity: number;
+            flashOpacityBoost: number;
+            flashFadePerSecond: number;
+        }
     }
 
     fuel: {

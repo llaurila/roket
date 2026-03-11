@@ -8,7 +8,6 @@ import Body from "./Physics/Body";
 import CircleCollider from "./Physics/CircleCollider";
 import Vector from "./Physics/Vector";
 import RNG from "./RNG";
-import Ship from "./Ship";
 import { globalSoundEffects } from "./Sounds/global-sound-effects";
 import { Config } from "./config";
 
@@ -52,8 +51,6 @@ class Meteor extends Body implements IDrawable {
             rng.nextInt(config.cornerCountMin, config.cornerCountMax);
         this.circleCollider = new CircleCollider(this.diameter / 2);
         this.shape = createShape(this.diameter, this.cornerCount, rng);
-
-        this.registerShipCollisionHandler();
     }
 
     public applyLaserHeat(delta: number): void {
@@ -174,14 +171,6 @@ class Meteor extends Body implements IDrawable {
 
     private getSplitRng(key: string): RNG {
         return new RNG(RNG.deriveSeed(this.id, key));
-    }
-
-    private registerShipCollisionHandler(): void {
-        this.onCollision(e => {
-            if (e.target instanceof Ship && e.target.alive) {
-                e.target.die();
-            }
-        });
     }
 }
 

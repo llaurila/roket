@@ -102,7 +102,6 @@ class NPCAIController {
             angularVelocity: this.ship.angularVelocity,
             heading: this.ship.getHeading().clone(),
             mass: this.ship.getMass(),
-            hullIntegrity: this.ship.hullIntegrity,
             fuel: {
                 capacity: this.ship.fuelTank.capacity,
                 currentAmount: this.ship.fuelTank.currentAmount,

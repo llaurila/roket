@@ -39,5 +39,7 @@ test("MeteorField spawns fuel capsules and meteors within configured ranges", as
         const distance = meteor.pos.length();
         expect(distance).toBeGreaterThanOrEqual(40);
         expect(distance).toBeLessThanOrEqual(90);
+        expect(meteor.mass).toBeGreaterThanOrEqual(800);
+        expect(meteor.mass).toBeLessThanOrEqual(1400);
     }
 });
