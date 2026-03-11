@@ -27,7 +27,7 @@ test("MeteorField spawns fuel capsules and meteors within configured ranges", as
     level.createObjects();
 
     expect(level.fuelCapsules).toHaveLength(3);
-    expect(level.meteors).toHaveLength(5);
+    expect(level.meteors).toHaveLength(9);
 
     for (const fuelCapsule of level.fuelCapsules) {
         const distance = fuelCapsule.pos.length();
@@ -39,7 +39,7 @@ test("MeteorField spawns fuel capsules and meteors within configured ranges", as
         const distance = meteor.pos.length();
         expect(distance).toBeGreaterThanOrEqual(40);
         expect(distance).toBeLessThanOrEqual(90);
-        expect(meteor.mass).toBeGreaterThanOrEqual(800);
-        expect(meteor.mass).toBeLessThanOrEqual(1400);
+        expect(meteor.mass).toBeGreaterThanOrEqual(1600);
+        expect(meteor.mass).toBeLessThanOrEqual(2800);
     }
 });
