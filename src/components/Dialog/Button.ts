@@ -54,6 +54,11 @@ export default class UIButton extends EventTarget implements IDrawable {
     }
 
     public update(viewport: Viewport) {
+        if (this.dialog.shouldIgnorePointerInput()) {
+            this.mouseWasDown = Pointer.leftPressed();
+            return;
+        }
+
         const mouseIsDown = Pointer.leftPressed();
         const mouseOver = this.isMouseOver(viewport);
 

@@ -21,6 +21,7 @@ export default abstract class UIInputBase extends EventTarget {
 
     protected isMouseOver(viewport: Viewport): boolean {
         if (!this.dialog.visible) return false;
+        if (this.dialog.shouldIgnorePointerInput()) return false;
         const mouse = Pointer.getPosition();
         const rect = this.getRect(viewport);
         return rect.contains(mouse);
