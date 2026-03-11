@@ -11,6 +11,7 @@ For AI tuning guidance, see [AI.md](AI.md).
 - Prefer small, focused methods over complex methods.
 - Use explicit state names that match gameplay semantics.
 - Keep code test-friendly (Node test environment, browser APIs guarded).
+- Treat zero runtime npm dependencies as a design principle (dev-only dependencies are fine).
 
 ## Tooling Baseline
 
