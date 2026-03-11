@@ -66,6 +66,11 @@ export function createMeteorFromObject(o: GameObject, rng: RNG): Meteor {
         `Meteor '${o.id}' requires props.mass.`
     );
     const cornerCount = getOptionalCornerCount(o);
+    const strength = getOptionalPositiveNumber(
+        o,
+        "strength",
+        `Meteor '${o.id}' requires props.strength to be > 0.`
+    );
 
     if (diameter <= 0) {
         throw new Error(`Meteor '${o.id}' requires props.diameter to be > 0.`);
@@ -80,7 +85,8 @@ export function createMeteorFromObject(o: GameObject, rng: RNG): Meteor {
         mass,
         velocity: getVelocity(o),
         angularVelocity: o.angularVelocity,
-        cornerCount
+        cornerCount,
+        strength
     }, rng);
 }
 
@@ -114,6 +120,22 @@ function getOptionalCornerCount(o: GameObject): number | undefined {
     }
 
     return value;
+}
+
+function getOptionalPositiveNumber(o: GameObject, key: string, message: string): number | undefined {
+    const value = o.props?.[key];
+
+    if (value == undefined) {
+        return undefined;
+    }
+
+    const numberValue = getNumericValue(value, message);
+
+    if (numberValue <= 0) {
+        throw new Error(message);
+    }
+
+    return numberValue;
 }
 
 function applyBodyKinematics(body: Body, o: GameObject): void {

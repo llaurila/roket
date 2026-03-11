@@ -191,6 +191,12 @@ export interface IConfig {
         vertexRadiusMinRelative: number;
         vertexRadiusMaxRelative: number;
         collisionRestitution: number;
+        minDiameter: number;
+        strength: number;
+        splitDriftSpeed: number;
+        splitGap: number;
+        explosionParticleCount: number;
+        explosionVelocityMax: number;
         color: IColor;
     }
 }

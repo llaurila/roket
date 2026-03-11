@@ -89,6 +89,8 @@ export class Laser implements IWeapon {
             ? this.lastHit.point
             : origin.add(direction.mul(config.range));
 
+        this.lastHit?.body.applyLaserHeat(delta);
+
         this.energy = Math.max(0, this.energy - config.energyDrainPerSecond * delta);
     }
 
