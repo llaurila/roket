@@ -163,7 +163,12 @@ export const Config: IConfig = {
         opacityMin: 0.75,
         opacityMax: 1.00,
         pulseHz: 0.5,
-        color: { R: 0, G: 1, B: 0, A: 1 }
+        color: { R: 0, G: 1, B: 0, A: 1 },
+        strength: 0.37,
+        coolDownPerSecond: 0.29,
+        explosionParticleCount: 260,
+        explosionVelocityMax: 36,
+        explosionSoundDuration: 0.9
     },
 
     beacon: {

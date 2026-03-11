@@ -1,11 +1,13 @@
 import type IDrawable from "./Graphics/IDrawable";
 import type Polygon from "./Graphics/Polygon";
 import Shapes from "./Graphics/Shapes";
+import ExplosionParticleEngine from "./Graphics/ExplosionParticleEngine";
 import Body from "./Physics/Body";
 import type Ship from "./Ship";
 import type { Graphics } from "./Graphics/Graphics";
 import CircleCollider from "./Physics/CircleCollider";
-import { getColorString } from "./Graphics/Color";
+import { getColorString, getInterpolatedColor, type IColor } from "./Graphics/Color";
+import { globalSoundEffects } from "./Sounds/global-sound-effects";
 import { Config } from "./config";
 import type { Viewport } from "./Graphics/Viewport";
 
@@ -16,6 +18,13 @@ enum State {
 }
 
 const config = Config.fuelCapsule;
+
+const HOT_COLOR: IColor = {
+    R: 1,
+    G: 0.1,
+    B: 0.1,
+    A: 1
+};
 
 class Fuel extends Body implements IDrawable {
     public static Shape: Polygon = Shapes.Capsule.mul(config.length);
@@ -28,6 +37,7 @@ class Fuel extends Body implements IDrawable {
 
     private state: State = State.Pulse;
     private opacity = 0;
+    private heat = 0;
 
     private collectEvent: Event = new Event("collect");
 
@@ -54,7 +64,20 @@ class Fuel extends Body implements IDrawable {
             return;
         }
 
+        this.coolDown(delta);
         this.updateGfx(time, delta);
+    }
+
+    public applyLaserHeat(delta: number): void {
+        if (!this.canAbsorbLaserHeat(delta)) {
+            return;
+        }
+
+        this.heat += delta / config.strength;
+
+        if (this.heat >= 1) {
+            this.explodeFromHeat();
+        }
     }
 
     public updateGfx(time: number, delta: number) {
@@ -82,7 +105,7 @@ class Fuel extends Body implements IDrawable {
         ctx.lineWidth = 1;
 
         ctx.strokeStyle = getColorString({
-            ...config.color,
+            ...this.getDisplayColor(),
             A: this.opacity
         });
 
@@ -96,6 +119,48 @@ class Fuel extends Body implements IDrawable {
         this.opacity = config.opacityMin +
             Math.sin(time * Math.PI * 2 * config.pulseHz) *
             (config.opacityMax - config.opacityMin);
+    }
+
+    private getDisplayColor(): IColor {
+        return getInterpolatedColor([
+            { Color: config.color, Pos: 0 },
+            { Color: HOT_COLOR, Pos: 1 }
+        ], Math.min(1, this.heat));
+    }
+
+    private coolDown(delta: number): void {
+        if (this.state != State.Pulse || this.heat <= 0) {
+            return;
+        }
+
+        this.heat = Math.max(0, this.heat - config.coolDownPerSecond * delta);
+    }
+
+    private canAbsorbLaserHeat(delta: number): boolean {
+        return this.state == State.Pulse && !this.collected && this.alive && delta > 0;
+    }
+
+    private explodeFromHeat(): void {
+        this.spawnExplosion();
+        globalSoundEffects.playExplosionSound(config.explosionSoundDuration);
+        this.state = State.Dead;
+        this._alive = false;
+    }
+
+    private spawnExplosion(): void {
+        if (!this.physics || !this.graphics) {
+            return;
+        }
+
+        const explosion = new ExplosionParticleEngine(this.pos, {
+            particleCount: config.explosionParticleCount,
+            velocityMin: 0,
+            velocityMax: config.explosionVelocityMax,
+            originVelocity: this.v
+        });
+
+        this.physics.add(explosion);
+        this.graphics.add(explosion);
     }
 
     private fadeOut(delta: number) {

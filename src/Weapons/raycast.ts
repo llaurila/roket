@@ -1,12 +1,15 @@
+import Fuel from "@/Fuel";
 import Meteor from "@/Meteor";
 import type PhysicsEngine from "@/Physics/PhysicsEngine";
 import type Vector from "@/Physics/Vector";
 
 export interface ICircleRaycastHit {
-    body: Meteor;
+    body: LaserTarget;
     point: Vector;
     distance: number;
 }
+
+export type LaserTarget = Meteor | Fuel;
 
 const EPSILON = 0.000001;
 
@@ -16,19 +19,18 @@ export function raycastMeteors(
     direction: Vector,
     maxDistance: number
 ): ICircleRaycastHit | null {
-    const meteors = physics.filter((obj): obj is Meteor =>
-        obj instanceof Meteor &&
-        obj.alive
+    const targets = physics.filter((obj): obj is LaserTarget =>
+        (obj instanceof Meteor || obj instanceof Fuel) && obj.alive
     );
 
     let nearest: ICircleRaycastHit | null = null;
 
-    for (const meteor of meteors) {
-        const radius = meteor.circleCollider.radius;
+    for (const target of targets) {
+        const radius = target.circleCollider.radius;
         const hitDistance = intersectRayWithCircle(
             origin,
             direction,
-            meteor.pos,
+            target.pos,
             radius,
             maxDistance
         );
@@ -37,7 +39,7 @@ export function raycastMeteors(
             continue;
         }
 
-        nearest = pickNearestHit(nearest, meteor, origin, direction, hitDistance);
+        nearest = pickNearestHit(nearest, target, origin, direction, hitDistance);
     }
 
     return nearest;
@@ -74,14 +76,14 @@ function intersectRayWithCircle(
 
 function pickNearestHit(
     current: ICircleRaycastHit | null,
-    meteor: Meteor,
+    target: LaserTarget,
     origin: Vector,
     direction: Vector,
     hitDistance: number
 ): ICircleRaycastHit {
     if (!current || hitDistance < current.distance) {
         return {
-            body: meteor,
+            body: target,
             distance: hitDistance,
             point: origin.add(direction.mul(hitDistance))
         };

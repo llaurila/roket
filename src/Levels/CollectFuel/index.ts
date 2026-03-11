@@ -2,6 +2,11 @@ import data from "./level.yaml";
 import Vector from "../../Physics/Vector";
 import Fuel from "../../Fuel";
 import DataLevel from "@/Level/DataLevel";
+import {
+    getCollectedFuelCount,
+    getRemainingCollectableFuelCount,
+    isFuelCollectionStillPossible
+} from "@/Level/fuelProgress";
 import type { LevelData } from "@/Level/types";
 import { globalSoundEffects } from "@/Sounds/global-sound-effects";
 
@@ -18,6 +23,14 @@ class CollectFuel extends DataLevel {
     public createObjects(): void {
         super.createObjects();
         this.generateFuelCapsules(this.fuelCapsuleCount);
+    }
+
+    public override update(time: number, delta: number): void {
+        super.update(time, delta);
+
+        if (!this.ended && this.isFuelCollectionImpossible()) {
+            this.failure("MISSION FAILED. NOT ENOUGH FUEL CAPSULES REMAIN.");
+        }
     }
 
     public generateFuelCapsules(count: number): void {
@@ -57,12 +70,25 @@ class CollectFuel extends DataLevel {
 
     protected registerObjectiveChecks(): void {
         this.registerObjectiveTest("allCollected", () =>
-            this.fuelCapsules.every(f => !f.alive)
+            this.getCollectedFuelCapsuleCount() >= this.fuelCapsuleCount
         );
     }
 
-    private getCollectedFuelCapsuleCount(): number {
-        return this.fuelCapsules.filter(f => !f.alive).length;
+    protected getCollectedFuelCapsuleCount(): number {
+        return getCollectedFuelCount(this.fuelCapsules);
+    }
+
+    protected getRemainingCollectableFuelCount(): number {
+        return getRemainingCollectableFuelCount(this.fuelCapsules);
+    }
+
+    protected requiredCollectedForSuccess(): number {
+        return this.fuelCapsuleCount;
+    }
+
+    private isFuelCollectionImpossible(): boolean {
+        const requiredCollected = this.requiredCollectedForSuccess();
+        return !isFuelCollectionStillPossible(this.fuelCapsules, requiredCollected);
     }
 }
 

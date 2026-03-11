@@ -162,6 +162,11 @@ export interface IConfig {
         opacityMax: number;
         pulseHz: number;
         color: IColor;
+        strength: number;
+        coolDownPerSecond: number;
+        explosionParticleCount: number;
+        explosionVelocityMax: number;
+        explosionSoundDuration: number;
     }
 
     beacon: {

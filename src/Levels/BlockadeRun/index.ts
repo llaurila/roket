@@ -89,16 +89,16 @@ class BlockadeRun extends CollectFuel {
 
     protected override registerObjectiveChecks(): void {
         this.registerObjectiveTest("fuelTargetReached", () =>
-            this.getCollectedCount() >= this.requiredFuelCapsules
+            this.getCollectedFuelCapsuleCount() >= this.requiredFuelCapsules
         );
+    }
+
+    protected override requiredCollectedForSuccess(): number {
+        return this.requiredFuelCapsules;
     }
 
     private shouldStopGuard(): boolean {
         return !this.enemy.alive || !this.ship.alive || this.ended;
-    }
-
-    private getCollectedCount(): number {
-        return this.fuelCapsules.filter(f => !f.alive).length;
     }
 
     private startNpcWhenPlayerMoves(): void {

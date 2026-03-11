@@ -28,7 +28,7 @@ export class Jukebox {
   private crossfadeSec: number;
   private fadeOutSec: number;
 
-  /* eslint-disable-next-line complexity */
+
   public constructor(opts: JukeboxOpts = {}) {
     /* eslint-disable-next-line
          @typescript-eslint/no-unsafe-member-access,

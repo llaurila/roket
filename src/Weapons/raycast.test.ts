@@ -1,5 +1,6 @@
 /* eslint-disable no-magic-numbers */
 import { expect, test } from "vitest";
+import Fuel from "@/Fuel";
 import Meteor from "@/Meteor";
 import { VacuumOfSpace } from "@/Physics/Environment";
 import PhysicsEngine from "@/Physics/PhysicsEngine";
@@ -43,4 +44,24 @@ test("raycast returns null when no meteor intersects the ray", () => {
     const hit = raycastMeteors(physics, Vector.Zero, Vector.UnitX, 100);
 
     expect(hit).toBeNull();
+});
+
+test("raycast hits fuel capsule before meteor along beam", () => {
+    const physics = new PhysicsEngine(VacuumOfSpace);
+    const fuel = new Fuel(new Vector(10, 0));
+    const meteor = createMeteor(new Vector(24, 0), 4);
+
+    physics.add(fuel);
+    physics.add(meteor);
+
+    const hit = raycastMeteors(physics, Vector.Zero, Vector.UnitX, 100);
+
+    expect(hit).not.toBeNull();
+
+    if (!hit) {
+        throw new Error("Expected a raycast hit.");
+    }
+
+    expect(hit.body).toBe(fuel);
+    expect(hit.distance).toBeLessThan(10);
 });
