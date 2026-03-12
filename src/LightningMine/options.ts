@@ -1,4 +1,5 @@
 import type { IColor } from "@/Graphics/Color";
+import { Config } from "@/config";
 
 const EPSILON = 0.000001;
 
@@ -7,6 +8,9 @@ export interface ILightningMineOptions {
     pulseInterval?: number;
     chargeDuration?: number;
     pulseFlashDuration?: number;
+    shieldDrainPerPulse?: number;
+    velocityMultiplierPerPulse?: number;
+    shieldRechargeLockSeconds?: number;
     lineWidth?: number;
     idleOpacity?: number;
     chargingOpacity?: number;
@@ -26,77 +30,98 @@ export interface ILightningMineOptions {
 
 export type LightningMineResolvedOptions = Required<ILightningMineOptions>;
 
-const DEFAULT_OPTIONS: LightningMineResolvedOptions = {
-    range: 24,
-    pulseInterval: 1.35,
-    chargeDuration: 0.4,
-    pulseFlashDuration: 0.18,
-    lineWidth: 0.25,
-    idleOpacity: 0.35,
-    chargingOpacity: 0.65,
-    pulseOpacity: 0.9,
-    ambientArcCount: 5,
-    ambientArcSpan: 0.5,
-    proximityArcCount: 2,
-    proximityArcSpread: 0.09,
-    proximityRange: 32,
-    maxProximityTargets: 3,
-    arcJitter: 9,
-    arcOvershoot: 6,
-    idleColor: { R: 0.45, G: 0.78, B: 1, A: 1 },
-    chargingColor: { R: 0.76, G: 0.88, B: 1, A: 1 },
-    pulseColor: { R: 1, G: 1, B: 1, A: 1 }
-};
-
 export function resolveLightningMineOptions(
     options: ILightningMineOptions
 ): LightningMineResolvedOptions {
+    const defaults = getLightningMineDefaults();
+
     return {
-        ...DEFAULT_OPTIONS,
+        ...defaults,
         ...options,
-        range: getPositiveOrDefault(options.range, DEFAULT_OPTIONS.range),
+        range: getPositiveOrDefault(options.range, defaults.range),
         pulseInterval: getPositiveOrDefault(
             options.pulseInterval,
-            DEFAULT_OPTIONS.pulseInterval
+            defaults.pulseInterval
         ),
-        chargeDuration: getChargeDuration(options, DEFAULT_OPTIONS),
+        chargeDuration: getChargeDuration(options, defaults),
         pulseFlashDuration: getNonNegativeOrDefault(
             options.pulseFlashDuration,
-            DEFAULT_OPTIONS.pulseFlashDuration
+            defaults.pulseFlashDuration
         ),
-        lineWidth: getPositiveOrDefault(options.lineWidth, DEFAULT_OPTIONS.lineWidth),
-        idleOpacity: getClampedOrDefault(options.idleOpacity, DEFAULT_OPTIONS.idleOpacity),
+        shieldDrainPerPulse: getNonNegativeOrDefault(
+            options.shieldDrainPerPulse,
+            defaults.shieldDrainPerPulse
+        ),
+        velocityMultiplierPerPulse: getClampedOrDefault(
+            options.velocityMultiplierPerPulse,
+            defaults.velocityMultiplierPerPulse
+        ),
+        shieldRechargeLockSeconds: getNonNegativeOrDefault(
+            options.shieldRechargeLockSeconds,
+            defaults.shieldRechargeLockSeconds
+        ),
+        lineWidth: getPositiveOrDefault(options.lineWidth, defaults.lineWidth),
+        idleOpacity: getClampedOrDefault(options.idleOpacity, defaults.idleOpacity),
         chargingOpacity: getClampedOrDefault(
             options.chargingOpacity,
-            DEFAULT_OPTIONS.chargingOpacity
+            defaults.chargingOpacity
         ),
-        pulseOpacity: getClampedOrDefault(options.pulseOpacity, DEFAULT_OPTIONS.pulseOpacity),
+        pulseOpacity: getClampedOrDefault(options.pulseOpacity, defaults.pulseOpacity),
         ambientArcCount: getNonNegativeIntOrDefault(
             options.ambientArcCount,
-            DEFAULT_OPTIONS.ambientArcCount
+            defaults.ambientArcCount
         ),
         proximityArcCount: getNonNegativeIntOrDefault(
             options.proximityArcCount,
-            DEFAULT_OPTIONS.proximityArcCount
+            defaults.proximityArcCount
         ),
         maxProximityTargets: getNonNegativeIntOrDefault(
             options.maxProximityTargets,
-            DEFAULT_OPTIONS.maxProximityTargets
+            defaults.maxProximityTargets
         ),
         ambientArcSpan: getPositiveOrDefault(
             options.ambientArcSpan,
-            DEFAULT_OPTIONS.ambientArcSpan
+            defaults.ambientArcSpan
         ),
         proximityArcSpread: getPositiveOrDefault(
             options.proximityArcSpread,
-            DEFAULT_OPTIONS.proximityArcSpread
+            defaults.proximityArcSpread
         ),
         proximityRange: getPositiveOrDefault(
             options.proximityRange,
-            DEFAULT_OPTIONS.proximityRange
+            defaults.proximityRange
         ),
-        arcJitter: getPositiveOrDefault(options.arcJitter, DEFAULT_OPTIONS.arcJitter),
-        arcOvershoot: getNonNegativeOrDefault(options.arcOvershoot, DEFAULT_OPTIONS.arcOvershoot)
+        arcJitter: getPositiveOrDefault(options.arcJitter, defaults.arcJitter),
+        arcOvershoot: getNonNegativeOrDefault(options.arcOvershoot, defaults.arcOvershoot)
+    };
+}
+
+function getLightningMineDefaults(): LightningMineResolvedOptions {
+    const defaults = Config.lightningMine;
+
+    return {
+        range: defaults.range,
+        pulseInterval: defaults.pulseInterval,
+        chargeDuration: defaults.chargeDuration,
+        pulseFlashDuration: defaults.pulseFlashDuration,
+        shieldDrainPerPulse: defaults.shieldDrainPerPulse,
+        velocityMultiplierPerPulse: defaults.velocityMultiplierPerPulse,
+        shieldRechargeLockSeconds: defaults.shieldRechargeLockSeconds,
+        lineWidth: defaults.lineWidth,
+        idleOpacity: defaults.idleOpacity,
+        chargingOpacity: defaults.chargingOpacity,
+        pulseOpacity: defaults.pulseOpacity,
+        ambientArcCount: defaults.ambientArcCount,
+        ambientArcSpan: defaults.ambientArcSpan,
+        proximityArcCount: defaults.proximityArcCount,
+        proximityArcSpread: defaults.proximityArcSpread,
+        proximityRange: defaults.proximityRange,
+        maxProximityTargets: defaults.maxProximityTargets,
+        arcJitter: defaults.arcJitter,
+        arcOvershoot: defaults.arcOvershoot,
+        idleColor: defaults.idleColor,
+        chargingColor: defaults.chargingColor,
+        pulseColor: defaults.pulseColor
     };
 }
 

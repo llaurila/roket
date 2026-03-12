@@ -204,6 +204,31 @@ export const Config: IConfig = {
         color: { R: 1.0, G: 0.1, B: 0.95, A: 1 }
     },
 
+    lightningMine: {
+        range: 26,
+        pulseInterval: 1.35,
+        chargeDuration: 0.4,
+        pulseFlashDuration: 0.18,
+        shieldDrainPerPulse: 0.18,
+        velocityMultiplierPerPulse: 0.65,
+        shieldRechargeLockSeconds: 0.3,
+        lineWidth: 0.25,
+        idleOpacity: 0.35,
+        chargingOpacity: 0.65,
+        pulseOpacity: 0.9,
+        ambientArcCount: 5,
+        ambientArcSpan: 0.5,
+        proximityArcCount: 2,
+        proximityArcSpread: 0.09,
+        proximityRange: 32,
+        maxProximityTargets: 3,
+        arcJitter: 9,
+        arcOvershoot: 6,
+        idleColor: { R: 0.45, G: 0.78, B: 1, A: 1 },
+        chargingColor: { R: 0.76, G: 0.88, B: 1, A: 1 },
+        pulseColor: { R: 1, G: 1, B: 1, A: 1 }
+    },
+
     meteor: {
         cornerCountMin: 9,
         cornerCountMax: 15,

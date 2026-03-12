@@ -203,6 +203,31 @@ export interface IConfig {
         color: IColor;
     }
 
+    lightningMine: {
+        range: number;
+        pulseInterval: number;
+        chargeDuration: number;
+        pulseFlashDuration: number;
+        shieldDrainPerPulse: number;
+        velocityMultiplierPerPulse: number;
+        shieldRechargeLockSeconds: number;
+        lineWidth: number;
+        idleOpacity: number;
+        chargingOpacity: number;
+        pulseOpacity: number;
+        ambientArcCount: number;
+        ambientArcSpan: number;
+        proximityArcCount: number;
+        proximityArcSpread: number;
+        proximityRange: number;
+        maxProximityTargets: number;
+        arcJitter: number;
+        arcOvershoot: number;
+        idleColor: IColor;
+        chargingColor: IColor;
+        pulseColor: IColor;
+    }
+
     meteor: {
         cornerCountMin: number;
         cornerCountMax: number;
