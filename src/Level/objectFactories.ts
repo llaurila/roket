@@ -10,7 +10,7 @@ import type { GameObject } from "./types";
 export const FUEL_DEFAULT_ANGULAR_VELOCITY = 0.21;
 
 export function createFuelFromObject(o: GameObject): Fuel {
-    const fuel = new Fuel(Vector.fromComponents(o.position));
+    const fuel = new Fuel(getPosition(o));
 
     if (o.props?.amount != undefined) {
         fuel.amount = getNumericValue(
@@ -29,10 +29,13 @@ export function createFuelFromObject(o: GameObject): Fuel {
 }
 
 export function createBeaconFromObject(o: GameObject): Beacon {
-    const beacon = new Beacon(Vector.fromComponents(o.position));
+    const beacon = new Beacon(getPosition(o));
 
     if (o.props?.active !== undefined) {
-        beacon.active = o.props.active as boolean;
+        beacon.active = getBooleanValue(
+            o.props.active,
+            `Beacon '${o.id}' requires props.active to be a boolean.`
+        );
     }
 
     applyBodyKinematics(beacon, o);
@@ -52,7 +55,7 @@ export function createGravityWellFromObject(o: GameObject): GravityWell {
         `Gravity well '${o.id}' requires props.strength.`
     );
 
-    const gravityWell = new GravityWell(Vector.fromComponents(o.position), range, strength);
+    const gravityWell = new GravityWell(getPosition(o), range, strength);
     applyBodyKinematics(gravityWell, o);
     return gravityWell;
 }
@@ -83,11 +86,11 @@ export function createMeteorFromObject(o: GameObject, rng: RNG): Meteor {
         throw new Error(`Meteor '${o.id}' requires props.mass to be > 0.`);
     }
 
-    return new Meteor(Vector.fromComponents(o.position), {
+    return new Meteor(getPosition(o), {
         diameter,
         mass,
         velocity: getVelocity(o),
-        angularVelocity: o.angularVelocity,
+        angularVelocity: getAngularVelocity(o),
         cornerCount,
         strength
     }, rng);
@@ -104,11 +107,42 @@ function getRequiredNumericProp(o: GameObject, key: string, message: string): nu
 }
 
 function getNumericValue(value: unknown, message: string): number {
-    if (typeof value !== "number" || Number.isNaN(value)) {
+    if (typeof value !== "number" || !Number.isFinite(value)) {
         throw new Error(message);
     }
 
     return value;
+}
+
+function getBooleanValue(value: unknown, message: string): boolean {
+    if (typeof value !== "boolean") {
+        throw new Error(message);
+    }
+
+    return value;
+}
+
+function getPosition(o: GameObject): Vector {
+    return getVector(
+        o.position,
+        `Object '${o.id}' requires position as [x, y] finite numbers.`
+    );
+}
+
+function getVector(value: unknown, message: string): Vector {
+    const [x, y] = getVectorComponents(value, message);
+    return new Vector(x, y);
+}
+
+function getVectorComponents(value: unknown, message: string): [number, number] {
+    if (!Array.isArray(value) || value.length < 2) {
+        throw new Error(message);
+    }
+
+    const x = getNumericValue(value[0], message);
+    const y = getNumericValue(value[1], message);
+
+    return [x, y];
 }
 
 function getOptionalCornerCount(o: GameObject): number | undefined {
@@ -160,8 +194,9 @@ function applyBodyKinematics(body: Body, o: GameObject): void {
         body.v = velocity;
     }
 
-    if (o.angularVelocity != undefined) {
-        body.angularVelocity = o.angularVelocity;
+    const angularVelocity = getAngularVelocity(o);
+    if (angularVelocity != undefined) {
+        body.angularVelocity = angularVelocity;
     }
 }
 
@@ -170,6 +205,20 @@ function getVelocity(o: GameObject): Vector | undefined {
         return undefined;
     }
 
-    return Vector.fromComponents(o.velocity);
+    return getVector(
+        o.velocity,
+        `Object '${o.id}' requires velocity as [vx, vy] finite numbers.`
+    );
+}
+
+function getAngularVelocity(o: GameObject): number | undefined {
+    if (o.angularVelocity == undefined) {
+        return undefined;
+    }
+
+    return getNumericValue(
+        o.angularVelocity,
+        `Object '${o.id}' requires angularVelocity to be a finite number.`
+    );
 }
 
