@@ -206,7 +206,9 @@ export const Config: IConfig = {
 
     lightningMine: {
         range: 26,
+        visualRange: 26,
         pulseInterval: 1.35,
+        inRangePulseInterval: 0.75,
         chargeDuration: 0.4,
         pulseFlashDuration: 0.18,
         shieldDrainPerPulse: 0.18,
@@ -220,10 +222,14 @@ export const Config: IConfig = {
         ambientArcSpan: 0.5,
         proximityArcCount: 2,
         proximityArcSpread: 0.09,
+        proximitySpreadJitter: 0.08,
         proximityRange: 32,
         maxProximityTargets: 3,
+        proximityArcReach: 6,
+        proximityArcReachJitter: 8,
         arcJitter: 9,
         arcOvershoot: 6,
+        ambientArcReach: 14,
         idleColor: { R: 0.45, G: 0.78, B: 1, A: 1 },
         chargingColor: { R: 0.76, G: 0.88, B: 1, A: 1 },
         pulseColor: { R: 1, G: 1, B: 1, A: 1 }

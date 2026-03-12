@@ -205,7 +205,9 @@ export interface IConfig {
 
     lightningMine: {
         range: number;
+        visualRange: number;
         pulseInterval: number;
+        inRangePulseInterval: number;
         chargeDuration: number;
         pulseFlashDuration: number;
         shieldDrainPerPulse: number;
@@ -219,10 +221,14 @@ export interface IConfig {
         ambientArcSpan: number;
         proximityArcCount: number;
         proximityArcSpread: number;
+        proximitySpreadJitter: number;
         proximityRange: number;
         maxProximityTargets: number;
+        proximityArcReach: number;
+        proximityArcReachJitter: number;
         arcJitter: number;
         arcOvershoot: number;
+        ambientArcReach: number;
         idleColor: IColor;
         chargingColor: IColor;
         pulseColor: IColor;

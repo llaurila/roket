@@ -5,7 +5,9 @@ const EPSILON = 0.000001;
 
 export interface ILightningMineOptions {
     range?: number;
+    visualRange?: number;
     pulseInterval?: number;
+    inRangePulseInterval?: number;
     chargeDuration?: number;
     pulseFlashDuration?: number;
     shieldDrainPerPulse?: number;
@@ -19,10 +21,14 @@ export interface ILightningMineOptions {
     ambientArcSpan?: number;
     proximityArcCount?: number;
     proximityArcSpread?: number;
+    proximitySpreadJitter?: number;
     proximityRange?: number;
     maxProximityTargets?: number;
+    proximityArcReach?: number;
+    proximityArcReachJitter?: number;
     arcJitter?: number;
     arcOvershoot?: number;
+    ambientArcReach?: number;
     idleColor?: IColor;
     chargingColor?: IColor;
     pulseColor?: IColor;
@@ -39,9 +45,14 @@ export function resolveLightningMineOptions(
         ...defaults,
         ...options,
         range: getPositiveOrDefault(options.range, defaults.range),
+        visualRange: getPositiveOrDefault(options.visualRange, defaults.visualRange),
         pulseInterval: getPositiveOrDefault(
             options.pulseInterval,
             defaults.pulseInterval
+        ),
+        inRangePulseInterval: getPositiveOrDefault(
+            options.inRangePulseInterval,
+            defaults.inRangePulseInterval
         ),
         chargeDuration: getChargeDuration(options, defaults),
         pulseFlashDuration: getNonNegativeOrDefault(
@@ -87,12 +98,28 @@ export function resolveLightningMineOptions(
             options.proximityArcSpread,
             defaults.proximityArcSpread
         ),
+        proximitySpreadJitter: getNonNegativeOrDefault(
+            options.proximitySpreadJitter,
+            defaults.proximitySpreadJitter
+        ),
         proximityRange: getPositiveOrDefault(
             options.proximityRange,
             defaults.proximityRange
         ),
         arcJitter: getPositiveOrDefault(options.arcJitter, defaults.arcJitter),
-        arcOvershoot: getNonNegativeOrDefault(options.arcOvershoot, defaults.arcOvershoot)
+        arcOvershoot: getNonNegativeOrDefault(options.arcOvershoot, defaults.arcOvershoot),
+        proximityArcReach: getNonNegativeOrDefault(
+            options.proximityArcReach,
+            defaults.proximityArcReach
+        ),
+        proximityArcReachJitter: getNonNegativeOrDefault(
+            options.proximityArcReachJitter,
+            defaults.proximityArcReachJitter
+        ),
+        ambientArcReach: getNonNegativeOrDefault(
+            options.ambientArcReach,
+            defaults.ambientArcReach
+        )
     };
 }
 
@@ -101,7 +128,9 @@ function getLightningMineDefaults(): LightningMineResolvedOptions {
 
     return {
         range: defaults.range,
+        visualRange: defaults.visualRange,
         pulseInterval: defaults.pulseInterval,
+        inRangePulseInterval: defaults.inRangePulseInterval,
         chargeDuration: defaults.chargeDuration,
         pulseFlashDuration: defaults.pulseFlashDuration,
         shieldDrainPerPulse: defaults.shieldDrainPerPulse,
@@ -115,10 +144,14 @@ function getLightningMineDefaults(): LightningMineResolvedOptions {
         ambientArcSpan: defaults.ambientArcSpan,
         proximityArcCount: defaults.proximityArcCount,
         proximityArcSpread: defaults.proximityArcSpread,
+        proximitySpreadJitter: defaults.proximitySpreadJitter,
         proximityRange: defaults.proximityRange,
         maxProximityTargets: defaults.maxProximityTargets,
+        proximityArcReach: defaults.proximityArcReach,
+        proximityArcReachJitter: defaults.proximityArcReachJitter,
         arcJitter: defaults.arcJitter,
         arcOvershoot: defaults.arcOvershoot,
+        ambientArcReach: defaults.ambientArcReach,
         idleColor: defaults.idleColor,
         chargingColor: defaults.chargingColor,
         pulseColor: defaults.pulseColor

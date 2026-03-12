@@ -13,7 +13,9 @@ import type { GameObject } from "./types";
 export const FUEL_DEFAULT_ANGULAR_VELOCITY = 0.21;
 
 const LIGHTNING_MINE_NUMERIC_OPTION_KEYS = [
+    "visualRange",
     "pulseInterval",
+    "inRangePulseInterval",
     "chargeDuration",
     "pulseFlashDuration",
     "shieldDrainPerPulse",
@@ -27,10 +29,14 @@ const LIGHTNING_MINE_NUMERIC_OPTION_KEYS = [
     "ambientArcSpan",
     "proximityArcCount",
     "proximityArcSpread",
+    "proximitySpreadJitter",
     "proximityRange",
     "maxProximityTargets",
+    "proximityArcReach",
+    "proximityArcReachJitter",
     "arcJitter",
-    "arcOvershoot"
+    "arcOvershoot",
+    "ambientArcReach"
 ] as const;
 
 const LIGHTNING_MINE_COLOR_OPTION_KEYS = [

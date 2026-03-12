@@ -12,6 +12,7 @@ import GameOfTag from "@/Levels/GameOfTag";
 import FuelRush from "@/Levels/FuelRush";
 import HotLap from "@/Levels/HotLap";
 import GravityHarvest from "@/Levels/GravityHarvest";
+import LightningMineIntro from "@/Levels/LightningMineIntro";
 import MeteorField from "@/Levels/MeteorField";
 import BlockadeRun from "@/Levels/BlockadeRun";
 import {
@@ -36,6 +37,7 @@ const levelTypes = [
     HotLap,
     FuelRush,
     GravityHarvest,
+    LightningMineIntro,
     MeteorField,
     BlockadeRun
 ];

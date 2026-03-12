@@ -1,0 +1,47 @@
+name: "LEVEL 9: LIGHTNING MINE"
+description: >
+  THE ELECTRIC MINE PULSES AND DRAINS YOUR SHIELD IN RANGE.
+  COLLECT BOTH FUEL CAPSULES (${collected}/${total}) BY DIVING IN,
+  RETREATING TO RECHARGE, AND RETURNING FOR THE SECOND CAPSULE.
+
+soundtrack: focus
+
+ship:
+  fuelTank:
+    currentAmount: 170
+  shield:
+    enabled: true
+
+objects:
+  - id: mine
+    type: lightning-mine
+    position: [0, 165]
+    props:
+      range: 50
+      visualRange: 26
+      pulseInterval: 1.35
+      inRangePulseInterval: 0.45
+      chargeDuration: 0.4
+      shieldDrainPerPulse: 0.1
+      velocityMultiplierPerPulse: 0.65
+      shieldRechargeLockSeconds: 0.3
+      proximityRange: 60
+      arcOvershoot: 16
+      proximityArcReach: 20
+      proximityArcReachJitter: 16
+      proximitySpreadJitter: 0.22
+      proximityArcCount: 3
+      ambientArcReach: 38
+  - id: fuel-a
+    type: fuel
+    position: [-200, 165]
+    angularVelocity: 0.25
+  - id: fuel-b
+    type: fuel
+    position: [200, 165]
+    angularVelocity: -0.25
+
+objectives:
+  - id: collect-fuel
+    title: COLLECT BOTH FUEL CAPSULES (${collected}/${total})
+    externalSuccessCheck: allCollected

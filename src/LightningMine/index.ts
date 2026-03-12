@@ -6,6 +6,7 @@ import { getColorString, type IColor } from "@/Graphics/Color";
 import Body from "@/Physics/Body";
 import Vector from "@/Physics/Vector";
 import Ship from "@/Ship";
+import { applyLightningMinePulseToShip } from "./effects";
 import {
     AMBIENT_PHASE_OFFSET,
     AMBIENT_ROTATION_SPEED,
@@ -22,12 +23,7 @@ import {
     type ILightningMineOptions,
     type LightningMineResolvedOptions
 } from "./options";
-
-export enum LightningMineState {
-    Idle,
-    Charging,
-    Pulse
-}
+import { LightningMineState } from "./state";
 
 export class LightningMine extends Body implements IDrawable {
     public graphics?: Graphics;
@@ -59,7 +55,8 @@ export class LightningMine extends Body implements IDrawable {
 
     public draw(viewport: Viewport): void {
         const center = viewport.toScreenCoordinates(this.pos);
-        const radius = viewport.toScreenScale(this.options.range);
+        const radius = viewport.toScreenScale(this.options.visualRange);
+        const ambientReach = viewport.toScreenScale(this.options.ambientArcReach);
 
         const { ctx } = viewport;
 
@@ -67,7 +64,7 @@ export class LightningMine extends Body implements IDrawable {
         ctx.lineWidth = Math.max(MIN_LINE_WIDTH, viewport.toScreenScale(this.options.lineWidth));
 
         this.drawRing(ctx, center, radius);
-        this.drawAmbientArcs(ctx, center, radius);
+        this.drawAmbientArcs(ctx, center, radius, ambientReach);
         this.drawProximityArcs(viewport, ctx, center, radius);
 
         ctx.restore();
@@ -90,8 +87,10 @@ export class LightningMine extends Body implements IDrawable {
 
         this.cycleTime += dt;
 
-        while (this.cycleTime >= this.options.pulseInterval) {
-            this.cycleTime -= this.options.pulseInterval;
+        const activeInterval = this.getActivePulseInterval();
+
+        while (this.cycleTime >= activeInterval) {
+            this.cycleTime -= activeInterval;
             this.triggerPulse();
         }
     }
@@ -99,8 +98,18 @@ export class LightningMine extends Body implements IDrawable {
     private triggerPulse(): void {
         this.pulseFlash = this.options.pulseFlashDuration;
 
+        this.applyPulseEffects();
+
         for (const callback of this.pulseCallbacks) {
             callback();
+        }
+    }
+
+    private applyPulseEffects(): void {
+        const targets = this.getShipsInRange(this.options.range);
+
+        for (const ship of targets) {
+            applyLightningMinePulseToShip(ship, this.options);
         }
     }
 
@@ -109,11 +118,19 @@ export class LightningMine extends Body implements IDrawable {
             return LightningMineState.Pulse;
         }
 
-        const chargeStart = this.options.pulseInterval - this.options.chargeDuration;
+        const chargeStart = this.getActivePulseInterval() - this.options.chargeDuration;
 
         return this.cycleTime >= chargeStart
             ? LightningMineState.Charging
             : LightningMineState.Idle;
+    }
+
+    private getActivePulseInterval(): number {
+        const hasTargetsInRange = this.getShipsInRange(this.options.range).length > 0;
+
+        return hasTargetsInRange
+            ? this.options.inRangePulseInterval
+            : this.options.pulseInterval;
     }
 
     private drawRing(ctx: CanvasRenderingContext2D, center: Vector, radius: number): void {
@@ -124,7 +141,12 @@ export class LightningMine extends Body implements IDrawable {
         ctx.stroke();
     }
 
-    private drawAmbientArcs(ctx: CanvasRenderingContext2D, center: Vector, radius: number): void {
+    private drawAmbientArcs(
+        ctx: CanvasRenderingContext2D,
+        center: Vector,
+        radius: number,
+        ambientReach: number
+    ): void {
         const count = this.options.ambientArcCount;
         const step = FULL_CIRCLE / Math.max(1, count);
 
@@ -133,7 +155,7 @@ export class LightningMine extends Body implements IDrawable {
             const endAngle = angle + this.options.ambientArcSpan;
 
             const start = center.add(Vector.UnitX.rotate(angle).mul(radius));
-            const end = center.add(Vector.UnitX.rotate(endAngle).mul(radius));
+            const end = center.add(Vector.UnitX.rotate(endAngle).mul(radius + ambientReach));
 
             this.drawArc(ctx, start, end, i + 1, 1);
         }
@@ -169,7 +191,7 @@ export class LightningMine extends Body implements IDrawable {
 
         const proximity = this.getProximityStrength(ship);
         const baseDirection = toShip.div(distance);
-        const overshoot = viewport.toScreenScale(this.options.arcOvershoot);
+        const overshoot = this.getProximityOvershoot(viewport, proximity);
 
         for (let i = 0; i < this.options.proximityArcCount; i++) {
             const spread = this.getProximitySpread(i);
@@ -266,15 +288,32 @@ export class LightningMine extends Body implements IDrawable {
     private getProximitySpread(index: number): number {
         const count = this.options.proximityArcCount;
         const center = (count - 1) / 2;
-        return (index - center) * this.options.proximityArcSpread;
+        const base = (index - center) * this.options.proximityArcSpread;
+        const jitter = this.getProximitySpreadJitter(index);
+        return base + jitter;
+    }
+
+    private getProximitySpreadJitter(index: number): number {
+        const phase = this.time * JITTER_TIME_SCALE + index * AMBIENT_PHASE_OFFSET * 7;
+        return Math.sin(phase) * this.options.proximitySpreadJitter;
+    }
+
+    private getProximityOvershoot(viewport: Viewport, proximity: number): number {
+        const base = this.options.arcOvershoot + this.options.proximityArcReach;
+        const jitter = Math.sin(this.time * JITTER_TIME_SCALE * 0.75) *
+            this.options.proximityArcReachJitter * proximity;
+
+        return viewport.toScreenScale(Math.max(0, base + jitter));
     }
 
     private getProximityTargets(): Ship[] {
+        return this.getShipsInRange(this.options.proximityRange);
+    }
+
+    private getShipsInRange(range: number): Ship[] {
         if (!this.physics) {
             return [];
         }
-
-        const range = this.options.proximityRange;
 
         return this.physics
             .filter((obj): obj is Ship => obj instanceof Ship && obj.alive)
@@ -290,3 +329,4 @@ function withOpacity(color: IColor, alpha: number): IColor {
 }
 
 export default LightningMine;
+export { LightningMineState };
