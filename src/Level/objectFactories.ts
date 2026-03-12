@@ -1,6 +1,9 @@
 import { Beacon } from "@/Beacon";
 import Fuel from "@/Fuel";
 import { GravityWell } from "@/GravityWell";
+import LightningMine from "@/LightningMine";
+import type { IColor } from "@/Graphics/Color";
+import type { ILightningMineOptions } from "@/LightningMine/options";
 import Meteor from "@/Meteor";
 import type Body from "@/Physics/Body";
 import Vector from "@/Physics/Vector";
@@ -8,6 +11,36 @@ import type RNG from "@/RNG";
 import type { GameObject } from "./types";
 
 export const FUEL_DEFAULT_ANGULAR_VELOCITY = 0.21;
+
+const LIGHTNING_MINE_NUMERIC_OPTION_KEYS = [
+    "pulseInterval",
+    "chargeDuration",
+    "pulseFlashDuration",
+    "shieldDrainPerPulse",
+    "velocityMultiplierPerPulse",
+    "shieldRechargeLockSeconds",
+    "lineWidth",
+    "idleOpacity",
+    "chargingOpacity",
+    "pulseOpacity",
+    "ambientArcCount",
+    "ambientArcSpan",
+    "proximityArcCount",
+    "proximityArcSpread",
+    "proximityRange",
+    "maxProximityTargets",
+    "arcJitter",
+    "arcOvershoot"
+] as const;
+
+const LIGHTNING_MINE_COLOR_OPTION_KEYS = [
+    "idleColor",
+    "chargingColor",
+    "pulseColor"
+] as const;
+
+type LightningMineNumericOptionKey = typeof LIGHTNING_MINE_NUMERIC_OPTION_KEYS[number];
+type LightningMineColorOptionKey = typeof LIGHTNING_MINE_COLOR_OPTION_KEYS[number];
 
 export function createFuelFromObject(o: GameObject): Fuel {
     const fuel = new Fuel(getPosition(o));
@@ -58,6 +91,30 @@ export function createGravityWellFromObject(o: GameObject): GravityWell {
     const gravityWell = new GravityWell(getPosition(o), range, strength);
     applyBodyKinematics(gravityWell, o);
     return gravityWell;
+}
+
+export function createLightningMineFromObject(o: GameObject): LightningMine {
+    const range = getRequiredNumericProp(
+        o,
+        "range",
+        `Lightning mine '${o.id}' requires props.range.`
+    );
+
+    if (range <= 0) {
+        throw new Error(`Lightning mine '${o.id}' requires props.range to be > 0.`);
+    }
+
+    const options: ILightningMineOptions = {
+        range
+    };
+
+    addLightningMineNumericOptions(options, o);
+    addLightningMineColorOptions(options, o);
+
+    const lightningMine = new LightningMine(getPosition(o), options);
+    applyBodyKinematics(lightningMine, o);
+
+    return lightningMine;
 }
 
 export function createMeteorFromObject(o: GameObject, rng: RNG): Meteor {
@@ -112,6 +169,71 @@ function getNumericValue(value: unknown, message: string): number {
     }
 
     return value;
+}
+
+function addLightningMineNumericOptions(options: ILightningMineOptions, o: GameObject): void {
+    for (const key of LIGHTNING_MINE_NUMERIC_OPTION_KEYS) {
+        const value = getOptionalLightningMineNumericOption(o, key);
+        if (value != undefined) {
+            options[key] = value;
+        }
+    }
+}
+
+function getOptionalLightningMineNumericOption(
+    o: GameObject,
+    key: LightningMineNumericOptionKey
+): number | undefined {
+    const value = o.props?.[key];
+
+    if (value == undefined) {
+        return undefined;
+    }
+
+    return getNumericValue(
+        value,
+        `Lightning mine '${o.id}' requires props.${key} to be a number.`
+    );
+}
+
+function addLightningMineColorOptions(options: ILightningMineOptions, o: GameObject): void {
+    for (const key of LIGHTNING_MINE_COLOR_OPTION_KEYS) {
+        const value = getOptionalLightningMineColorOption(o, key);
+        if (value != undefined) {
+            options[key] = value;
+        }
+    }
+}
+
+function getOptionalLightningMineColorOption(
+    o: GameObject,
+    key: LightningMineColorOptionKey
+): IColor | undefined {
+    const value = o.props?.[key];
+
+    if (value == undefined) {
+        return undefined;
+    }
+
+    return getColorValue(
+        value,
+        `Lightning mine '${o.id}' requires props.${key} as { R, G, B, A }.`
+    );
+}
+
+function getColorValue(value: unknown, message: string): IColor {
+    if (!value || typeof value !== "object") {
+        throw new Error(message);
+    }
+
+    const color = value as Record<string, unknown>;
+
+    return {
+        R: getNumericValue(color.R, message),
+        G: getNumericValue(color.G, message),
+        B: getNumericValue(color.B, message),
+        A: getNumericValue(color.A, message)
+    };
 }
 
 function getBooleanValue(value: unknown, message: string): boolean {

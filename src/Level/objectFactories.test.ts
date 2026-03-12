@@ -4,6 +4,7 @@ import {
     createBeaconFromObject,
     createFuelFromObject,
     createGravityWellFromObject,
+    createLightningMineFromObject,
     createMeteorFromObject
 } from "@/Level/objectFactories";
 import type { GameObject } from "@/Level/types";
@@ -94,4 +95,44 @@ test("meteor factory rejects non-finite mass", () => {
     } as unknown as GameObject;
 
     expect(() => createMeteorFromObject(object, new RNG(1))).toThrow(/props\.mass/);
+});
+
+test("lightning mine factory validates range and applies optional overrides", () => {
+    const object: GameObject = {
+        ...createBaseObject("lightning-mine"),
+        props: {
+            range: 26,
+            pulseInterval: 1.1,
+            shieldDrainPerPulse: 0.2,
+            idleColor: { R: 0.2, G: 0.7, B: 1, A: 0.8 }
+        }
+    };
+
+    const mine = createLightningMineFromObject(object);
+
+    expect(mine.pos.x).toBe(0);
+    expect(mine.pos.y).toBe(0);
+    expect(mine.getPulseState()).toBeDefined();
+
+    expect(() => createLightningMineFromObject({
+        ...createBaseObject("lightning-mine"),
+        props: {
+            pulseInterval: 1.2
+        }
+    })).toThrow(/props\.range/);
+
+    expect(() => createLightningMineFromObject({
+        ...createBaseObject("lightning-mine"),
+        props: {
+            range: -1
+        }
+    })).toThrow(/props\.range to be > 0/);
+
+    expect(() => createLightningMineFromObject({
+        ...createBaseObject("lightning-mine"),
+        props: {
+            range: 20,
+            idleColor: { R: 1, G: 1, B: 1 }
+        }
+    })).toThrow(/props\.idleColor/);
 });

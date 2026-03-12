@@ -11,6 +11,7 @@ import {
     createBeaconFromObject,
     createFuelFromObject,
     createGravityWellFromObject,
+    createLightningMineFromObject,
     createMeteorFromObject
 } from "./objectFactories";
 
@@ -203,6 +204,8 @@ abstract class DataLevel extends Level {
             fuel: this.createFuel.bind(this),
             beacon: this.createBeacon.bind(this),
             meteor: this.createMeteor.bind(this),
+            lightningMine: this.createLightningMine.bind(this),
+            "lightning-mine": this.createLightningMine.bind(this),
             gravityWell: this.createGravityWell.bind(this),
             "gravity-well": this.createGravityWell.bind(this)
         };
@@ -231,6 +234,12 @@ abstract class DataLevel extends Level {
         const gravityWell = createGravityWellFromObject(o);
         this.objects[o.id] = gravityWell;
         this.addGravityWell(gravityWell);
+    }
+
+    private createLightningMine(o: GameObject) {
+        const lightningMine = createLightningMineFromObject(o);
+        this.objects[o.id] = lightningMine;
+        this.addLightningMine(lightningMine);
     }
 
     private createMeteor(o: GameObject) {

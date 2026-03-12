@@ -1,5 +1,7 @@
 # Step 5 - Level Data and Factories
 
+Status: completed
+
 ## Purpose
 
 Make lightning mines spawnable from YAML level data.
@@ -23,3 +25,16 @@ Make lightning mines spawnable from YAML level data.
 
 - A YAML object with `type: lightning-mine` spawns correctly.
 - Invalid props fail with clear error messages.
+
+## Implementation Notes
+
+- Added `createLightningMineFromObject(o)` in `src/Level/objectFactories.ts`.
+  - Requires `props.range` and validates it as `> 0`.
+  - Supports optional numeric overrides (timings, gameplay, visual tunables).
+  - Supports optional color overrides (`idleColor`, `chargingColor`, `pulseColor`).
+  - Applies shared body kinematics validation for velocity/angularVelocity.
+- Registered object type factories in `src/Level/DataLevel.ts`:
+  - `lightning-mine`
+  - `lightningMine`
+- Added `addLightningMine()` helper in `src/Level/index.ts`.
+- Extended tests in `src/Level/objectFactories.test.ts` for lightning mine factory validation.

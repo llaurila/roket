@@ -16,6 +16,7 @@ import { Hud } from "../components/Hud";
 import { Viewport } from "@/Graphics/Viewport";
 import type { Beacon } from "@/Beacon";
 import type { GravityWell } from "@/GravityWell";
+import type LightningMine from "@/LightningMine";
 import type Meteor from "@/Meteor";
 import { Player } from "@/Player";
 import { globalJukebox } from "@/Sounds/global-jukebox";
@@ -115,6 +116,11 @@ abstract class Level extends EventTarget {
     public addGravityWell(gravityWell: GravityWell): void {
         this.physics.add(gravityWell);
         this.graphics.add(gravityWell);
+    }
+
+    public addLightningMine(lightningMine: LightningMine): void {
+        this.physics.add(lightningMine);
+        this.graphics.add(lightningMine);
     }
 
     public addMeteor(meteor: Meteor): void {
