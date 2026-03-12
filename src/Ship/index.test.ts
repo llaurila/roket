@@ -35,3 +35,39 @@ test("shield recharge waits for lock delay", () => {
     ship.update(0, Config.ship.shield.rechargeDelay + 1);
     expect(ship.getShieldIntegrity()).toBeGreaterThan(damagedIntegrity);
 });
+
+test("applyVelocityDamp clamps multiplier and scales velocity", () => {
+    const ship = new Ship(Vector.Zero);
+    ship.v = new Vector(10, -4);
+
+    ship.applyVelocityDamp(0.5);
+
+    expect(ship.v.x).toBe(5);
+    expect(ship.v.y).toBe(-2);
+
+    ship.applyVelocityDamp(-1);
+    expect(ship.v.length()).toBe(0);
+});
+
+test("drainShield depletes integrity and can destroy ship", () => {
+    const ship = new Ship(Vector.Zero);
+    ship.enableShield(0.3);
+
+    ship.drainShield(0.1, 1);
+    expect(ship.alive).toBe(true);
+    expect(ship.getShieldIntegrity()).toBeCloseTo(0.2, 6);
+
+    ship.drainShield(1);
+    expect(ship.alive).toBe(false);
+    expect(ship.getShieldIntegrity()).toBe(0);
+});
+
+test("drainShield is ignored when shield is disabled", () => {
+    const ship = new Ship(Vector.Zero);
+    ship.v = new Vector(4, 0);
+
+    ship.drainShield(0.5, 1);
+
+    expect(ship.alive).toBe(true);
+    expect(ship.getShieldIntegrity()).toBe(0);
+});

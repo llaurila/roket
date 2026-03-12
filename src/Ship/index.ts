@@ -94,24 +94,35 @@ class Ship extends Body implements IShip, IDrawable {
         return this.shieldCollider.radius;
     }
 
+    public applyVelocityDamp(multiplier: number): void {
+        if (!this.alive) {
+            return;
+        }
+
+        const clampedMultiplier = Math.max(0, Math.min(multiplier, 1));
+        this.v = this.v.mul(clampedMultiplier);
+    }
+
+    public drainShield(amount: number, rechargeLock = 0): void {
+        if (!this.canDrainShield()) {
+            return;
+        }
+
+        const clampedDrain = this.getDrainAmount(amount);
+        if (clampedDrain === 0) {
+            return;
+        }
+
+        this.applyShieldDrain(clampedDrain, rechargeLock);
+    }
+
     public absorbShieldImpact(relativeSpeed: number): void {
         if (!this.alive || !this.shieldEnabled) {
             return;
         }
 
-        this.shieldFlashIntensity = SHIELD_FLASH_MAX;
-        this.shieldRechargeLock = ship.shield.rechargeDelay;
-
         const damage = this.getShieldDamage(relativeSpeed);
-        if (damage <= 0) {
-            return;
-        }
-
-        this.shieldIntegrity = this.clampShieldIntegrity(this.shieldIntegrity - damage);
-
-        if (this.shieldIntegrity === 0) {
-            this.die();
-        }
+        this.drainShield(damage, ship.shield.rechargeDelay);
     }
 
     public die(): void {
@@ -192,6 +203,24 @@ class Ship extends Body implements IShip, IDrawable {
         const effectiveSpeed = Math.max(0, relativeSpeed - ship.shield.minImpactSpeed);
 
         return effectiveSpeed * effectiveSpeed * ship.shield.impactDamageScale;
+    }
+
+    private canDrainShield(): boolean {
+        return this.alive && this.shieldEnabled;
+    }
+
+    private getDrainAmount(amount: number): number {
+        return Math.max(0, amount);
+    }
+
+    private applyShieldDrain(amount: number, rechargeLock: number): void {
+        this.shieldFlashIntensity = SHIELD_FLASH_MAX;
+        this.shieldRechargeLock = Math.max(this.shieldRechargeLock, Math.max(0, rechargeLock));
+        this.shieldIntegrity = this.clampShieldIntegrity(this.shieldIntegrity - amount);
+
+        if (this.shieldIntegrity === 0) {
+            this.die();
+        }
     }
 
     private clampShieldIntegrity(value: number): number {
