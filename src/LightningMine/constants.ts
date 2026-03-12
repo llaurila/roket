@@ -1,0 +1,9 @@
+export const FULL_CIRCLE = Math.PI * 2;
+export const MIN_LINE_WIDTH = 1;
+export const EPSILON = 0.000001;
+export const ARC_SEGMENTS = 6;
+export const AMBIENT_ROTATION_SPEED = 1.8;
+export const AMBIENT_PHASE_OFFSET = 0.73;
+export const JITTER_TIME_SCALE = 14;
+export const JITTER_PHASE_OFFSET = 0.97;
+export const DISTANCE_FOR_FULL_JITTER = 120;

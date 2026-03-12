@@ -1,5 +1,7 @@
 # Step 2 - Lightning Mine Core Object
 
+Status: completed
+
 ## Purpose
 
 Implement the hazard entity that owns timing, visual zaps, and pulse emission.
@@ -28,3 +30,19 @@ Implement the hazard entity that owns timing, visual zaps, and pulse emission.
 - Mine visibly crackles at all times.
 - Proximity visuals react when ships approach.
 - Pulse state is distinct and reusable by gameplay effect logic.
+
+## Implementation Notes
+
+- Implemented new module:
+  - `src/LightningMine/index.ts`
+  - `src/LightningMine/options.ts`
+  - `src/LightningMine/constants.ts`
+- Added pulse lifecycle state enum (`Idle`, `Charging`, `Pulse`) and timer-driven transitions.
+- Added `onPulse()` callback registration to allow later gameplay-effect wiring.
+- Added ambient arc rendering and proximity arc rendering against nearby ships.
+- Added deterministic option resolver that clamps invalid values to safe defaults.
+- Added focused tests in `src/LightningMine.test.ts` for:
+  - state transition behavior
+  - pulse callback cadence
+  - proximity target acquisition
+  - option clamping safety
