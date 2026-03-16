@@ -218,7 +218,7 @@ export const Config: IConfig = {
         idleOpacity: 0.35,
         chargingOpacity: 0.65,
         pulseOpacity: 0.9,
-        ambientArcCount: 5,
+        ambientArcCount: 10,
         ambientArcSpan: 0.5,
         proximityArcCount: 2,
         proximityArcSpread: 0.09,

@@ -14,8 +14,6 @@ import {
     DISTANCE_FOR_FULL_JITTER,
     EPSILON,
     FULL_CIRCLE,
-    JITTER_PHASE_OFFSET,
-    JITTER_TIME_SCALE,
     MIN_LINE_WIDTH
 } from "./constants";
 import {
@@ -24,6 +22,17 @@ import {
     type LightningMineResolvedOptions
 } from "./options";
 import { LightningMineState } from "./state";
+import {
+    getArcForwardOffset,
+    getArcOffset,
+    getLightningBranchOffset,
+    getProximityEndJitter,
+    getProximityOvershoot,
+    getProximitySpreadJitter,
+    shouldSpawnLightningBranch
+} from "./arcNoise";
+
+const LIGHTNING_BRANCH_CHANCE = 0.52;
 
 export class LightningMine extends Body implements IDrawable {
     public graphics?: Graphics;
@@ -191,16 +200,32 @@ export class LightningMine extends Body implements IDrawable {
 
         const proximity = this.getProximityStrength(ship);
         const baseDirection = toShip.div(distance);
-        const overshoot = this.getProximityOvershoot(viewport, proximity);
+        const overshoot = getProximityOvershoot(
+            viewport,
+            proximity,
+            this.options.arcOvershoot,
+            this.options.proximityArcReach,
+            this.options.proximityArcReachJitter,
+            this.time
+        );
 
         for (let i = 0; i < this.options.proximityArcCount; i++) {
-            const spread = this.getProximitySpread(i);
+            const seed = (i + 1) * 13;
+            const spread = this.getProximitySpread(i, proximity, seed);
             const direction = baseDirection.rotate(spread);
 
             const start = center.add(direction.mul(radius));
-            const end = shipPos.add(direction.mul(overshoot));
+            const endJitter = getProximityEndJitter(
+                viewport,
+                seed,
+                proximity,
+                direction,
+                this.options.proximityArcReachJitter,
+                this.time
+            );
+            const end = shipPos.add(direction.mul(overshoot)).add(endJitter);
 
-            this.drawArc(ctx, start, end, (i + 1) * 13, proximity);
+            this.drawArc(ctx, start, end, seed, proximity);
         }
     }
 
@@ -229,9 +254,29 @@ export class LightningMine extends Body implements IDrawable {
         for (let i = 1; i < ARC_SEGMENTS; i++) {
             const t = i / ARC_SEGMENTS;
             const basePoint = start.add(delta.mul(t));
-            const offset = this.getArcOffset(seed, i, jitterScale);
-            const point = basePoint.add(normal.mul(offset));
+            const offset = getArcOffset(seed, i, jitterScale, intensity, this.time);
+            const forwardOffset = getArcForwardOffset(seed, i, jitterScale, this.time);
+            const point = basePoint
+                .add(normal.mul(offset))
+                .add(tangent.mul(forwardOffset));
+
             ctx.lineTo(point.x, point.y);
+
+            if (shouldSpawnLightningBranch(seed, i, this.time, LIGHTNING_BRANCH_CHANCE)) {
+                const branchSeed = seed * 31 + i;
+                const branchOffset = getLightningBranchOffset(
+                    tangent,
+                    distance,
+                    intensity,
+                    branchSeed,
+                    i,
+                    this.time
+                );
+                const branchEnd = point.add(branchOffset);
+
+                ctx.moveTo(point.x, point.y);
+                ctx.lineTo(branchEnd.x, branchEnd.y);
+            }
         }
 
         ctx.lineTo(end.x, end.y);
@@ -244,14 +289,9 @@ export class LightningMine extends Body implements IDrawable {
         return drift + index * step + Math.sin(this.time + phase) * this.options.proximityArcSpread;
     }
 
-    private getArcOffset(seed: number, segment: number, jitterScale: number): number {
-        const phase = seed + segment * JITTER_PHASE_OFFSET + this.time * JITTER_TIME_SCALE;
-        return Math.sin(phase) * jitterScale;
-    }
-
     private getJitterScale(distance: number, intensity: number): number {
         const distanceScale = Math.min(1, distance / DISTANCE_FOR_FULL_JITTER);
-        return this.options.arcJitter * distanceScale * intensity;
+        return this.options.arcJitter * distanceScale * (0.45 + intensity * 1.25);
     }
 
     private getRingColor(): IColor {
@@ -285,25 +325,19 @@ export class LightningMine extends Body implements IDrawable {
         return Math.max(0.3, relative);
     }
 
-    private getProximitySpread(index: number): number {
+    private getProximitySpread(index: number, proximity: number, seed: number): number {
         const count = this.options.proximityArcCount;
         const center = (count - 1) / 2;
         const base = (index - center) * this.options.proximityArcSpread;
-        const jitter = this.getProximitySpreadJitter(index);
+
+        const jitter = getProximitySpreadJitter(
+            index,
+            proximity,
+            seed,
+            this.options.proximitySpreadJitter,
+            this.time
+        );
         return base + jitter;
-    }
-
-    private getProximitySpreadJitter(index: number): number {
-        const phase = this.time * JITTER_TIME_SCALE + index * AMBIENT_PHASE_OFFSET * 7;
-        return Math.sin(phase) * this.options.proximitySpreadJitter;
-    }
-
-    private getProximityOvershoot(viewport: Viewport, proximity: number): number {
-        const base = this.options.arcOvershoot + this.options.proximityArcReach;
-        const jitter = Math.sin(this.time * JITTER_TIME_SCALE * 0.75) *
-            this.options.proximityArcReachJitter * proximity;
-
-        return viewport.toScreenScale(Math.max(0, base + jitter));
     }
 
     private getProximityTargets(): Ship[] {
