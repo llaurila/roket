@@ -7,6 +7,10 @@ const SHORT_DURATION = 0.05;
 const LONG_DURATION = 0.4;
 const FADE_TIME_SEC = 0.05;
 
+type LegacyAudioWindow = Window & {
+    webkitAudioContext?: new () => AudioContext;
+};
+
 const clampVolume = (value: number) => Math.min(1, Math.max(0, value));
 
 export class SoundEffects {
@@ -269,12 +273,10 @@ export class SoundEffects {
             return null;
         }
 
-        /* eslint-disable-next-line
-            @typescript-eslint/no-unsafe-member-access,
-            @typescript-eslint/no-explicit-any */
-        const AudioContextImpl = window.AudioContext || (window as any).webkitAudioContext;
+        const legacyWindow = window as LegacyAudioWindow;
+        const AudioContextImpl = window.AudioContext || legacyWindow.webkitAudioContext || null;
 
-        return AudioContextImpl as (new () => AudioContext) | null;
+        return AudioContextImpl;
     }
 
     private initializeAudioGraph(AudioContextImpl: new () => AudioContext): void {

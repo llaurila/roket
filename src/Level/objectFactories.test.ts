@@ -36,10 +36,10 @@ test("factory accepts valid finite kinematic inputs", () => {
 });
 
 test("factory rejects non-finite position values", () => {
-    const object = {
+    const object: GameObject = {
         ...createBaseObject("fuel"),
         position: [Infinity, 0]
-    } as unknown as GameObject;
+    };
 
     expect(() => createFuelFromObject(object)).toThrow(/position/);
 });
