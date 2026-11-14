@@ -62,3 +62,16 @@ Custom Tab), install Roket from Chrome's menu, and launch it from its Home Scree
 The web app manifest requests fullscreen display when installed.
 
 Many people find the linter a bit sadistic, especially the _complexity_ rule. Sorry (not sorry).
+
+## Deploy
+
+The production Amplify app uses manual deployments; pushing to GitHub does not
+deploy it. To build and deploy from PowerShell, install the AWS CLI and configure
+the `laurila` profile with access to the app, then run:
+
+```powershell
+./deploy.ps1
+```
+
+The script deploys the current working tree to the `main` production branch in
+`eu-north-1` and waits for the deployment result. It does not push to GitHub.
