@@ -1,5 +1,7 @@
 import Game from "@/Game";
 import Keys from "../../Controls/Keys";
+import Pointer from "@/Controls/Pointer";
+import { hasTouchScreen } from "@/Controls/Device";
 import { panTowardsShip } from "../../cinematics";
 import { drawFps, drawNpcAiDebug } from "../../debug";
 import Introduction from "@/Levels/Introduction";
@@ -21,6 +23,13 @@ import {
     hasNextLevel,
     hasPreviousLevel,
 } from "./levelNavigation";
+
+const TOUCH_GUIDE_DURATION = 10;
+const TOUCH_GUIDE_FADE_DURATION = 2;
+const TOUCH_GUIDE_RADIUS = 42;
+const TOUCH_GUIDE_OPACITY = 0.12;
+const TOUCH_GUIDE_X_RATIO = 0.25;
+const TOUCH_GUIDE_Y_RATIO = 0.8;
 
 const restartButton = () => Keys.wasPressed("Escape");
 const continueButton = () => Keys.wasPressed("Enter");
@@ -45,6 +54,14 @@ const levelTypes = [
 let currentLevel = 0;
 
 export function loadLevel(number: number) {
+    Pointer.ignoreCurrentTouches();
+    const showTouchGuide = hasTouchScreen();
+    let levelTime = 0;
+    let touchGuideStartTime: number | null = null;
+    const initialTouchPressId = Pointer.getTouchPressId();
+    let touchContinueReady = false;
+    let touchPressIdWhenReady = initialTouchPressId;
+
     if (number < 0 || number >= levelTypes.length) {
         window.document.body.innerHTML = "<h1>Invalid level number</h1>";
         throw new Error(`Invalid level number: ${number}`);
@@ -66,6 +83,10 @@ export function loadLevel(number: number) {
     game.start();
 
     function update(time: number, delta: number) {
+        levelTime = time;
+        if (hasFirstTouchSinceLevelStart()) {
+            touchGuideStartTime = time;
+        }
         handleNextLevel();
         handleRestart();
         handleDebug(game);
@@ -75,6 +96,7 @@ export function loadLevel(number: number) {
         }
 
         level.update(time, delta);
+        updateTouchContinueState();
 
         panTowardsShip(level, delta);
     }
@@ -85,7 +107,27 @@ export function loadLevel(number: number) {
         }
     }
 
-    const shouldContinueToNextLevel = () => continueButton() && level.passed;
+    function shouldContinueToNextLevel(): boolean {
+        if (!level.passed) return false;
+        if (continueButton()) return true;
+
+        return shouldContinueByTouch();
+    }
+
+    function shouldContinueByTouch(): boolean {
+        if (!showTouchGuide || !touchContinueReady) return false;
+
+        return Pointer.getTouchPressId() !== touchPressIdWhenReady &&
+            Pointer.getActiveTouchCount() === 0;
+    }
+
+    function updateTouchContinueState(): void {
+        if (!showTouchGuide || !level.passed || touchContinueReady) return;
+        if (Pointer.getActiveTouchCount() > 0) return;
+
+        touchContinueReady = true;
+        touchPressIdWhenReady = Pointer.getTouchPressId();
+    }
 
     function handleRestart() {
         if (restartButton()) {
@@ -106,9 +148,54 @@ export function loadLevel(number: number) {
 
         ctx.restore();
 
+        if (showTouchGuide) {
+            drawTouchControlsGuide(viewport, getTouchGuideOpacity(getTouchGuideElapsed()));
+        }
+
         drawFps(ctx, game.fpsTracker.currentFps);
         drawNpcAiDebug(ctx, level);
     }
+
+    function hasFirstTouchSinceLevelStart(): boolean {
+        return showTouchGuide && touchGuideStartTime === null &&
+            Pointer.getTouchPressId() !== initialTouchPressId;
+    }
+
+    function getTouchGuideElapsed(): number {
+        return touchGuideStartTime === null ? 0 : levelTime - touchGuideStartTime;
+    }
+}
+
+function getTouchGuideOpacity(levelTime: number): number {
+    const fadeStart = TOUCH_GUIDE_DURATION - TOUCH_GUIDE_FADE_DURATION;
+    if (levelTime >= TOUCH_GUIDE_DURATION) return 0;
+    if (levelTime <= fadeStart) return 1;
+
+    return (TOUCH_GUIDE_DURATION - levelTime) / TOUCH_GUIDE_FADE_DURATION;
+}
+
+function drawTouchControlsGuide(viewport: Viewport, opacity: number): void {
+    if (opacity <= 0) return;
+
+    const { ctx, width, height } = viewport;
+    const centerY = height * TOUCH_GUIDE_Y_RATIO;
+
+    ctx.save();
+    ctx.globalAlpha = TOUCH_GUIDE_OPACITY * opacity;
+    ctx.fillStyle = "#ffffff";
+    drawTouchGuideCircle(ctx, width * TOUCH_GUIDE_X_RATIO, centerY);
+    drawTouchGuideCircle(ctx, width * (1 - TOUCH_GUIDE_X_RATIO), centerY);
+    ctx.restore();
+}
+
+function drawTouchGuideCircle(
+    ctx: CanvasRenderingContext2D,
+    centerX: number,
+    centerY: number
+): void {
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, TOUCH_GUIDE_RADIUS, 0, Math.PI * 2);
+    ctx.fill();
 }
 
 function handleDebug(game: Game) {

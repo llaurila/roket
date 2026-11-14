@@ -5,6 +5,7 @@ import type IUpdatable from "./Physics/IUpdatable";
 import { getDeltaTimeFormatted, getTableRow } from "./text";
 import Alert from "./components/UIWindow/Alert";
 import type { Viewport } from "./Graphics/Viewport";
+import { hasTouchScreen } from "@/Controls/Device";
 
 class LevelOutro implements IDrawable, IUpdatable {
     public id: number = UniqueIdProvider.next();
@@ -39,9 +40,13 @@ class LevelOutro implements IDrawable, IUpdatable {
     }
 
     private getSuccessMessage(): string {
+        const continuePrompt = hasTouchScreen()
+            ? "PRESS <TAP> TO CONTINUE"
+            : "PRESS <ENTER> TO CONTINUE";
+
         return this.getStatString() + "\n" +
             "\n" +
-            "PRESS <ENTER> TO CONTINUE, <ESC> TO RESTART.";
+            continuePrompt + ", <ESC> TO RESTART.";
     }
 
     private getFailureMessage(): string {

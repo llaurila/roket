@@ -56,4 +56,74 @@ describe("pointer input", () => {
         pointer.beginFrame();
         expect(pointer.getPressId()).toBe(0);
     });
+
+    test("tracks simultaneous touches on both screen sides until each is released", async () => {
+        Object.assign(win, { innerWidth: 100 });
+        const { default: pointer } = await import("./Pointer");
+
+        win.dispatchEvent(pointerEvent("pointerdown", {
+            pointerId: 1, pointerType: "touch", clientX: 20
+        }));
+        win.dispatchEvent(pointerEvent("pointerdown", {
+            pointerId: 2, pointerType: "touch", isPrimary: false, clientX: 80
+        }));
+
+        expect(pointer.getActiveTouchCount()).toBe(2);
+        expect(pointer.leftSidePressed()).toBe(true);
+        expect(pointer.rightSidePressed()).toBe(true);
+
+        win.dispatchEvent(pointerEvent("pointerup", { pointerId: 1, pointerType: "touch" }));
+
+        expect(pointer.leftSidePressed()).toBe(false);
+        expect(pointer.rightSidePressed()).toBe(true);
+        expect(pointer.getActiveTouchCount()).toBe(1);
+    });
+
+    test("updates a held touch when it moves across the screen", async () => {
+        Object.assign(win, { innerWidth: 100 });
+        const { default: pointer } = await import("./Pointer");
+
+        win.dispatchEvent(pointerEvent("pointerdown", {
+            pointerType: "touch", clientX: 20
+        }));
+        win.dispatchEvent(pointerEvent("pointermove", {
+            pointerType: "touch", clientX: 80
+        }));
+
+        expect(pointer.leftSidePressed()).toBe(false);
+        expect(pointer.rightSidePressed()).toBe(true);
+    });
+
+    test("ignores touches already held when gameplay starts", async () => {
+        Object.assign(win, { innerWidth: 100 });
+        const { default: pointer } = await import("./Pointer");
+
+        win.dispatchEvent(pointerEvent("pointerdown", {
+            pointerType: "touch", clientX: 20
+        }));
+        pointer.ignoreCurrentTouches();
+        win.dispatchEvent(pointerEvent("pointermove", {
+            pointerType: "touch", clientX: 80
+        }));
+
+        expect(pointer.leftSidePressed()).toBe(false);
+        expect(pointer.rightSidePressed()).toBe(false);
+
+        win.dispatchEvent(pointerEvent("pointerup", { pointerType: "touch" }));
+        win.dispatchEvent(pointerEvent("pointerdown", {
+            pointerType: "touch", clientX: 80
+        }));
+
+        expect(pointer.rightSidePressed()).toBe(true);
+    });
+
+    test("tracks touch presses separately from mouse presses", async () => {
+        const { default: pointer } = await import("./Pointer");
+
+        win.dispatchEvent(pointerEvent("pointerdown", { pointerType: "mouse" }));
+        expect(pointer.getTouchPressId()).toBe(0);
+
+        win.dispatchEvent(pointerEvent("pointerdown", { pointerType: "touch" }));
+        expect(pointer.getTouchPressId()).toBe(1);
+    });
 });

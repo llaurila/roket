@@ -1,4 +1,5 @@
 import Keys from "./Controls/Keys";
+import Pointer from "./Controls/Pointer";
 import type Ship from "./Ship";
 import GameController from "./Controls/GameController";
 import { Config } from "./config";
@@ -65,8 +66,8 @@ class ShipController {
 
 const choke = () => Keys.isDown("Shift");
 const both = () => Keys.isDown("ArrowUp");
-const ccw: ThrustPowerFunc = () => Keys.isDown("ArrowLeft") ? 1 : 0;
-const cw: ThrustPowerFunc = () => Keys.isDown("ArrowRight") ? 1 : 0;
+const ccw: ThrustPowerFunc = () => Keys.isDown("ArrowLeft") || Pointer.leftSidePressed() ? 1 : 0;
+const cw: ThrustPowerFunc = () => Keys.isDown("ArrowRight") || Pointer.rightSidePressed() ? 1 : 0;
 const fire = () => Keys.isDown(" ") || Keys.isDown("Space") || Keys.isDown("Spacebar");
 
 export default ShipController;

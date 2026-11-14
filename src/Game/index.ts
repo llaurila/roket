@@ -42,9 +42,9 @@ class Game {
         this.prev = (new Date()).getTime();
 
         const gameLoop = () => {
-            if (this.running) {
-                window.requestAnimationFrame(gameLoop);
-            }
+            if (!this.running) return;
+
+            window.requestAnimationFrame(gameLoop);
 
             const time = (new Date()).getTime() / 1000;
             const delta = time - this.prev;
