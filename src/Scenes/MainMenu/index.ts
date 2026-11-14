@@ -14,6 +14,7 @@ import { getQueryStringValue } from "@/Utils";
 import { Config } from "@/config";
 import { PlayerNameDialog } from "./PlayerNameDialog";
 import { SettingsDialog } from "./SettingsDialog";
+import { hasTouchScreen } from "@/Controls/Device";
 
 export enum MainMenuMode {
     Loading = "loading",
@@ -59,7 +60,11 @@ function applyMenuMode() {
 function drawModeOverlay(ctx: CanvasRenderingContext2D) {
     if (menuMode === MainMenuMode.Ready) return;
 
-    const message = menuMode === MainMenuMode.Loading ? "LOADING..." : "CLICK TO START";
+    let message = "LOADING...";
+
+    if (menuMode === MainMenuMode.WaitingForGesture) {
+        message = hasTouchScreen() ? "TAP TO START" : "CLICK TO START";
+    }
 
     ctx.save();
     ctx.fillStyle = "#ffffff";
@@ -76,6 +81,20 @@ function drawModeOverlay(ctx: CanvasRenderingContext2D) {
 export function setMainMenuMode(nextMode: MainMenuMode) {
     menuMode = nextMode;
     applyMenuMode();
+}
+
+function handleCanvasPointerDown() {
+    if (menuMode === MainMenuMode.WaitingForGesture) {
+        requestMobileFullscreen();
+        setMainMenuMode(MainMenuMode.Ready);
+    }
+}
+
+function requestMobileFullscreen() {
+    if (!hasTouchScreen() || !document.fullscreenEnabled || document.fullscreenElement) return;
+
+    void document.documentElement.requestFullscreen({ navigationUI: "hide" })
+        .catch(() => undefined);
 }
 
 function update(time: number, _delta: number) {
@@ -137,6 +156,7 @@ export function enterMainMenu() {
         initializeGraphics("game"),
         new Camera(Vector.Zero, ZOOM)
     );
+    viewport.ctx.canvas.addEventListener("pointerdown", handleCanvasPointerDown);
 
     graphics = new Graphics();
 

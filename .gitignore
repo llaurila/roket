@@ -2,5 +2,6 @@ node_modules/
 dist/
 .cache/
 .nyc_output/
+.certs/
 tsconfig.tsbuildinfo
 deploy.sh

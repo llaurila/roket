@@ -22,6 +22,11 @@ export class Menu extends UIWindow {
     public draw(viewport: Viewport) {
         if (!this.visible) return;
 
+        this.width = Math.min(
+            config.windowWidth,
+            viewport.width - Config.ui.window.margin * 2
+        );
+
         const { ctx } = viewport;
 
         ctx.save();

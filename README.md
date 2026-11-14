@@ -38,4 +38,27 @@ If you are new to the codebase, start at `src/main.ts`.
 - `pnpm install`
 - `pnpm run dev`
 
+### Test on a phone over HTTPS
+
+Mobile browser fullscreen APIs require a secure origin. For LAN testing, install
+[mkcert](https://github.com/FiloSottile/mkcert), then run these commands in PowerShell
+from the project directory (replace the example address with your computer's LAN IP):
+
+```powershell
+mkcert -install
+New-Item -ItemType Directory -Force .certs
+mkcert -key-file .certs/lan-key.pem -cert-file .certs/lan-cert.pem 192.168.1.94
+pnpm run dev
+```
+
+With both local certificate files present, Vite serves HTTPS automatically. Install
+mkcert's local root certificate (`mkcert -CAROOT`, file `rootCA.pem`) on the phone and
+trust it, then open `https://192.168.1.94:5173`. Allow Vite through the computer's
+firewall on the private network if the phone cannot connect. The `.certs` directory is
+git-ignored and should never be committed.
+
+For a browser-chrome-free Android test, open the HTTPS URL in Chrome (not an embedded
+Custom Tab), install Roket from Chrome's menu, and launch it from its Home Screen icon.
+The web app manifest requests fullscreen display when installed.
+
 Many people find the linter a bit sadistic, especially the _complexity_ rule. Sorry (not sorry).
