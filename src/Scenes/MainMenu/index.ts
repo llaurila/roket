@@ -79,12 +79,14 @@ function drawModeOverlay(ctx: CanvasRenderingContext2D) {
 }
 
 export function setMainMenuMode(nextMode: MainMenuMode) {
+    if (menuMode === nextMode) return;
     menuMode = nextMode;
     applyMenuMode();
 }
 
-function handleCanvasPointerDown() {
+function handleCanvasPointerDown(event: PointerEvent) {
     if (menuMode === MainMenuMode.WaitingForGesture) {
+        event.preventDefault();
         requestMobileFullscreen();
         setMainMenuMode(MainMenuMode.Ready);
     }

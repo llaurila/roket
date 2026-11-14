@@ -18,8 +18,6 @@ export class MenuItem extends EventTarget implements IDrawable {
 
     public disabled = false;
 
-    private mouseWasDown = false;
-
     private clickEvent: Event = new Event("click");
 
     public constructor(public text: string, public parent: Menu) {
@@ -31,17 +29,10 @@ export class MenuItem extends EventTarget implements IDrawable {
     public getHeight = () => HEIGHT;
 
     public update(viewport: Viewport) {
-        const mouseIsDown = Pointer.leftPressed();
-        const mouseOver = this.isMouseOver(viewport);
-
-        if (mouseOver) {
-            const mouseDown = Pointer.leftPressed();
-            if (mouseDown && !this.mouseWasDown) {
-                this.dispatchEvent(this.clickEvent);
-            }
+        if (this.parent.visible && this.parent.acceptsPress() && !this.disabled &&
+            this.getContentRect(viewport).contains(Pointer.getPressPosition())) {
+            this.dispatchEvent(this.clickEvent);
         }
-
-        this.mouseWasDown = mouseIsDown;
     }
 
     public draw(viewport: Viewport) {

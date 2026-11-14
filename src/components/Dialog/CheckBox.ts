@@ -5,15 +5,12 @@ import type Rectangle from "@/Graphics/Rectangle";
 import { makeBgGradient } from "../UIWindow/utils";
 import { getColorString } from "@/Graphics/Color";
 import { Config } from "@/config";
-import Pointer from "@/Controls/Pointer";
 
 const SIZE = 30;
 const CHECK_RECT_SIZE = 12;
 const MARGIN = 12;
 
 export default class UICheckBox extends UIInputBase {
-    private mouseWasDown = false;
-
     public constructor(
         dialog: UIDialog,
         public label: string,
@@ -32,15 +29,10 @@ export default class UICheckBox extends UIInputBase {
     }
 
     public update(viewport: Viewport): void {
-        const mouseIsDown = Pointer.leftPressed();
-        const mouseOver = this.isMouseOver(viewport);
-
-        if (mouseOver && !this.mouseWasDown && mouseIsDown) {
+        if (this.isMouseOver(viewport)) {
             this.checked = !this.checked;
             this.triggerChange();
         }
-
-        this.mouseWasDown = mouseIsDown;
     }
 
     private drawBox(ctx: CanvasRenderingContext2D, rect: Rectangle) {

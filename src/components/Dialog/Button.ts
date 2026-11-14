@@ -18,7 +18,6 @@ export default class UIButton extends EventTarget implements IDrawable {
     public id: number = UniqueIdProvider.next();
     public alive = true;
 
-    private mouseWasDown = false;
     private clickEvent: Event = new Event("click");
 
     public constructor(public text: string, private dialog: UIDialog) {
@@ -50,23 +49,12 @@ export default class UIButton extends EventTarget implements IDrawable {
 
         ctx.restore();
 
-        this.update(viewport);
     }
 
     public update(viewport: Viewport) {
-        if (this.dialog.shouldIgnorePointerInput()) {
-            this.mouseWasDown = Pointer.leftPressed();
-            return;
-        }
-
-        const mouseIsDown = Pointer.leftPressed();
-        const mouseOver = this.isMouseOver(viewport);
-
-        if (mouseOver && mouseIsDown && !this.mouseWasDown) {
+        if (!this.dialog.shouldIgnorePointerInput() && this.isMouseOver(viewport)) {
             this.dispatchEvent(this.clickEvent);
         }
-
-        this.mouseWasDown = mouseIsDown;
     }
 
     public getHeight(): number {
@@ -100,7 +88,7 @@ export default class UIButton extends EventTarget implements IDrawable {
 
     private isMouseOver(viewport: Viewport): boolean {
         if (!this.dialog.visible) return false;
-        const mouse = Pointer.getPosition();
+        const mouse = Pointer.getPressPosition();
         const rect = this.getRect(viewport);
         return rect.contains(mouse);
     }

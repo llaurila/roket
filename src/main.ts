@@ -14,6 +14,9 @@ import { Store } from "./Store";
 
 function unlockOnFirstGesture() {
   const handler = async () => {
+    window.removeEventListener("pointerdown", handler);
+    window.removeEventListener("keydown", handler);
+    window.removeEventListener("touchstart", handler);
     try {
       await Promise.all([
         globalJukebox.unlock(),
@@ -37,9 +40,6 @@ function unlockOnFirstGesture() {
       globalJukebox.jb.select("menu");
       await globalJukebox.jb.play();
     } finally {
-      window.removeEventListener("pointerdown", handler);
-      window.removeEventListener("keydown", handler);
-      window.removeEventListener("touchstart", handler);
       setTimeout(() => {
         setMainMenuMode(MainMenuMode.Ready);
       }, 100);

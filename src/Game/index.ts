@@ -3,6 +3,7 @@ import type { Action, IRecurringTask } from "@/types";
 import { Config } from "@/config";
 import { FPSTracker } from "./FPSTracker";
 import type { Viewport } from "@/Graphics/Viewport";
+import Pointer from "@/Controls/Pointer";
 
 const FPS_TRACKER_HZ = 5;
 
@@ -48,6 +49,7 @@ class Game {
             const time = (new Date()).getTime() / 1000;
             const delta = time - this.prev;
 
+            Pointer.beginFrame();
             this.updatePhysics(delta, time);
             this.drawFunc(this.viewport);
             this.runRecurringTasks(time);

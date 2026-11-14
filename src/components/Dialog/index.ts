@@ -5,14 +5,17 @@ import UITextInput from "./TextInput";
 import type UIInputBase from "./InputBase";
 import UICheckBox from "./CheckBox";
 import Pointer from "@/Controls/Pointer";
+import { Config } from "@/config";
 
 export default class UIDialog extends UIWindow {
     public buttons: UIButton[] = [];
     public inputs: UIInputBase[] = [];
-    private ignorePointerUntilRelease = false;
+    private ignoredPressId = 0;
+    private readonly preferredWidth: number;
 
     public constructor(width: number, height: number) {
         super(width, height);
+        this.preferredWidth = width;
     }
 
     public addButton(caption: string): UIButton {
@@ -35,23 +38,16 @@ export default class UIDialog extends UIWindow {
 
     public override show() {
         super.show();
-        this.ignorePointerUntilRelease = Pointer.leftPressed();
+        this.ignoredPressId = Pointer.getPressId();
     }
 
     public override hide() {
         super.hide();
-        this.ignorePointerUntilRelease = false;
+        for (const input of this.inputs) input.hide();
     }
 
     public shouldIgnorePointerInput(): boolean {
-        if (!this.ignorePointerUntilRelease) return false;
-
-        if (!Pointer.leftPressed()) {
-            this.ignorePointerUntilRelease = false;
-            return false;
-        }
-
-        return true;
+        return Pointer.getPressId() === 0 || Pointer.getPressId() === this.ignoredPressId;
     }
 
     public update(time: number, delta: number) {
@@ -60,6 +56,8 @@ export default class UIDialog extends UIWindow {
 
     public draw(viewport: Viewport) {
         if (!this.visible) return;
+
+        this.width = Math.min(this.preferredWidth, viewport.width - Config.ui.window.margin * 2);
 
         const { ctx } = viewport;
 

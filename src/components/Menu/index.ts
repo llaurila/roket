@@ -2,11 +2,13 @@ import { UIWindow } from "../UIWindow";
 import { Config } from "@/config";
 import { MenuItem } from "./MenuItem";
 import type { Viewport } from "@/Graphics/Viewport";
+import Pointer from "@/Controls/Pointer";
 
 const config = Config.ui.mainMenu;
 
 export class Menu extends UIWindow {
     public items: MenuItem[] = [];
+    private ignoredPressId = 0;
 
     public constructor(title = "MENU") {
         super(config.windowWidth, 0);
@@ -17,6 +19,16 @@ export class Menu extends UIWindow {
         const item = new MenuItem(caption, this);
         this.items.push(item);
         return item;
+    }
+
+    public override show() {
+        super.show();
+        this.ignoredPressId = Pointer.getPressId();
+    }
+
+    public acceptsPress(): boolean {
+        const pressId = Pointer.getPressId();
+        return pressId !== 0 && pressId !== this.ignoredPressId;
     }
 
     public draw(viewport: Viewport) {

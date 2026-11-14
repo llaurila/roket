@@ -19,10 +19,12 @@ export default abstract class UIInputBase extends EventTarget {
         this.dialog = dialog;
     }
 
+    public hide(): void { /* Most inputs have no DOM element to hide. */ }
+
     protected isMouseOver(viewport: Viewport): boolean {
         if (!this.dialog.visible) return false;
         if (this.dialog.shouldIgnorePointerInput()) return false;
-        const mouse = Pointer.getPosition();
+        const mouse = Pointer.getPressPosition();
         const rect = this.getRect(viewport);
         return rect.contains(mouse);
     }
