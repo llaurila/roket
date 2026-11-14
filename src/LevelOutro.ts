@@ -6,6 +6,7 @@ import { getDeltaTimeFormatted, getTableRow } from "./text";
 import Alert from "./components/UIWindow/Alert";
 import type { Viewport } from "./Graphics/Viewport";
 import { hasTouchScreen } from "@/Controls/Device";
+import Vector from "@/Physics/Vector";
 
 class LevelOutro implements IDrawable, IUpdatable {
     public id: number = UniqueIdProvider.next();
@@ -29,6 +30,7 @@ class LevelOutro implements IDrawable, IUpdatable {
 
         this.alert.title = title;
         this.alert.content = message;
+        if (hasTouchScreen()) this.addTouchActions();
     }
 
     public update(time: number, delta: number) {
@@ -36,17 +38,35 @@ class LevelOutro implements IDrawable, IUpdatable {
     }
 
     public draw(viewport: Viewport) {
+        if (hasTouchScreen()) {
+            this.alert.relativePosition = new Vector(
+                viewport.width / 2 - viewport.getCenter().x, 0
+            );
+        }
         this.alert.draw(viewport);
     }
 
+    private addTouchActions(): void {
+        this.alert.actions.items.push({
+            text: "RETRY",
+            primary: !this.level.passed || !this.level.hasNextLevel,
+            onSelect: () => this.level.dispatchEvent(new Event("retry"))
+        });
+        if (!this.level.passed || !this.level.hasNextLevel) return;
+
+        this.alert.actions.items.push({
+            text: "NEXT LEVEL",
+            primary: true,
+            onSelect: () => this.level.dispatchEvent(new Event("continue"))
+        });
+    }
+
     private getSuccessMessage(): string {
-        const continuePrompt = hasTouchScreen()
-            ? "PRESS <TAP> TO CONTINUE"
-            : "PRESS <ENTER> TO CONTINUE";
+        if (hasTouchScreen()) return this.getStatString();
 
         return this.getStatString() + "\n" +
             "\n" +
-            continuePrompt + ", <ESC> TO RESTART.";
+            "PRESS <ENTER> TO CONTINUE, <ESC> TO RESTART.";
     }
 
     private getFailureMessage(): string {
@@ -54,9 +74,8 @@ class LevelOutro implements IDrawable, IUpdatable {
 
         return failureMessage + "\n" +
             "\n" +
-            this.getStatString() + "\n" +
-            "\n" +
-            "PRESS <ESC> TO RESTART.";
+            this.getStatString() +
+            (hasTouchScreen() ? "" : "\n\nPRESS <ESC> TO RESTART.");
     }
 
     private getStatString(): string {

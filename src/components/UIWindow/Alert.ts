@@ -4,11 +4,13 @@ import { getColorString } from "@/Graphics/Color";
 import Rectangle from "@/Graphics/Rectangle";
 import type { Viewport } from "@/Graphics/Viewport";
 import { getTextLines } from "@/Typography";
+import AlertActions from "./AlertActions";
 
 const config = Config.ui.alert;
 
 export default class Alert extends UIWindow {
     public content = "";
+    public actions = new AlertActions();
 
     private contentRect: Rectangle = Rectangle.Zero;
     private lines: string[] = [];
@@ -23,13 +25,17 @@ export default class Alert extends UIWindow {
         ctx.save();
         ctx.resetTransform();
 
+        this.width = Math.min(config.windowWidth, viewport.width - Config.ui.window.margin * 2);
         this.updateContent(viewport);
         this.height = this.getWindowHeight();
+        this.contentRect = this.getContentRect(viewport);
 
         super.draw(viewport);
 
         ctx.globalAlpha = this.opacity;
         this.drawText(viewport);
+        this.actions.update(this.contentRect);
+        this.actions.draw(viewport, this.contentRect);
 
         ctx.restore();
     }
@@ -53,6 +59,7 @@ export default class Alert extends UIWindow {
     private getWindowHeight(): number {
         return config.lineHeight * this.lines.length +
             config.padding * 2 +
+            this.actions.height +
             Config.ui.window.titleHeight +
             Config.ui.window.margin;
     }

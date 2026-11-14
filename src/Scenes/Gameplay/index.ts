@@ -59,8 +59,8 @@ export function loadLevel(number: number) {
     let levelTime = 0;
     let touchGuideStartTime: number | null = null;
     const initialTouchPressId = Pointer.getTouchPressId();
-    let touchContinueReady = false;
-    let touchPressIdWhenReady = initialTouchPressId;
+    let retryRequested = false;
+    let continueRequested = false;
 
     if (number < 0 || number >= levelTypes.length) {
         window.document.body.innerHTML = "<h1>Invalid level number</h1>";
@@ -70,6 +70,9 @@ export function loadLevel(number: number) {
     currentLevel = number;
 
     const level: Level = new levelTypes[number];
+    level.hasNextLevel = hasNextLevel(number, levelTypes.length);
+    level.addEventListener("retry", () => { retryRequested = true; });
+    level.addEventListener("continue", () => { continueRequested = true; });
 
     const game = new Game(update, draw, level.viewport);
 
@@ -83,12 +86,12 @@ export function loadLevel(number: number) {
     game.start();
 
     function update(time: number, delta: number) {
+        if (handleLevelNavigation()) return;
+
         levelTime = time;
         if (hasFirstTouchSinceLevelStart()) {
             touchGuideStartTime = time;
         }
-        handleNextLevel();
-        handleRestart();
         handleDebug(game);
 
         if (level.shipController) {
@@ -96,44 +99,28 @@ export function loadLevel(number: number) {
         }
 
         level.update(time, delta);
-        updateTouchContinueState();
 
         panTowardsShip(level, delta);
     }
 
-    function handleNextLevel() {
-        if (shouldContinueToNextLevel()) {
-            loadNextLevel(game);
-        }
+    function handleLevelNavigation(): boolean {
+        return !game.running || handleNextLevel() || handleRestart();
     }
 
-    function shouldContinueToNextLevel(): boolean {
-        if (!level.passed) return false;
-        if (continueButton()) return true;
+    function handleNextLevel(): boolean {
+        if (!level.passed || !level.hasNextLevel) return false;
+        if (!continueButton() && !continueRequested) return false;
 
-        return shouldContinueByTouch();
+        loadNextLevel(game);
+        return true;
     }
 
-    function shouldContinueByTouch(): boolean {
-        if (!showTouchGuide || !touchContinueReady) return false;
+    function handleRestart(): boolean {
+        if (!restartButton() && !retryRequested) return false;
 
-        return Pointer.getTouchPressId() !== touchPressIdWhenReady &&
-            Pointer.getActiveTouchCount() === 0;
-    }
-
-    function updateTouchContinueState(): void {
-        if (!showTouchGuide || !level.passed || touchContinueReady) return;
-        if (Pointer.getActiveTouchCount() > 0) return;
-
-        touchContinueReady = true;
-        touchPressIdWhenReady = Pointer.getTouchPressId();
-    }
-
-    function handleRestart() {
-        if (restartButton()) {
-            game.stop();
-            loadLevel(currentLevel);
-        }
+        game.stop();
+        loadLevel(currentLevel);
+        return true;
     }
 
     function draw(viewport: Viewport): void {
@@ -148,7 +135,7 @@ export function loadLevel(number: number) {
 
         ctx.restore();
 
-        if (showTouchGuide) {
+        if (showTouchGuide && !level.ended) {
             drawTouchControlsGuide(viewport, getTouchGuideOpacity(getTouchGuideElapsed()));
         }
 

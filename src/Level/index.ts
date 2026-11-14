@@ -45,6 +45,7 @@ abstract class Level extends EventTarget {
     public failureMessage?: string;
     public objectives: Objective[] = [];
     public passed = false;
+    public hasNextLevel = false;
     public hud: Hud = new Hud(this);
     public number?: number;
     public stats = new Stats();
@@ -189,4 +190,3 @@ abstract class Level extends EventTarget {
 }
 
 export default Level;
-
