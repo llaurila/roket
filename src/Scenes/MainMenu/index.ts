@@ -15,6 +15,7 @@ import { Config } from "@/config";
 import { PlayerNameDialog } from "./PlayerNameDialog";
 import { SettingsDialog } from "./SettingsDialog";
 import { hasTouchScreen } from "@/Controls/Device";
+import { setInstallSuggestionMenuVisible } from "@/InstallSuggestion";
 
 export enum MainMenuMode {
     Loading = "loading",
@@ -82,6 +83,7 @@ export function setMainMenuMode(nextMode: MainMenuMode) {
     if (menuMode === nextMode) return;
     menuMode = nextMode;
     applyMenuMode();
+    setInstallSuggestionMenuVisible(nextMode === MainMenuMode.Ready);
 }
 
 function handleCanvasPointerDown(event: PointerEvent) {
@@ -210,6 +212,7 @@ export function enterMainMenu() {
     });
 
     applyMenuMode();
+    setInstallSuggestionMenuVisible(menuMode === MainMenuMode.Ready);
 
     graphics.add(mainMenu);
     graphics.add(playerNameDialog.uiDialog);
@@ -221,5 +224,6 @@ export function enterMainMenu() {
 }
 
 export function exitMainMenu() {
+    setInstallSuggestionMenuVisible(false);
     game.stop();
 }

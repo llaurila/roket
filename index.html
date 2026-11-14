@@ -7,6 +7,8 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <title>Roket</title>
     <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="/roket-app-icon-192.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -20,6 +22,30 @@
       * { padding: 0; margin: 0; }
 
       canvas { background: black; display: block; margin: 0 auto; touch-action: none; }
+
+      #install-suggestion {
+          position: fixed;
+          z-index: 2;
+          right: max(12px, env(safe-area-inset-right));
+          bottom: max(12px, env(safe-area-inset-bottom));
+          max-width: min(320px, calc(100vw - 24px));
+          box-sizing: border-box;
+          padding: 12px;
+          border: 1px solid #1af2f2;
+          background: #101820;
+          color: white;
+          font: 14px/1.4 "Roboto Mono", monospace;
+      }
+
+      #install-suggestion button {
+          margin: 8px 8px 0 0;
+          padding: 6px 10px;
+          border: 1px solid #1af2f2;
+          background: #101820;
+          color: white;
+          font: inherit;
+          cursor: pointer;
+      }
 
       #orientation-banner {
           display: none;
@@ -45,6 +71,11 @@
   <body>
     <canvas id="game" width="480" height="320"></canvas>
     <div id="orientation-banner" role="status">HOLD YOUR PHONE HORIZONTALLY</div>
+    <aside id="install-suggestion" aria-label="Install Roket" hidden>
+      <p id="install-message">Install Roket for a fullscreen experience and quick access.</p>
+      <button id="install-button" type="button">Install</button>
+      <button id="install-dismiss" type="button">Not now</button>
+    </aside>
     <script type="module" src="./src/main.ts"></script>
   </body>
 </html>

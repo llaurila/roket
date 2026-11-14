@@ -11,6 +11,7 @@ import chaseThemeUrl from "./assets/chase.mp3";
 import focusThemeUrl from "./assets/focus.mp3";
 import cruisingThemeUrl from "./assets/cruising.mp3";
 import { Store } from "./Store";
+import { initializeInstallSuggestion } from "./InstallSuggestion";
 
 function unlockOnFirstGesture() {
   const handler = async () => {
@@ -67,6 +68,7 @@ async function preloadMusic() {
   ]);
 }
 
+initializeInstallSuggestion();
 enterMainMenu();
 
 await preloadMusic();

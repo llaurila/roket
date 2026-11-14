@@ -61,6 +61,11 @@ For a browser-chrome-free Android test, open the HTTPS URL in Chrome (not an emb
 Custom Tab), install Roket from Chrome's menu, and launch it from its Home Screen icon.
 The web app manifest requests fullscreen display when installed.
 
+When installation is available, the main menu suggests installing Roket. On iOS,
+it provides Share menu instructions instead of a native prompt. Dismissing the
+suggestion hides it for the current browser session. Browser installability rules
+and secure-origin requirements still apply.
+
 Many people find the linter a bit sadistic, especially the _complexity_ rule. Sorry (not sorry).
 
 ## Deploy
