@@ -3,7 +3,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { defineConfig } from "vite";
 import { parse } from "yaml";
 
-const LOCAL_CERTIFICATE_DIRECTORY = path.resolve(__dirname, ".certs");
+const LOCAL_CERTIFICATE_DIRECTORY = path.resolve(import.meta.dirname, ".certs");
 const LOCAL_KEY_PATH = path.join(LOCAL_CERTIFICATE_DIRECTORY, "lan-key.pem");
 const LOCAL_CERTIFICATE_PATH = path.join(LOCAL_CERTIFICATE_DIRECTORY, "lan-cert.pem");
 
@@ -40,7 +40,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "@": path.resolve(import.meta.dirname, "./src"),
     },
   },
   server: {
